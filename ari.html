@@ -175,8 +175,8 @@
                     </ul>
                      <figure class="my-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <img src="../saturation.png" alt="Graph showing the arm's position responding to different high-level voltages, identifying the saturation limit at +/-12V." class="rounded-lg w-full shadow-lg border border-slate-200">
-                            <img src="../insensitibity.png" alt="Graph showing the arm's position responding to different low-level voltages, identifying the insensitivity band at +/-0.25V." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="saturation.png" alt="Graph showing the arm's position responding to different high-level voltages, identifying the saturation limit at +/-12V." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="insensitibity.png" alt="Graph showing the arm's position responding to different low-level voltages, identifying the insensitivity band at +/-0.25V." class="rounded-lg w-full shadow-lg border border-slate-200">
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">
                             Experimental identification of input saturation (left) and insensitivity (right).
@@ -201,8 +201,8 @@
                     </p>
                     <figure class="my-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <img src="../identification.jpg" alt="Graph of the pendulum's response to a 5-degree deviation, used to identify its dynamic parameters." class="rounded-lg w-full shadow-lg border border-slate-200">
-                            <img src="../math_sim.png" alt="Graph comparing the response of the mathematical pendulum model with the simulator's pendulum, showing a close match." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="identification.jpg" alt="Graph of the pendulum's response to a 5-degree deviation, used to identify its dynamic parameters." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="math_sim.png" alt="Graph comparing the response of the mathematical pendulum model with the simulator's pendulum, showing a close match." class="rounded-lg w-full shadow-lg border border-slate-200">
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">
                             Pendulum's response to a 5° deviation (left) and validation of the mathematical model against the simulator (right).
@@ -224,8 +224,8 @@
                     </p>
                     <figure class="my-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <img src="../gradual.png" alt="Graph of the pendulum's response to a 5-degree deviation, used to identify its dynamic parameters." class="rounded-lg w-full shadow-lg border border-slate-200">
-                            <img src="../gradualamr.png" alt="Graph comparing the response of the mathematical pendulum model with the simulator's pendulum, showing a close match." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="gradual.png" alt="Graph of the pendulum's response to a 5-degree deviation, used to identify its dynamic parameters." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="gradualamr.png" alt="Graph comparing the response of the mathematical pendulum model with the simulator's pendulum, showing a close match." class="rounded-lg w-full shadow-lg border border-slate-200">
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">
                             The iterative process of matching simulated responses (orange, blue, green) to the real system (red) to find k₁ and k₂.
@@ -234,8 +234,8 @@
                     Then I validated the nonlinear model with the obtained constants against the real model, confirming a close match.
                     <figure class="my-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <img src="../nonlin.png" alt="Graph comparing the response of the mathematical pendulum model with the simulator's pendulum, showing a close match." class="rounded-lg w-full shadow-lg border border-slate-200">
-                            <img src="../gg.png" alt="Graph of the pendulum's response to a 5-degree deviation, used to identify its dynamic parameters." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="nonlin.png" alt="Graph comparing the response of the mathematical pendulum model with the simulator's pendulum, showing a close match." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="gg.png" alt="Graph of the pendulum's response to a 5-degree deviation, used to identify its dynamic parameters." class="rounded-lg w-full shadow-lg border border-slate-200">
                             
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">
@@ -248,7 +248,7 @@
                         With all parameters identified, the final state-space matrices A and B were numericized. This provides an accurate state-space representation of the rotary pendulum, essential for the design and analysis of controllers. The graph below shows a correspondence between the linearized model, the nonlinear model, and the actual system response.
                     </p>
                     <figure class="my-8">
-                        <img src="../nnnn.png" alt="Graph comparing the step responses of the final linear, nonlinear, and real system models." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <img src="nnnn.png" alt="Graph comparing the step responses of the final linear, nonlinear, and real system models." class="rounded-lg w-full shadow-lg border border-slate-200">
                         <figcaption class="text-sm text-center text-slate-500 mt-3">
                            Validation of the final models, showing close agreement between the linear, nonlinear, and real systems.
                         </figcaption>
@@ -260,7 +260,7 @@
                         To achieve a specified performance (settling time < 2s, overshoot < 5%), I designed a state-space regulator using pole placement.
 
                         <figure class="my-8">
-                            <img src="../statespace_forwardfeed.png" alt="Graph showing a feed-forward controller rejecting a disturbance perfectly, while a feedback-only controller shows a large error spike." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="statespace_forwardfeed.png" alt="Graph showing a feed-forward controller rejecting a disturbance perfectly, while a feedback-only controller shows a large error spike." class="rounded-lg w-full shadow-lg border border-slate-200">
                             <figcaption class="text-sm text-center text-slate-500 mt-3">
                                 The feed-forward system shows essentially zero deviation from a step disturbance, allowing the controller to maintain stability with minimal corrective action.
                             </figcaption>
@@ -269,8 +269,8 @@
                         This approach resulted in the desired system response with a smooth non saturated corrective action.
                         <figure class="my-8">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <img src="../state-space.png" alt="Graph of the state-space controller's system response." class="rounded-lg w-full shadow-lg border border-slate-200">
-                                <img src="../statstatce_correctiveaction.png" alt="Graph of the corrective action for the state-space controller." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="state-space.png" alt="Graph of the state-space controller's system response." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="statstatce_correctiveaction.png" alt="Graph of the corrective action for the state-space controller." class="rounded-lg w-full shadow-lg border border-slate-200">
                             </div>
                             <figcaption class="text-sm text-center text-slate-500 mt-3">
                                 The state-space controller achieves the desired system response (left) with a precise and non-saturating corrective action (right).
@@ -281,14 +281,14 @@
 
                         <figure class="my-8">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <img src="../obs20step.png" alt="Graph of the state-space controller's system response with a Luenberger observer." class="rounded-lg w-full shadow-lg border border-slate-200">
-                                <img src="../observer_corrective_action_20.png" alt="Graph of the corrective action for the state-space controller with an observer." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="obs20step.png" alt="Graph of the state-space controller's system response with a Luenberger observer." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="observer_corrective_action_20.png" alt="Graph of the corrective action for the state-space controller with an observer." class="rounded-lg w-full shadow-lg border border-slate-200">
                             </div>
                         </figure>
 
                         At the end I added a Feed-Forward path to the state-space controller to improve disturbance rejection and tracking performance.
                         <figure class="my-8">
-                            <img src="../ssFWdistrubancer.png" alt="Graph showing a feed-forward controller rejecting a disturbance perfectly, while a feedback-only controller shows a large error spike." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="ssFWdistrubancer.png" alt="Graph showing a feed-forward controller rejecting a disturbance perfectly, while a feedback-only controller shows a large error spike." class="rounded-lg w-full shadow-lg border border-slate-200">
                             <figcaption class="text-sm text-center text-slate-500 mt-3">
                                 The feed-forward system shows essentially zero deviation from a step disturbance, allowing the controller to maintain stability with minimal corrective action.
                             </figcaption>
@@ -304,17 +304,17 @@
                         <h4>Discrete dead-beat controller</h4>
                         What’s interesting about deadbeat control is that its region of stability lies entirely inside the unit circle in the z-plane, so the “most stable” pole can be placed at the origin (z = 0). Continuous control has no single “most stable” pole location in the s-plane. I’ve therefore placed all controller poles at zero. Below is the response compared to the continuous state-space controller.
                         <figure class="my-8">
-                            <img src="../deadbeat.png" alt="Graph showing the dead-beat controller settling in 0.7 seconds, far faster than its continuous counterpart, with a clean corrective action." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="deadbeat.png" alt="Graph showing the dead-beat controller settling in 0.7 seconds, far faster than its continuous counterpart, with a clean corrective action." class="rounded-lg w-full shadow-lg border border-slate-200">
                         </figure>
                         As shown, the discrete deadbeat controller outperforms the continuous controller: on a 20-unit step input it achieves a settling time of 0.7 s, reaches steady state in five steps, and requires a maximum control voltage of 3 V.
                         <figure class="my-8">
-                            <img src="../correctiveActiondeadbeat.png" alt="Graph showing the dead-beat controller's corrective action." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="correctiveActiondeadbeat.png" alt="Graph showing the dead-beat controller's corrective action." class="rounded-lg w-full shadow-lg border border-slate-200">
                         </figure>
                     
                     <h4>MPC</h4>
                     I discretized my linearized state-space model with a zero-order hold at a sample time Ts = 5 ms. Then I created an MPC controller with a 100-step prediction horizon and a 50-step control horizon. I set the same control priority for the pendulum and the arm, and I imposed a penalty of 0.1 on the rate of change of the corrective action to ensure a smooth response.
                     <figure class="my-8">
-                        <img src="../MPC.png" alt="Graph showing the response of the Model Predictive Controller (MPC)." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <img src="MPC.png" alt="Graph showing the response of the Model Predictive Controller (MPC)." class="rounded-lg w-full shadow-lg border border-slate-200">
                     </figure>
 
                     
@@ -330,8 +330,8 @@
                         After designing the PID controller, I implemented anti-windup techniques to prevent integrator windup.
                         <figure class="my-8">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <img src="../clamping_diagram.png" alt="Diagram of the clamping anti-windup method." class="rounded-lg w-full shadow-lg border border-slate-200">
-                                <img src="../back_calc.png" alt="Diagram of the back-calculation anti-windup method." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="clamping_diagram.png" alt="Diagram of the clamping anti-windup method." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="back_calc.png" alt="Diagram of the back-calculation anti-windup method." class="rounded-lg w-full shadow-lg border border-slate-200">
                             </div>
                             <figcaption class="text-sm text-center text-slate-500 mt-3">
                                 Diagrams for clamping (left) and back-calculation (right) anti-windup techniques.
@@ -340,8 +340,8 @@
                         I tested the controller's performance and both anti-windup methods improove the system's response. Back calculation worked slightly better.
                         <figure class="my-8">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <img src="../back_calc_step.png" alt="System response with back-calculation anti-windup." class="rounded-lg w-full shadow-lg border border-slate-200">
-                                <img src="../back_calc_akcni.png" alt="Corrective action with back-calculation anti-windup." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="back_calc_step.png" alt="System response with back-calculation anti-windup." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="back_calc_akcni.png" alt="Corrective action with back-calculation anti-windup." class="rounded-lg w-full shadow-lg border border-slate-200">
                             </div>
                             <figcaption class="text-sm text-center text-slate-500 mt-3">
                                 System response (left) and corrective action (right) using back-calculation anti-windup.
@@ -355,7 +355,7 @@
                     </h2>
                     Once again I implemented a PID controller with the root locus method and anti-windup. Here are the responses for several deviations.
                     <figure class="my-8">
-                        <img src="../PID_pend_Cons.png" alt="Response of the pendulum-only PID controller for various deviations." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <img src="PID_pend_Cons.png" alt="Response of the pendulum-only PID controller for various deviations." class="rounded-lg w-full shadow-lg border border-slate-200">
                         <figcaption class="text-sm text-center text-slate-500 mt-3">
                             The pendulum-only PID controller's response to various step deviations.
                         </figcaption>
@@ -363,11 +363,11 @@
                     
                     <h4>Delays - Smith predictor</h4>
                     <figure class="my-8">
-                        <img src="../smith.png" alt="Diagram of the Smith predictor implementation." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <img src="smith.png" alt="Diagram of the Smith predictor implementation." class="rounded-lg w-full shadow-lg border border-slate-200">
                     </figure>
                     I implemented a Smith predictor to the arm-position controller to cancel out the 1 s delay. Without it, that 1 s delay shifts the phase margin so much that the normal PID (blue line) goes unstable and never settles. With the Smith predictor (red line), the delay is effectively removed, the phase margin is restored, and the arm tracks the reference smoothly. This also shows the basic system can only tolerate delays up to about 1 s—any longer and you need the predictor.
                     <figure class="my-8">
-                        <img src="../smithvspid.png" alt="Comparison of PID controller with and without a Smith predictor when a 1s delay is present." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <img src="smithvspid.png" alt="Comparison of PID controller with and without a Smith predictor when a 1s delay is present." class="rounded-lg w-full shadow-lg border border-slate-200">
                     </figure>
 
                     <h2 id="digital-filters"  class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
@@ -380,15 +380,15 @@
                         First I tested the filter on the PID controller. After
                         filtering, the PID could control again.
                         <figure class="my-8">
-                            <img src="../lowpassvsnopass.png" alt="Comparison of PID controller with and without a low-pass filter in the presence of noise." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="lowpassvsnopass.png" alt="Comparison of PID controller with and without a low-pass filter in the presence of noise." class="rounded-lg w-full shadow-lg border border-slate-200">
                         </figure>
                         For the state-space regulator, the filters had less effect on reference tracking.
                         As we can see, adding the filter slows down the response, but it significantly improves the corrective action. Without it the system would be uncontrollable in real life.
 
                         <figure class="my-8">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <img src="../statespace_lp.png" alt="State-space controller response with a low-pass filter." class="rounded-lg w-full shadow-lg border border-slate-200">
-                                <img src="../lp_corrective_action.png" alt="Corrective action of the state-space controller with a low-pass filter." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="statespace_lp.png" alt="State-space controller response with a low-pass filter." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="lp_corrective_action.png" alt="Corrective action of the state-space controller with a low-pass filter." class="rounded-lg w-full shadow-lg border border-slate-200">
                             </div>
                             <figcaption class="text-sm text-center text-slate-500 mt-3">
                                 State-space controller response (left) and its significantly smoother corrective action (right) with a low-pass filter.
