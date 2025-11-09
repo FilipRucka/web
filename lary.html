@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -134,7 +134,7 @@
                         <li><b>Contour Filtering:</b> Finally, contours were extracted from the composite binary masks. These potential object outlines were systematically filtered based on geometric properties—including area, convexity, and circularity—to accurately identify targets and eliminate false positives.</li>
                     </ul>
                     <figure class="my-8">
-                        <img src="../space_orientation_bgr2025.png" alt="Masks of detected objects overlaid on the camera image, showing the ball, goalposts, and obstacles." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <img src="space_orientation_bgr2025.png" alt="Masks of detected objects overlaid on the camera image, showing the ball, goalposts, and obstacles." class="rounded-lg w-full shadow-lg border border-slate-200">
                         <figcaption class="text-sm text-center text-slate-500 mt-3">
                             Visual output of the detection pipeline, with masks identifying key objects.
                         </figcaption>
@@ -155,7 +155,7 @@
                         <li><strong>Data Validation:</strong> A crucial failsafe was implemented to handle cases where an object, visible in the RGB image, was occluded in the point cloud. If the sampled region returned a <code>NaN</code> value, the detection was discarded to prevent mapping errors.</li>
                     </ul>
                     <figure class="my-8">
-                        <img src="../space_orientation_depth.png" alt="Masks of detected objects overlaid on the camera image, showing the ball, goalposts, and obstacles." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <img src="space_orientation_depth.png" alt="Masks of detected objects overlaid on the camera image, showing the ball, goalposts, and obstacles." class="rounded-lg w-full shadow-lg border border-slate-200">
                         
                     </figure>
                     <h4>2. Coordinate Transformation and Camera Calibration</h4>
@@ -175,7 +175,7 @@
                         The final step was to translate these camera-relative 3D coordinates into a single, persistent global map. Using the robot's odometry data, we applied a standard 2D rotation-translation transformation. The object's local position vector was rotated by the robot's current global orientation and translated by its global position, correctly placing it on the map and accounting for differences between the odometry and map coordinate frames.
                     </p>
                     <figure class="my-8">
-                        <img src="../space_orientation_map.png" alt="A 2D map of the environment showing the robot's position, the detected ball, goalposts, and obstacles." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <img src="space_orientation_map.png" alt="A 2D map of the environment showing the robot's position, the detected ball, goalposts, and obstacles." class="rounded-lg w-full shadow-lg border border-slate-200">
                         <figcaption class="text-sm text-center text-slate-500 mt-3">
                            Top-down map of the world state, generated from fused sensor data.
                         </figcaption>
@@ -193,7 +193,7 @@
                     </p>
 
                     <figure class="my-8">
-                        <img src="../expected_depth.png" alt="Masks of detected objects overlaid on the camera image, showing the ball, goalposts, and obstacles." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <img src="expected_depth.png" alt="Masks of detected objects overlaid on the camera image, showing the ball, goalposts, and obstacles." class="rounded-lg w-full shadow-lg border border-slate-200">
                         <figcaption class="text-sm text-center text-slate-500 mt-3">
                             Expected depth image
                          </figcaption>
@@ -226,7 +226,7 @@
                         By setting this strategic point as the goal for the Theta* algorithm, we ensured that upon arrival, the robot would be perfectly oriented to execute a straight push towards the goal. The output of the planner is a sequence of waypoints, which are then passed to the robot's control system.
                     </p>
                     <figure class="my-8">
-                        <img src="../pathfinding.png" alt="Theta* pathfinding visualization on a grid, showing the start point, goal, inflated obstacles, and the calculated 6-point path." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <img src="pathfinding.png" alt="Theta* pathfinding visualization on a grid, showing the start point, goal, inflated obstacles, and the calculated 6-point path." class="rounded-lg w-full shadow-lg border border-slate-200">
                         <figcaption class="text-sm text-center text-slate-500 mt-3">
                             The Theta* algorithm finding a 6-point path to the kicking position, navigating around inflated obstacle zones.
                         </figcaption>
@@ -251,7 +251,7 @@
                                     The entire system was orchestrated by a central control loop that functions as a state machine. Its primary goal is to score a goal, and it will continue to execute until a direct kick is attempted or it is manually stopped. This reactive design ensures the robot always has a defined task. If any step in the process fails, the loop restarts from the beginning, forcing the robot to re-evaluate the environment with fresh data.
                                 </p>
                                 <figure class="my-8">
-                                    <img src="../Control_loop-2.png" alt="Diagram of the main control loop." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                    <img src="Control_loop-2.png" alt="Diagram of the main control loop." class="rounded-lg w-full shadow-lg border border-slate-200">
                                     <figcaption class="text-sm text-center text-slate-500 mt-3">
                                         High-level diagram of the reactive control loop.
                                     </figcaption>
@@ -264,8 +264,8 @@
 
                                 <figure class="my-8">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <img src="../depth_rgb_unaligned_1.png" alt="Graph showing the arm's position responding to different high-level voltages, identifying the saturation limit at +/-12V." class="rounded-lg w-full shadow-lg border border-slate-200">
-                                        <img src="../depth_rgb_unaligned_2.png" alt="Graph showing the arm's position responding to different low-level voltages, identifying the insensitivity band at +/-0.25V." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                        <img src="depth_rgb_unaligned_1.png" alt="Graph showing the arm's position responding to different high-level voltages, identifying the saturation limit at +/-12V." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                        <img src="depth_rgb_unaligned_2.png" alt="Graph showing the arm's position responding to different low-level voltages, identifying the insensitivity band at +/-0.25V." class="rounded-lg w-full shadow-lg border border-slate-200">
                                     </div>
                                     <figcaption class="text-sm text-center text-slate-500 mt-3">
                                         Pointcloud delay behind RGB camera
@@ -289,7 +289,7 @@
                                 </p>
 
                                 <figure class="my-8">
-                                    <img src="../Max_angle.png" alt="Diagram of the main control loop." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                    <img src="Max_angle.png" alt="Diagram of the main control loop." class="rounded-lg w-full shadow-lg border border-slate-200">
                                     <figcaption class="text-sm text-center text-slate-500 mt-3">
                                         Determining the largest free angle for a goal kick
                                     </figcaption>
