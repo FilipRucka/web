@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autonomous Goal-Scoring Robot - Filip Ručka</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style> 
+        body { font-family: 'Inter', sans-serif; } 
+        .prose p { margin-bottom: 1rem; }
+        .prose h4 { font-size: 1.25rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; color: #1e293b; }
+        .prose ul { list-style-position: inside; margin-left: 1rem; margin-bottom: 1rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose code { 
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            background-color: #f1f5f9; /* slate-100 */
+            color: #e11d48; /* rose-600 */
+            padding: 0.2em 0.4em;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+        }
+        .active-nav-text {
+            color: #2563eb; /* text-blue-600 */
+            transform: translateX(5px);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-700">
+    <div class="container mx-auto max-w-screen-lg px-6 py-12 md:py-20 lg:py-24">
+        
+        <a href="./index.html" class="group flex items-center font-semibold text-blue-600 mb-12">
+            <i class="fas fa-arrow-left mr-2 transition-transform group-hover:-translate-x-1"></i>
+            Go Back to Portfolio
+        </a>
+
+        <header class="mb-12">
+            <h1 class="text-4xl font-bold text-slate-900 sm:text-5xl">Autonomous Goal-Scoring Robot</h1>
+            <p class="mt-3 text-lg text-slate-600">A technical report on the design of a control algorithm for a TurtleBot to autonomously detect a ball, navigate an obstacle course, and score a goal.</p>
+        </header>
+
+        <main class="grid md:grid-cols-3 md:items-start gap-x-12">
+            <!-- LEFT COLUMN: KEY DETAILS & NAVIGATION -->
+            <aside class="md:col-span-1 md:sticky md:top-24">
+                <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Key Details</h3>
+                <dl class="text-sm">
+                    <dt class="font-semibold text-slate-800">Project Type:</dt>
+                    <dd class="text-slate-600 mb-3">University Coursework (B3B33LAR)</dd>
+                    <dt class="font-semibold text-slate-800">Co-Authors:</dt>
+                    <dd class="text-slate-600 mb-0">Přemysl Černý</dd>
+                    <dd class="text-slate-600 mb-3">Amir Akrami</dd>
+                    <dt class="font-semibold text-slate-800">Tools:</dt>
+                    <dd class="text-slate-600 mb-3">Python, ROS Noetic, TurtleBot 2, OpenCV, Singularity</dd>
+                    
+                    <dt class="font-semibold text-slate-800">Core Concepts:</dt>
+                    <dd class="text-slate-600">
+                        <ul class="list-disc list-inside">
+                            <li>Object Detection</li>
+                            <li>3D Localization</li>
+                            <li>Path Planning (Theta*)</li>
+                            <li>Obstacle Avoidance</li>
+                            <li>P & PD Control</li>
+                            <li>State Machine Design</li>
+                            <li>Environment Mapping</li>
+                        </ul>
+                    </dd>
+                </dl>
+                
+                <!-- On this page navigation -->
+                <nav class="hidden md:block mt-12">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">On this page</h3>
+                    <ul id="nav-menu" class="flex flex-col space-y-3 text-sm font-medium mt-4">
+                        <li>
+                            <a href="#problem-description" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Problem Description</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#object-detection" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Object Detection</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#localization" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">3D Localization</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#path-planning" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Path Planning</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#control" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Robot Control</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#implementation" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Implementation</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+            
+            <!-- RIGHT COLUMN: DETAILED DESCRIPTION -->
+            <div class="md:col-span-2 mt-8 md:mt-0">
+                <div class="prose max-w-none">
+                    <h2 id="problem-description" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                        1. Project Overview
+                    </h2>
+                    <p>
+                        Our objective was to engineer a fully autonomous control system for a TurtleBot navigating the "Score a Goal" challenge. The system was designed to perceive the field, identify the ball and a goal marked by two blue posts, and execute a multi-step plan to score. A key challenge was navigating a field with up to three obstacles, which required the robot to calculate indirect paths to the goal. Rather than a straight shot, our algorithm enabled the robot to first kick the ball to an optimal position before striking it into the goal. Our group was one of only two (from the entire grade) to successfully implement this complex version of the challenge.
+                    </p>
+                    
+                    <h2 id="object-detection" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                        2. Object Detection from Image Data
+                    </h2>
+
+                    <h4>Detection Pipeline</h4>
+                    <ul>
+                        <li><b>Image Preprocessing:</b> The raw RGB input was first refined to enhance signal quality. This involved cropping the frame to remove background distractions and applying sequential Gaussian and bilateral filters to reduce noise while preserving critical edge information.</li>
+                        <li><b>Color Segmentation:</b> To achieve robust detection across varying lighting conditions, the image was converted to the HSV color space. We then applied pre-defined HSV thresholds to generate binary masks, isolating pixels corresponding to the yellow ball, blue goalposts, and obstacles.</li>
+                        <li><b>Adaptive Thresholding:</b> In parallel, adaptive thresholding was performed on a grayscale version of the image to account for localized lighting variations. The resulting binary mask was then merged with the HSV mask to significantly improve detection reliability.</li>
+                        <li><b>Contour Filtering:</b> Finally, contours were extracted from the composite binary masks. These potential object outlines were systematically filtered based on geometric properties—including area, convexity, and circularity—to accurately identify targets and eliminate false positives.</li>
+                    </ul>
+                    <figure class="my-8">
+                        <img src="../space_orientation_bgr2025.png" alt="Masks of detected objects overlaid on the camera image, showing the ball, goalposts, and obstacles." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                            Visual output of the detection pipeline, with masks identifying key objects.
+                        </figcaption>
+                    </figure>
+
+                    <!-- === UPDATED SECTION START === -->
+                    <h2 id="localization" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                        3. 3D Localization &amp; Mapping
+                    </h2>
+                    <p>
+                        To navigate intelligently, the robot required a precise understanding of the 3D positions of all key objects. This was achieved through a multi-stage pipeline that transformed 2D pixel data into a robust, global 3D map.
+                    </p>
+                
+                    <h4>1. 3D Position Estimation from 2D Contours</h4>
+                    <ul>
+                        <li><strong>Robust Distance Sampling:</strong> Instead of relying on a single pixel, we sampled a 5-pixel radius circular region around the object's detected center. The 3D points from the camera's <strong>point cloud</strong> data within this region were then averaged to provide a reliable distance estimate, mitigating sensor noise.</li>
+                        <li><strong>Center Point Correction:</strong> To get the true distance to the object's center, the known radius of the object (e.g., 11 cm for the ball, 2.5 cm for goalposts) was added to the measured surface distance.</li>
+                        <li><strong>Data Validation:</strong> A crucial failsafe was implemented to handle cases where an object, visible in the RGB image, was occluded in the point cloud. If the sampled region returned a <code>NaN</code> value, the detection was discarded to prevent mapping errors.</li>
+                    </ul>
+                    <figure class="my-8">
+                        <img src="../space_orientation_depth.png" alt="Masks of detected objects overlaid on the camera image, showing the ball, goalposts, and obstacles." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        
+                    </figure>
+                    <h4>2. Coordinate Transformation and Camera Calibration</h4>
+                    <p>
+                        A significant challenge was transforming the pixel coordinates from the 2D image plane into the robot's 3D reference frame. This required correcting for the camera's physical orientation.
+                    </p>
+                    <ul>
+                        <li><strong>Projection Vector Calculation:</strong> A 3D direction vector for any given pixel <code>(u, v)</code> was calculated using the intrinsic camera matrix <strong>K</strong>. However, this assumes the camera is perfectly parallel to the ground.</li>
+                        <li><strong>Experimental Tilt Calibration:</strong> We performed an experiment to precisely measure the camera's downward tilt. By observing other robots at an identical height, we calculated the rotational correction needed to zero out their vertical angle in our robot's view. This calibration yielded a precise downward tilt of <strong>-15.2°</strong>.</li>
+                        <li><strong>Final 3D Point Calculation:</strong> The initial projection vector was then corrected by applying a rotation matrix <strong>T</strong> for the -15.2° tilt. This corrected vector, when scaled by the calculated distance <strong>d</strong>, gave the object's precise 3D coordinates relative to the camera.</li>
+                    </ul>
+                    
+
+                
+                    <h4>3. Global Mapping with Odometry Integration</h4>
+                    <p>
+                        The final step was to translate these camera-relative 3D coordinates into a single, persistent global map. Using the robot's odometry data, we applied a standard 2D rotation-translation transformation. The object's local position vector was rotated by the robot's current global orientation and translated by its global position, correctly placing it on the map and accounting for differences between the odometry and map coordinate frames.
+                    </p>
+                    <figure class="my-8">
+                        <img src="../space_orientation_map.png" alt="A 2D map of the environment showing the robot's position, the detected ball, goalposts, and obstacles." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                           Top-down map of the world state, generated from fused sensor data.
+                        </figcaption>
+                    </figure>
+                    
+                    <h4>4. Detection of Unknown Obstacles</h4>
+                    <p>
+                        In addition to tracking known objects, the system was designed to dynamically identify and map unknown ("nameless") obstacles. This capability allowed it to react to environmental features not defined by color, such as arena walls, other robots, or even poorly segmented objects.
+                    </p>
+                    <p>
+                        This detection was performed exclusively using the point cloud. The process involved comparing the actual depth data against a pre-calculated <strong>expected depth map</strong>—a model of the flat ground plane based on the camera's known height and tilt angle. The system scanned the point cloud at a fixed vertical height every 50 horizontal pixels. If the measured depth at any point deviated from the expected ground plane by more than 1 meter, the point was classified as an unknown obstacle and its 3D position was mapped.
+                    </p>
+                    <p>
+                        To prevent redundancy and conflicts in pathfinding (e.g., treating the ball as an obstacle twice), a final filtering step was applied: any 'nameless' obstacles detected in the immediate vicinity of an already identified named object were discarded.
+                    </p>
+
+                    <figure class="my-8">
+                        <img src="../expected_depth.png" alt="Masks of detected objects overlaid on the camera image, showing the ball, goalposts, and obstacles." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                            Expected depth image
+                         </figcaption>
+                    </figure>
+
+                    <h2 id="path-planning" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                        4. Path Planning
+                    </h2>
+                    <p>
+                        After successfully localizing all relevant objects, the next key step was to plan a safe and efficient trajectory. For this task, we implemented the <strong>Theta* algorithm</strong>, an advanced any-angle pathfinding algorithm that produces smoother and more direct paths than a standard A* search.
+                    </p>
+                    <h4>Environment Representation and Obstacle Inflation</h4>
+                    <p>
+                        The algorithm operates on a discrete <strong>grid representation</strong> of the playing field. The positions of all detected obstacles were first converted from world coordinates to grid cell coordinates. To prevent collisions, these obstacles were then <strong>inflated</strong>. This process marks all cells within a certain radius of an obstacle as occupied. The inflation radius was calculated based on the robot's physical radius plus an additional safety margin, ensuring that any generated path would maintain a safe distance from all known hazards.
+                    </p>
+                    <h4>The Theta* Algorithm in Practice</h4>
+                    <p>
+                        Like A*, Theta* uses a heuristic to guide its search efficiently toward the goal. However, its key advantage is the inclusion of a <strong>line-of-sight check</strong>. When expanding from a node, Theta* checks if a direct, unobstructed path exists from the *parent* of the current node to the new neighbor. If line-of-sight is clear, it forms a direct connection, allowing the path to "cut corners" rather than being constrained to grid edges. This results in a significantly smoother and more realistic trajectory for the robot to follow. If the start or end point happened to fall within an inflated zone, a Breadth-First Search (BFS) was used to find the nearest valid, non-obstructed cell to begin planning from.
+                    </p>
+                    <h4>Defining the Goal: The Kicking Position</h4>
+                    <p>
+                        Crucially, the pathfinding target was not the ball itself, but a calculated <strong>kicking position</strong>. This is an ideal point located a specific distance <em>behind</em> the ball, perfectly aligned with the center of the goal. The calculation involves the following steps:
+                    </p>
+                    <ol>
+                        <li>A vector is created from the goal's center to the ball's position.</li>
+                        <li>This vector is normalized to create a unit vector, which represents the direction of the kick.</li>
+                        <li>The final kicking position is determined by moving from the ball's position along this unit vector by a specified <code>clearance</code> distance.</li>
+                    </ol>
+                    <p>
+                        By setting this strategic point as the goal for the Theta* algorithm, we ensured that upon arrival, the robot would be perfectly oriented to execute a straight push towards the goal. The output of the planner is a sequence of waypoints, which are then passed to the robot's control system.
+                    </p>
+                    <figure class="my-8">
+                        <img src="../pathfinding.png" alt="Theta* pathfinding visualization on a grid, showing the start point, goal, inflated obstacles, and the calculated 6-point path." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                            The Theta* algorithm finding a 6-point path to the kicking position, navigating around inflated obstacle zones.
+                        </figcaption>
+                    </figure>
+                    <!-- === UPDATED SECTION END === -->
+                    <h2 id="control" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                        5. Robot Control
+                    </h2>
+                    <p>
+                        To follow the generated path, we implemented two primary controllers to manage the robot's movement.
+                    </p>
+                    <ul>
+                        <li><b>P-Controller for Linear Velocity:</b> A proportional controller determined the robot's forward speed. The speed was proportional to the remaining distance to the current target waypoint. We implemented minimum and maximum velocity saturation to prevent the motors from stalling at very low speeds or moving too quickly.</li>
+                        <li><b>PD-Controller for Angular Velocity:</b> A proportional-derivative controller was used for fine-tuned, stable rotation. The proportional term reacted to the angular error (the difference between the robot's current heading and the direction to the target), while the derivative term smoothed the response by considering the rate of change of this error. This combination allowed for quick yet smooth turning without overshoot.</li>
+                    </ul>
+
+                                  <!-- === UPDATED SECTION START === -->
+                                  <h2 id="implementation" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                                    6. Implementation &amp; Control Logic
+                                </h2>
+                                <p>
+                                    The entire system was orchestrated by a central control loop that functions as a state machine. Its primary goal is to score a goal, and it will continue to execute until a direct kick is attempted or it is manually stopped. This reactive design ensures the robot always has a defined task. If any step in the process fails, the loop restarts from the beginning, forcing the robot to re-evaluate the environment with fresh data.
+                                </p>
+                                <figure class="my-8">
+                                    <img src="../Control_loop-2.png" alt="Diagram of the main control loop." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                    <figcaption class="text-sm text-center text-slate-500 mt-3">
+                                        High-level diagram of the reactive control loop.
+                                    </figcaption>
+                                </figure>
+                                
+                                <h4>The Scan-and-Map Cycle</h4>
+                                <p>
+                                    The process begins with a <strong>scan</strong> phase, where the robot performs a 360° rotation in 45° increments. At each step, it pauses briefly to ensure the RGB and point cloud data streams are synchronized, mitigating issues with sensor lag. After each scan, the newly detected objects are merged with the existing world map. Each new detection is compared to existing objects; if it's within a 10 cm threshold of an old one, their positions are averaged. New objects are added, and old objects without a recent detection are temporarily retained to prevent them from disappearing from the map due to transient sensor dropouts.
+                                </p>
+
+                                <figure class="my-8">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <img src="../depth_rgb_unaligned_1.png" alt="Graph showing the arm's position responding to different high-level voltages, identifying the saturation limit at +/-12V." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                        <img src="../depth_rgb_unaligned_2.png" alt="Graph showing the arm's position responding to different low-level voltages, identifying the insensitivity band at +/-0.25V." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                    </div>
+                                    <figcaption class="text-sm text-center text-slate-500 mt-3">
+                                        Pointcloud delay behind RGB camera
+                                    </figcaption>
+            
+                                <h4>Lost State Recovery</h4>
+                                <p>
+                                    If the robot cannot determine a valid kicking position—either because it can't see the ball, the goal, or sees too many of either due to sensor noise—it enters a recovery state. The primary strategy is to navigate towards the center of its known environment to gain a better vantage point. For safety, it only travels a short distance (max 1.5m) along this path to avoid colliding with unseen obstacles. If the robot is already at the center and still "lost," it chooses a random nearby target to explore. This process repeats until it has the necessary information to proceed.
+                                </p>
+            
+                                <h4>Strategic Kicking Logic</h4>
+                                <p>
+                                    The system's core intelligence lies in its ability to decide *how* to kick. It evaluates whether a direct shot is possible by calculating the largest unobstructed angle between the ball and the goalposts.
+                                </p>
+                                <ul>
+                                    <li><strong>Direct Kick:</strong> If the clear angle is greater than 20°, the robot classifies it as a direct shot. It then aims for the center of this opening and executes the kick. This action terminates the control loop.</li>
+                                    <li><strong>Indirect "Tapping" Strategy:</strong> If the path is blocked, the robot plans a series of smaller, controlled taps to maneuver the ball around obstacles. It first calculates an ideal, obstacle-free path for the ball. It then takes just the first segment (the tangent) of this path and sets a target 0.5m along it. After tapping the ball towards this intermediate target, the entire control loop restarts. </li>
+                                </ul>
+                                <p>
+                                    The physical kick itself is mechanically simple: the bumper sensors are temporarily disabled, and the robot moves forward at a set speed to strike the ball. The same navigation routine is used for both normal traversal and kicking, with only the speed and sensor states adjusted.
+                                </p>
+
+                                <figure class="my-8">
+                                    <img src="../Max_angle.png" alt="Diagram of the main control loop." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                    <figcaption class="text-sm text-center text-slate-500 mt-3">
+                                        Determining the largest free angle for a goal kick
+                                    </figcaption>
+                                </figure>
+
+            
+                                <h2 id="challenges" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                                    7. Challenges &amp; Results
+                                </h2>
+                                <p>
+                                    This project was a rewarding challenge. Significant time was invested in refining the object detection pipeline to make it robust against variable lighting conditions throughout the day. We also debugged a peculiar issue where the robot's motion control loops would only function correctly when interspersed with <code>print</code> or <code>sleep</code> commands, likely due to a process scheduling anomaly in the execution environment.
+                                </p>
+                                <p>
+                                    A major external challenge arose mid-semester when a mandatory update to the ROS container forced all robots into a low-resolution camera mode, incompatible with our existing code. We solved this by reverting to an older Singularity image and manually importing the necessary libraries, a workaround that required a full day of troubleshooting.
+                                </p>
+                                <p>
+                                    Despite these hurdles, the final system is capable of robust, autonomous navigation and goal-scoring in nearly any field configuration, even with more obstacles than required by the assignment. Given more time, the codebase could be further refined for clarity. A logical next step would be to enhance the robot's spatial awareness beyond its reactive, "goldfish memory" approach by implementing a true SLAM algorithm, allowing it to build and calibrate its position within a persistent map aggregated from multiple viewpoints.
+                                </p>
+                                <!-- === UPDATED SECTION END === -->
+                 </div>
+            </div>
+        </main>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sections = document.querySelectorAll('main h2[id]');
+        const navLinks = document.querySelectorAll('#nav-menu a');
+
+        if (sections.length === 0 || navLinks.length === 0) {
+            console.error("Could not find sections or nav links for observer.");
+            return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            let currentActiveId = '';
+            
+            // Determine the last section that is "active" based on scroll position
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    currentActiveId = entry.target.id;
+                }
+            });
+
+            // Fallback for when scrolling up past the first item
+            if (window.scrollY < sections[0].offsetTop) {
+                currentActiveId = sections[0].id;
+            }
+
+            // A better way to find the active ID based on which section is most visible
+            let bestVisibleRatio = -1;
+            document.querySelectorAll('main h2[id]').forEach(section => {
+                const rect = section.getBoundingClientRect();
+                const visibleHeight = Math.max(0, Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0));
+                const visibleRatio = visibleHeight / rect.height;
+                if (rect.top < window.innerHeight && rect.bottom > 0) { // is at least partially on screen
+                     if (visibleRatio > bestVisibleRatio) {
+                        bestVisibleRatio = visibleRatio;
+                        currentActiveId = section.id;
+                     }
+                }
+            });
+
+
+            navLinks.forEach(link => {
+                const navText = link.querySelector('.nav-text');
+                const navIndicator = link.querySelector('.nav-indicator');
+                const linkId = link.getAttribute('href').substring(1);
+
+                if (linkId === currentActiveId) {
+                    navText.classList.add('active-nav-text');
+                    navIndicator.classList.add('w-16', 'bg-slate-800');
+                    navIndicator.classList.remove('w-8', 'bg-slate-400');
+                } else {
+                    navText.classList.remove('active-nav-text');
+                    navIndicator.classList.remove('w-16', 'bg-slate-800');
+                    navIndicator.classList.add('w-8', 'bg-slate-400');
+                }
+            });
+        }, { 
+            root: null, // viewport
+            threshold: 0.1, // trigger when 10% of the element is visible
+            rootMargin: '0px 0px -50% 0px' // consider the "top" of the viewport to be halfway down the screen
+        });
+
+        sections.forEach(section => observer.observe(section));
+    });
+</script>
+
+</body>
+</html>

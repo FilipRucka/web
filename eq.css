@@ -1,0 +1,31 @@
+/* ADD THESE STYLES TO YOUR <HEAD> SECTION */
+.equation-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 1.5rem 0;
+    font-family: 'Times New Roman', serif;
+    font-size: 1.2rem;
+    color: #334155;
+}
+.fraction {
+    display: inline-flex;
+    flex-direction: column;
+    text-align: center;
+    vertical-align: middle;
+    margin: 0 0.2em;
+}
+.numerator {
+    padding: 0 0.4em;
+}
+.denominator {
+    border-top: 1px solid currentColor;
+    padding: 0 0.4em;
+}
+.param-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    text-align: center;
+}

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotary Pendulum Control - Filip Ručka</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="eq.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style> 
+        body { font-family: 'Inter', sans-serif; } 
+        /* Simple styling for prose text */
+        .prose p { margin-bottom: 1rem; }
+        .prose h4 { font-size: 1.25rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; color: #1e293b; }
+        .prose ul { list-style-position: inside; margin-left: 1rem; margin-bottom: 1rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose .equation {
+            display: block;
+            text-align: center;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.2rem;
+            margin: 1.5rem 0;
+            color: #334155;
+        }
+        /* Style for the active navigation link text */
+        .active-nav-text {
+            color: #2563eb; /* text-blue-600 */
+            transform: translateX(5px);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-700">
+    <div class="container mx-auto max-w-screen-lg px-6 py-12 md:py-20 lg:py-24">
+        
+        <a href="./index.html" class="group flex items-center font-semibold text-blue-600 mb-12">
+            <i class="fas fa-arrow-left mr-2 transition-transform group-hover:-translate-x-1"></i>
+            Go Back to Portfolio
+        </a>
+
+        <header class="mb-12">
+            <h1 class="text-4xl font-bold text-slate-900 sm:text-5xl">Automatic Control: Rotary Pendulum</h1>
+            <p class="mt-3 text-lg text-slate-600">A technical walkthrough of controller design, from classical PID to modern digital control, for a highly unstable system.</p>
+        </header>
+
+        <main class="grid md:grid-cols-3 md:items-start gap-x-12">
+            <!-- LEFT COLUMN: KEY DETAILS & NAVIGATION -->
+            <aside class="md:col-span-1 md:sticky md:top-24">
+                <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Key Details</h3>
+                <dl class="text-sm">
+                    <dt class="font-semibold text-slate-800">Project Type:</dt>
+                    <dd class="text-slate-600 mb-3">University Coursework / Personal Project</dd>
+                    
+                    <dt class="font-semibold text-slate-800">Tools:</dt>
+                    <dd class="text-slate-600 mb-3">MATLAB, Simulink</dd>
+                    
+                    <dt class="font-semibold text-slate-800">Core Concepts:</dt>
+                    <dd class="text-slate-600">
+                        <ul class="list-disc list-inside">
+                            <li>System Identification</li>
+                            <li>PID & PD Control</li>
+                            <li>State-Space Design</li>
+                            <li>Luenberger Observers</li>
+                            <li>Anti-Windup Techniques</li>
+                            <li>Feed-Forward Control</li>
+                            <li>Digital Filtering (FIR, LP)</li>
+                            <li>Smith Predictor</li>
+                            <li>Model Predictive Control (MPC)</li>
+                            <li>Dead-Beat Control</li>
+                        </ul>
+                    </dd>
+                </dl>
+                
+                <!-- On this page navigation -->
+                <nav class="hidden md:block mt-12">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">On this page</h3>
+                    <ul id="nav-menu" class="flex flex-col space-y-3 text-sm font-medium mt-4">
+                        <li>
+                            <a href="#identification" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">System Identification</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#state-space-control" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">State-Space Control</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#digital-control" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Digital Control</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#arm-control" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Arm-Only Control</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#pendulum-control" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Pendulum-Only Control</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#digital-filters" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Digital Filters</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+            
+            <!-- RIGHT COLUMN: DETAILED DESCRIPTION -->
+            <div class="md:col-span-2 mt-8 md:mt-0">
+                 <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Technical Walkthrough</h3>
+                 <div class="prose max-w-none">
+                    <p>
+                        This project documents the design and validation of multiple control systems for a rotary pendulum. The following sections detail the methods used and the results achieved, focusing on both the system's dynamic response and the quality of the required corrective action.
+                    </p>
+
+                    <h2 id="identification" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                        1. System Identification
+                    </h2>
+                    <p>
+                        The first and most critical step in designing an effective controller is to create an accurate mathematical model of the system. This process, known as system identification, involves determining the system's dynamic equations and key parameters by observing its response to various inputs. The goal was to develop a state-space representation that could be used for advanced controller design.
+                    </p>
+                    <h4>System Equations</h4>
+                    <p>
+                        The rotary pendulum is a highly coupled, nonlinear system. Its complete dynamics are described by the following set of differential equations, which define the angular accelerations of the arm (ω̇<sub>m</sub>) and the pendulum (ω̇<sub>p</sub>):
+                    </p>
+                    <div class="equation-line">
+                        ω̇<sub>m</sub> = 
+                        <div class="fraction">
+                            <span class="numerator">k<sub>1</sub> sin(φ<sub>p</sub>)(k<sub>d</sub> w<sub>p</sub> + k<sub>2</sub> cos(φ<sub>p</sub>))</span>
+                            <span class="denominator">k<sub>1</sub> k<sub>3</sub> sin²(φ<sub>p</sub>) - 1</span>
+                        </div>
+                        -
+                        <div class="fraction">
+                            <span class="numerator">k<sub>1</sub> cos(φ<sub>p</sub>) w<sub>p</sub>² + k<sub>m</sub> u - k<sub>b</sub> w<sub>m</sub></span>
+                            <span class="denominator">k<sub>1</sub> k<sub>3</sub> sin²(φ<sub>p</sub>) - 1</span>
+                        </div>
+                    </div>
+                    <div class="equation-line">
+                        ω̇<sub>p</sub> = 
+                        <div class="fraction">
+                            <span class="numerator">k<sub>d</sub> w<sub>p</sub> + k<sub>2</sub> cos(φ<sub>p</sub>)</span>
+                            <span class="denominator">k<sub>1</sub> k<sub>3</sub> sin²(φ<sub>p</sub>) - 1</span>
+                        </div>
+                        -
+                        <div class="fraction">
+                            <span class="numerator">k<sub>3</sub> sin(φ<sub>p</sub>)(k<sub>1</sub> cos(φ<sub>p</sub>) w<sub>p</sub>² + k<sub>m</sub> u - k<sub>b</sub> w<sub>m</sub>)</span>
+                            <span class="denominator">k<sub>1</sub> k<sub>3</sub> sin²(φ<sub>p</sub>) - 1</span>
+                        </div>
+                    </div>
+                    <p>The constants k<sub>1</sub>, k<sub>2</sub>, k<sub>3</sub>, etc., are themselves functions of the system's physical properties such as mass, inertia, and friction.</p>
+               
+                    <h4>Linearization and Equilibrium</h4>
+                    <p>
+                        To apply linear control techniques, these nonlinear equations were linearized around the stable equilibrium point of -90° (-π/2 radians). By computing the Jacobian matrices at this point, we obtained the linear state-space matrices A, B, C, and D, which approximate the system's behavior for small deviations.
+                    </p>
+
+                    <h4>Identifying Static Nonlinearities</h4>
+                    <p>
+                        Real-world systems exhibit nonlinearities that are not captured by linearization. Two key nonlinearities were identified experimentally:
+                    </p>
+                    <ul>
+                        <li><b>Saturation:</b> By progressively increasing the input voltage, we found that the system's response ceased to change beyond a certain point. This input saturation limit was identified at ±12V.</li>
+                        <li><b>Insensitivity (Dead Zone):</b> At very low input voltages, the system showed no response. This insensitivity band was identified to be ±0.25V.</li>
+                    </ul>
+                     <figure class="my-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <img src="../saturation.png" alt="Graph showing the arm's position responding to different high-level voltages, identifying the saturation limit at +/-12V." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="../insensitibity.png" alt="Graph showing the arm's position responding to different low-level voltages, identifying the insensitivity band at +/-0.25V." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                            Experimental identification of input saturation (left) and insensitivity (right).
+                        </figcaption>
+                    </figure>
+
+                    <h4>Pendulum and Motor Dynamics</h4>
+                    <p>
+                        To simplify the identification process, the dynamics of the pendulum and the motor were isolated and analyzed separately. For the pendulum, the arm was locked in place to study its free oscillations. Its behavior is described by the nonlinear differential equation:
+                    </p>
+                    <span class="equation">J φ̈ + mgl cos φ + 2δ φ̇ = 0</span>
+                  
+                    <p>
+                        The transfer function for this second-order system is:
+                    </p>
+                    <span class="equation">G(s) = φ(0) + (kω<sub>n</sub>²)/(s² + 2ζω<sub>n</sub>s + ω<sub>n</sub>²)</span>
+                    <p>
+                            From the system's response to a 5° deviation, we calculated the damping factor (ζ) and natural frequency (ω<sub>n</sub>) using the logarithmic decrement method.
+                    </p>
+                    <p>
+                        The mathematical model was then validated against the simulator, showing a close match in frequency and damping.
+                    </p>
+                    <figure class="my-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <img src="../identification.jpg" alt="Graph of the pendulum's response to a 5-degree deviation, used to identify its dynamic parameters." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="../math_sim.png" alt="Graph comparing the response of the mathematical pendulum model with the simulator's pendulum, showing a close match." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                            Pendulum's response to a 5° deviation (left) and validation of the mathematical model against the simulator (right).
+                        </figcaption>
+
+                       
+                    </figure>
+                    <p>
+                        The motor's dynamics were identified by analyzing its step response. From the response, it's clear the motor behaves as a first-order system with an integrator, which has the following transfer function form:
+                    </p>
+                    <span class="equation">G(s) = k / (s(Ts + 1))</span>
+                    <p>
+                        The gain k (the asymptote's slope) and the time constant T (the asymptote's x-intercept) were determined from the step response graph. We identified the key motor parameters k<sub>m</sub> and k<sub>b</sub>.
+                    </p>
+
+                    <h4>Identifying Cross-Correlated Terms</h4>
+                    <p>
+                        The parameters <i>k₁</i> and <i>k₂</i>, which represent the coupling between the arm and pendulum dynamics, were determined experimentally. By building a nonlinear model in Simulink and testing different values, I was able to match the simulated behavior to the real system's response.
+                    </p>
+                    <figure class="my-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <img src="../gradual.png" alt="Graph of the pendulum's response to a 5-degree deviation, used to identify its dynamic parameters." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="../gradualamr.png" alt="Graph comparing the response of the mathematical pendulum model with the simulator's pendulum, showing a close match." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                            The iterative process of matching simulated responses (orange, blue, green) to the real system (red) to find k₁ and k₂.
+                        </figcaption>
+                    </figure>
+                    Then I validated the nonlinear model with the obtained constants against the real model, confirming a close match.
+                    <figure class="my-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <img src="../nonlin.png" alt="Graph comparing the response of the mathematical pendulum model with the simulator's pendulum, showing a close match." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <img src="../gg.png" alt="Graph of the pendulum's response to a 5-degree deviation, used to identify its dynamic parameters." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                            Validation of the nonlinear model against the real system.
+                        </figcaption>
+                    </figure>
+
+                    <h4>Final System Model</h4>
+                    <p>
+                        With all parameters identified, the final state-space matrices A and B were numericized. This provides an accurate state-space representation of the rotary pendulum, essential for the design and analysis of controllers. The graph below shows a correspondence between the linearized model, the nonlinear model, and the actual system response.
+                    </p>
+                    <figure class="my-8">
+                        <img src="../nnnn.png" alt="Graph comparing the step responses of the final linear, nonlinear, and real system models." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                           Validation of the final models, showing close agreement between the linear, nonlinear, and real systems.
+                        </figcaption>
+                    </figure>
+
+                        <h2 id="state-space-control" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                            2. State-Space Control for both the arm and the pendulum
+                        </h2>
+                        To achieve a specified performance (settling time < 2s, overshoot < 5%), I designed a state-space regulator using pole placement.
+
+                        <figure class="my-8">
+                            <img src="../statespace_forwardfeed.png" alt="Graph showing a feed-forward controller rejecting a disturbance perfectly, while a feedback-only controller shows a large error spike." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <figcaption class="text-sm text-center text-slate-500 mt-3">
+                                The feed-forward system shows essentially zero deviation from a step disturbance, allowing the controller to maintain stability with minimal corrective action.
+                            </figcaption>
+                        </figure>
+
+                        This approach resulted in the desired system response with a smooth non saturated corrective action.
+                        <figure class="my-8">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <img src="../state-space.png" alt="Graph of the state-space controller's system response." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="../statstatce_correctiveaction.png" alt="Graph of the corrective action for the state-space controller." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            </div>
+                            <figcaption class="text-sm text-center text-slate-500 mt-3">
+                                The state-space controller achieves the desired system response (left) with a precise and non-saturating corrective action (right).
+                            </figcaption>
+                        </figure>
+
+                        Because we can't always measure all states, I built a Luenberger observer to estimate their velocities. With the observer in place, I tested the system's response for a 20 unit step.
+
+                        <figure class="my-8">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <img src="../obs20step.png" alt="Graph of the state-space controller's system response with a Luenberger observer." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="../observer_corrective_action_20.png" alt="Graph of the corrective action for the state-space controller with an observer." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            </div>
+                        </figure>
+
+                        At the end I added a Feed-Forward path to the state-space controller to improve disturbance rejection and tracking performance.
+                        <figure class="my-8">
+                            <img src="../ssFWdistrubancer.png" alt="Graph showing a feed-forward controller rejecting a disturbance perfectly, while a feedback-only controller shows a large error spike." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            <figcaption class="text-sm text-center text-slate-500 mt-3">
+                                The feed-forward system shows essentially zero deviation from a step disturbance, allowing the controller to maintain stability with minimal corrective action.
+                            </figcaption>
+                        </figure>
+                        
+                        <h2 id="digital-control" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                            3. Digital Control Implementation for both the arm and the pendulum
+                        </h2>
+                        <p>
+                            Next, I explored discrete-time control to improve performance. I implemented a Model Predictive Controller (MPC) and a discrete dead-beat controller, which is configured to reach the setpoint in a minimum number of steps.
+                        </p>
+                        
+                        <h4>Discrete dead-beat controller</h4>
+                        What’s interesting about deadbeat control is that its region of stability lies entirely inside the unit circle in the z-plane, so the “most stable” pole can be placed at the origin (z = 0). Continuous control has no single “most stable” pole location in the s-plane. I’ve therefore placed all controller poles at zero. Below is the response compared to the continuous state-space controller.
+                        <figure class="my-8">
+                            <img src="../deadbeat.png" alt="Graph showing the dead-beat controller settling in 0.7 seconds, far faster than its continuous counterpart, with a clean corrective action." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        </figure>
+                        As shown, the discrete deadbeat controller outperforms the continuous controller: on a 20-unit step input it achieves a settling time of 0.7 s, reaches steady state in five steps, and requires a maximum control voltage of 3 V.
+                        <figure class="my-8">
+                            <img src="../correctiveActiondeadbeat.png" alt="Graph showing the dead-beat controller's corrective action." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        </figure>
+                    
+                    <h4>MPC</h4>
+                    I discretized my linearized state-space model with a zero-order hold at a sample time Ts = 5 ms. Then I created an MPC controller with a 100-step prediction horizon and a 50-step control horizon. I set the same control priority for the pendulum and the arm, and I imposed a penalty of 0.1 on the rate of change of the corrective action to ensure a smooth response.
+                    <figure class="my-8">
+                        <img src="../MPC.png" alt="Graph showing the response of the Model Predictive Controller (MPC)." class="rounded-lg w-full shadow-lg border border-slate-200">
+                    </figure>
+
+                    
+
+                    <h2 id="arm-control" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                        4. Control of the arm's position only
+                    </h2>
+                    <p>
+                        I decided to design a PID controller, as it is one of the most common and widely-used controllers in engineering applications. 
+                        For the design I utilized the root locus method.
+                        <br>
+                        <br>
+                        After designing the PID controller, I implemented anti-windup techniques to prevent integrator windup.
+                        <figure class="my-8">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <img src="../clamping_diagram.png" alt="Diagram of the clamping anti-windup method." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="../back_calc.png" alt="Diagram of the back-calculation anti-windup method." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            </div>
+                            <figcaption class="text-sm text-center text-slate-500 mt-3">
+                                Diagrams for clamping (left) and back-calculation (right) anti-windup techniques.
+                            </figcaption>
+                        </figure>
+                        I tested the controller's performance and both anti-windup methods improove the system's response. Back calculation worked slightly better.
+                        <figure class="my-8">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <img src="../back_calc_step.png" alt="System response with back-calculation anti-windup." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="../back_calc_akcni.png" alt="Corrective action with back-calculation anti-windup." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            </div>
+                            <figcaption class="text-sm text-center text-slate-500 mt-3">
+                                System response (left) and corrective action (right) using back-calculation anti-windup.
+                            </figcaption>
+                        </figure>
+                        
+                    </p>
+
+                    <h2 id="pendulum-control" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                        5. Control of the Pendulum’s position only
+                    </h2>
+                    Once again I implemented a PID controller with the root locus method and anti-windup. Here are the responses for several deviations.
+                    <figure class="my-8">
+                        <img src="../PID_pend_Cons.png" alt="Response of the pendulum-only PID controller for various deviations." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                            The pendulum-only PID controller's response to various step deviations.
+                        </figcaption>
+                    </figure>
+                    
+                    <h4>Delays - Smith predictor</h4>
+                    <figure class="my-8">
+                        <img src="../smith.png" alt="Diagram of the Smith predictor implementation." class="rounded-lg w-full shadow-lg border border-slate-200">
+                    </figure>
+                    I implemented a Smith predictor to the arm-position controller to cancel out the 1 s delay. Without it, that 1 s delay shifts the phase margin so much that the normal PID (blue line) goes unstable and never settles. With the Smith predictor (red line), the delay is effectively removed, the phase margin is restored, and the arm tracks the reference smoothly. This also shows the basic system can only tolerate delays up to about 1 s—any longer and you need the predictor.
+                    <figure class="my-8">
+                        <img src="../smithvspid.png" alt="Comparison of PID controller with and without a Smith predictor when a 1s delay is present." class="rounded-lg w-full shadow-lg border border-slate-200">
+                    </figure>
+
+                    <h2 id="digital-filters"  class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                        6. Digital filters
+                    </h2>
+                    <p>
+                        I used an FIR filter and a low-pass filter. The noise amplitude was intentionally set high (±10 units) on top of a 20-unit step to test the limits of these custom filters.
+                        <br>
+                        <br>
+                        First I tested the filter on the PID controller. After
+                        filtering, the PID could control again.
+                        <figure class="my-8">
+                            <img src="../lowpassvsnopass.png" alt="Comparison of PID controller with and without a low-pass filter in the presence of noise." class="rounded-lg w-full shadow-lg border border-slate-200">
+                        </figure>
+                        For the state-space regulator, the filters had less effect on reference tracking.
+                        As we can see, adding the filter slows down the response, but it significantly improves the corrective action. Without it the system would be uncontrollable in real life.
+
+                        <figure class="my-8">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <img src="../statespace_lp.png" alt="State-space controller response with a low-pass filter." class="rounded-lg w-full shadow-lg border border-slate-200">
+                                <img src="../lp_corrective_action.png" alt="Corrective action of the state-space controller with a low-pass filter." class="rounded-lg w-full shadow-lg border border-slate-200">
+                            </div>
+                            <figcaption class="text-sm text-center text-slate-500 mt-3">
+                                State-space controller response (left) and its significantly smoother corrective action (right) with a low-pass filter.
+                            </figcaption>
+                        </figure>
+                    </p>
+                    
+                 </div>
+            </div>
+        </main>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sections = document.querySelectorAll('main h2[id]');
+        const navLinks = document.querySelectorAll('#nav-menu a');
+
+        if (sections.length === 0 || navLinks.length === 0) {
+            console.error("Could not find sections or nav links for observer.");
+            return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            let activeSectionId = null;
+
+            // Find the last section in the document order that is intersecting
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    activeSectionId = entry.target.id;
+                }
+            });
+            
+            // If scrolling up and out of view, the last activeSectionId might disappear.
+            // A more robust way is to check all observed sections.
+            let currentActiveId = '';
+            sections.forEach(section => {
+                // A section is active if its top is above the trigger line (middle of the screen).
+                // We find the last one that fits this criteria.
+                if(section.getBoundingClientRect().top < window.innerHeight / 2) {
+                    currentActiveId = section.id;
+                }
+            });
+
+
+            navLinks.forEach(link => {
+                const navText = link.querySelector('.nav-text');
+                const navIndicator = link.querySelector('.nav-indicator');
+                const linkId = link.getAttribute('href').substring(1);
+
+                if (linkId === currentActiveId) {
+                    // This is the active link
+                    navText.classList.add('active-nav-text');
+                    navIndicator.classList.add('w-16', 'bg-slate-800');
+                    navIndicator.classList.remove('w-8', 'bg-slate-400');
+                } else {
+                    // This is an inactive link
+                    navText.classList.remove('active-nav-text');
+                    navIndicator.classList.remove('w-16', 'bg-slate-800');
+                    navIndicator.classList.add('w-8', 'bg-slate-400');
+                }
+            });
+        }, { 
+            rootMargin: "-50% 0px -50% 0px", // Trigger when a section enters the middle of the viewport
+            threshold: 0 
+        });
+
+        sections.forEach(section => observer.observe(section));
+    });
+</script>
+
+</body>
+</html>
