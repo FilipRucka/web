@@ -124,6 +124,12 @@
                 <p>
                     The crystal's alpha shape model is used as a template. A multi-step rotational search is performed where the template is rotated at progressively finer increments (e.g., from coarse 5° steps down to fine 0.1° steps). At each angle, OpenCV's <code>matchTemplate</code> function scans the template across the placer's difference mask to find the highest correlation score. This iterative refinement approach efficiently determines the crystal's precise final orientation and position.
                 </p>
+                <figure class="my-8">
+                    <img src="coords.png" alt="Coordinate system for image processing. Image by Ing. Pavel Krsek Ph.D." class="rounded-lg w-full shadow-lg border border-slate-200">
+                    <figcaption class="text-sm text-center text-slate-500 mt-3">
+                        Coordinate system for image processing. Image by Ing. Pavel Krsek Ph.D.
+                    </figcaption>
+                </figure>
                 <h4>Final Validation and Output</h4>
                 <p>
                     Once the best alignment is found, the system transforms the crystal's contour and the pipette's position into the destination camera's coordinate system. This data is used to generate a final overlay for visual verification and, critically, to perform <strong>collision checks</strong> against previously placed crystals using geometric libraries. The final output confirms a successful placement or flags a collision, ensuring the integrity of the experiment.
