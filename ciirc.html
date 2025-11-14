@@ -80,7 +80,7 @@
             <div class="prose prose-slate max-w-none">
                 <h2 id="project-overview" class="text-3xl font-bold text-slate-900 scroll-mt-24">Project Overview</h2>
                 <p>
-                    This project, developed for the DeKrys initiative, involved creating a robust Python-based system to precisely estimate the position and orientation of microscopic crystals for robotic manipulation. The vision pipeline processes multiple camera views—a high-resolution macro image of the crystal and "before" and "after" images from a destination camera—to achieve accurate localization and placement validation.
+                    This project, developed for the DeKrys initiative, involved creating a robust Python-based system to precisely estimate the position and orientation of crystals for robotic manipulation. The vision pipeline processes multiple camera views a high resolution macro image of the crystal and "before" and "after" images from a destination camera to achieve accurate localization and placement validation.
                 </p>
                 <p>
                     The system is designed as a modular class-based interface, providing key information such as the crystal's final position, its rotation, and potential collisions with other crystals on the destination plate.
@@ -96,7 +96,7 @@
                 
                 <h2 id="macro-processing" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">1. Macro Image Processing</h2>
                 <p>
-                    The process begins by analyzing the high-resolution macro image to extract a precise, vector-based model of the crystal's unique shape.
+                    The process begins by analyzing the high-resolution macro image to extract the crystal's unique shape.
                 </p>
                 <h4>Edge Detection & Alpha Shape</h4>
                 <p>
@@ -113,16 +113,16 @@
                 </p>
                 <h4>Difference Masking</h4>
                 <p>
-                    By computing a pixel-wise difference between the "before" and "after" grayscale images, we isolate the exact region of change. This difference image is then blurred to reduce noise and thresholded to create a clean binary mask. This critical step focuses the subsequent search area only on where the new crystal has appeared, dramatically improving efficiency and reducing false positives.
+                    By computing a pixel-wise difference between the "before" and "after" grayscale images, we isolate the exact region of change. This difference image is then blurred to reduce noise and thresholded to create a clean binary mask. This critical step focuses the subsequent search area only on where the new crystal has appeared, improving efficiency and reducing false positives.
                 </p>
                 
                 <h2 id="alignment" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">3. Template Matching & Alignment</h2>
                 <p>
-                    The final step is to align the crystal's shape model (from the macro image) with its detected location in the destination image to determine its final orientation and position.
+                    Next is to align the crystal's shape model (from the macro image) with its detected location in the destination image to determine its final orientation and position.
                 </p>
                 <h4>Iterative Rotational Matching</h4>
                 <p>
-                    The crystal's alpha shape model is used as a template. A multi-step rotational search is performed where the template is rotated at progressively finer increments (e.g., from coarse 5° steps down to fine 0.1° steps). At each angle, OpenCV's <code>matchTemplate</code> function scans the template across the placer's difference mask to find the highest correlation score. This iterative refinement approach efficiently determines the crystal's precise final orientation and position.
+                    The crystal's alpha shape model is used as a template. A multi-step rotational search is performed where the template is rotated at progressively finer increments (e.g., from coarse 5° steps down to fine 0.1° steps). At each angle, the algorithm scans the template across the placer's difference mask to find the highest correlation score. This iterative approach determines the crystal's precise final orientation and position.
                 </p>
                 <figure class="my-8">
                     <img src="coords.png" alt="Coordinate system for image processing. Image by Ing. Pavel Krsek Ph.D." class="rounded-lg w-full shadow-lg border border-slate-200">
@@ -132,8 +132,10 @@
                 </figure>
                 <h4>Final Validation and Output</h4>
                 <p>
-                    Once the best alignment is found, the system transforms the crystal's contour and the pipette's position into the destination camera's coordinate system. This data is used to generate a final overlay for visual verification and, critically, to perform <strong>collision checks</strong> against previously placed crystals using geometric libraries. The final output confirms a successful placement or flags a collision, ensuring the integrity of the experiment.
+                    Once the best alignment is found, the system transforms the crystal's contour and the pipette's position into the destination camera's coordinate system. This data is used to generate a final overlay for visual verification and, critically, to perform <strong>collision checks</strong> against previously placed crystals using geometric libraries.
                 </p>
+
+                At the end, the code calculates the orientation and positional difference between the projection points and the detected points by the algorigthm. It uses Principal Component Analysis to find the main axis of each point set and then calculates the angle between these axes in degrees. This tells us how much one set of points is rotated relative to the other. By doing this, we obtain the shift between the centers of the two point sets and their rotation.
                 <figure class="my-8">
                     <img src="pca.png" alt="Determining the position of the detected crystal relative to the planned position. Image by Ing. Pavel Krsek Ph.D." class="rounded-lg w-full shadow-lg border border-slate-200">
                     <figcaption class="text-sm text-center text-slate-500 mt-3">
