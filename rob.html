@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robotic Labyrinth Solver - Filip Ručka</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="eq.css">
+    
+    <style> 
+        body { font-family: 'Inter', sans-serif; } 
+        
+        /* Prose Styling */
+        .prose p { margin-bottom: 1rem; }
+        .prose h4 { font-size: 1.25rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; color: #1e293b; }
+        .prose ul { list-style-position: inside; margin-left: 1rem; margin-bottom: 1rem; }
+        .prose li { margin-bottom: 0.5rem; }
+
+        /* Navigation Active State */
+        .active-nav-text {
+            color: #2563eb; /* text-blue-600 */
+            transform: translateX(5px);
+            font-weight: 600;
+        }
+
+        /* Fallback styles in case eq.css is missing during preview */
+        .equation-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.2rem;
+            color: #334155;
+        }
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            text-align: center;
+            vertical-align: middle;
+            margin: 0 0.2em;
+        }
+        .numerator {
+            padding: 0 0.4em;
+        }
+        .denominator {
+            border-top: 1px solid currentColor;
+            padding: 0 0.4em;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-700">
+    <div class="container mx-auto max-w-screen-lg px-6 py-12 md:py-20 lg:py-24">
+        
+        <a href="./index.html" class="group flex items-center font-semibold text-blue-600 mb-12">
+            <i class="fas fa-arrow-left mr-2 transition-transform group-hover:-translate-x-1"></i>
+            Go Back to Portfolio
+        </a>
+
+        <header class="mb-12">
+            <h1 class="text-4xl font-bold text-slate-900 sm:text-5xl">Robotic Labyrinth Solver</h1>
+            <p class="mt-3 text-lg text-slate-600">Autonomous manipulation using computer vision, homography, and path planning on a 6-DoF Mitsubishi RV6S arm.</p>
+        </header>
+
+        <main class="grid md:grid-cols-3 md:items-start gap-x-12">
+            <aside class="md:col-span-1 md:sticky md:top-24">
+                <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Key Details</h3>
+                <dl class="text-sm">
+                    <dt class="font-semibold text-slate-800">Project Type:</dt>
+                    <dd class="text-slate-600 mb-3">Semestral Work</dd>
+                    
+                    <dt class="font-semibold text-slate-800">Team:</dt>
+                    <dd class="text-slate-600 mb-3">Adam Pospíchal, Filip Ručka, Přemysl Černý</dd>
+                    
+                    <dt class="font-semibold text-slate-800">Hardware:</dt>
+                    <dd class="text-slate-600 mb-3">Mitsubishi RV6S, Fixed Camera</dd>
+                    
+                    <dt class="font-semibold text-slate-800">Core Concepts:</dt>
+                    <dd class="text-slate-600">
+                        <ul class="list-disc list-inside">
+                            <li>Homography Mapping</li>
+                            <li>Computer Vision (OpenCV)</li>
+                            <li>Forward/Inverse Kinematics</li>
+                            <li>Path Planning (SE3)</li>
+                            <li>Collision Avoidance</li>
+                            <li>Graph Traversal Optimization</li>
+                        </ul>
+                    </dd>
+                </dl>
+                
+                <nav class="hidden md:block mt-12">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">On this page</h3>
+                    <ul id="nav-menu" class="flex flex-col space-y-3 text-sm font-medium mt-4">
+                        <li>
+                            <a href="#video-demo" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Video Demo</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#homography" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Homography & Calibration</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#computer-vision" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Computer Vision</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#localization" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Labyrinth Localization</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#path-planning" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Path Planning</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#optimization" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900">
+                                <span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span>
+                                <span class="nav-text">Traversal Optimization</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+            
+            <div class="md:col-span-2 mt-8 md:mt-0">
+                 <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Technical Walkthrough</h3>
+                 <div class="prose max-w-none">
+                    <div id="video-demo" class="mb-12">
+                         <p class="mb-4">
+                            Below is a demonstration of the robot solving the labyrinth. This video illustrates the successful integration of the homography, computer vision, and path planning systems.
+                        </p>
+                        <figure>
+                            <video controls class="w-full rounded-lg shadow-lg">
+                                <source src="your-video-file.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </figure>
+                    </div>
+                    <p>
+                        The objective of this project is to guide a hoop, attached to the end-effector of a 6-DoF robotic manipulator, through a wire labyrinth. The labyrinth can be placed anywhere within the robot's working space and the view of a fixed camera mounted above. The solution requires solving three primary challenges: finding the homography from camera to robot space, detecting the labyrinth, and calculating the optimal traversal path.
+                    </p>
+
+                    <h2 id="homography" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                        1. Homography & Calibration
+                    </h2>
+                    <p>
+                        To map points from the 2D image plane to 3D real-world coordinates, we established a homography with respect to the labyrinth's base plane. This required collecting corresponding points between the image plane and robot space.
+                    </p>
+                    <h4>Data Collection</h4>
+                    <p>
+                        We captured a series of 20 images of the hoop attached to the robot's end-effector. For every image, the center of the hoop was extracted using computer vision algorithms. Simultaneously, the corresponding 3D world coordinates of the hoop's center were calculated using the robot's forward kinematics.
+                    </p>
+                    <p>
+                        To ensure robustness, the robot arm was lowered to the labyrinth height, and the arm was rotated 10 degrees incrementally to generate distinct data pairs. If the hoop was not detected, the arm would adjust its extension or reverse rotation until detection was regained. The final matrix was calculated using the OpenCV function <code>cv2.findHomography</code>.
+                    </p>
+
+                    <h2 id="computer-vision" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                        2. Computer Vision
+                    </h2>
+                    <p>
+                        Robust detection of the hoop's inner circle is critical for manipulation. The detection pipeline consists of two stages: edge detection and circle detection.
+                    </p>
+                    <h4>Edge Detection</h4>
+                    <p>
+                        We implemented a Sobel gradient method, which proved more reliable than color thresholding under varying light conditions. Given the flat table background with minimal gradients, this approach allowed for confident edge filtering.
+                    </p>
+                    <ul>
+                        <li>The image is converted to grayscale and a Gaussian blur is applied to prevent noise amplification during derivative calculation.</li>
+                        <li>Horizontal and vertical gradients are calculated and convolved to obtain the gradient magnitude.</li>
+                        <li>A fixed threshold is applied to the normalized gradient magnitude to create a binary mask.</li>
+                    </ul>
+                    
+                    <figure class="my-8">
+                        <img src="gradient_mask.png" alt="Gradient Mask" class="mx-auto block rounded-lg shadow-lg">
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                            Figure 1: Gradient binary mask generated using fixed thresholding.
+                        </figcaption>
+                    </figure>
+
+                    <p>
+                        Fixed thresholding was chosen over adaptive methods because the gradient magnitude histogram did not present a clear minimum for dynamic selection.
+                    </p>
+                    
+                    <figure class="my-8">
+                        <img src="gradient_histogram.png" alt="Gradient Histogram" class="mx-auto block rounded-lg shadow-lg">
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                            Figure 2: Gradient magnitude histogram showing threshold selection.
+                        </figcaption>
+                    </figure>
+
+                    <h4>Hough Transform</h4>
+                    <p>
+                        Using the thresholded mask, we performed circle detection using the Hough transform. Since the radius of the hoop's inner circle is a known parameter, the transform could accurately localize the hoop center.
+                    </p>
+                    
+                    <figure class="my-8">
+                        <img src="detected_hoop.png" alt="Detected Hoop" class="mx-auto block rounded-lg shadow-lg">
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                            Figure 3: Final detected hoop overlayed on the camera feed.
+                        </figcaption>
+                    </figure>
+
+                    <h2 id="localization" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                        3. Labyrinth Localization
+                    </h2>
+                    <p>
+                        To determine the labyrinth's position in robot space, we utilize ArUco markers (4x4 size) placed on the labyrinth base. The robot arm first moves aside to prevent obstruction.
+                    </p>
+                    <h4>Coordinate Transformation</h4>
+                    <p>
+                        The <code>cv2.aruco.ArucoDetector</code> identifies marker corners and IDs. We use the previously calculated homography matrix <i>H</i> to transform the corner coordinates from camera space to robot space:
+                    </p>
+                    
+                    <div class="equation-line">
+                        c · i = H · [x<sub>i</sub>, y<sub>i</sub>, 1]<sup>T</sup>
+                    </div>
+
+                    <p>
+                        The marker with ID 1 defines the top-left corner, and ID 2 defines the right. From these points, we establish normalized local axes <i>x</i> and <i>y</i> and the center point.
+                    </p>
+                    
+                    <div class="equation-line">
+                        α = arctan
+                        <div class="fraction">
+                            <span class="numerator">norm_x<sub>y</sub></span>
+                            <span class="denominator">norm_x<sub>x</sub></span>
+                        </div>
+                    </div>
+
+                    <p>
+                        This allows us to derive the full SE3 transform <i>T<sub>Base Labyrinth</sub> = (p, α)</i> representing the labyrinth's pose.
+                    </p>
+                    
+                    <figure class="my-8">
+                        <img src="Aruco1_edidet.png" alt="ArUco Detection" class="mx-auto block rounded-lg shadow-lg">
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                            Figure 4: ArUco markers defining the local coordinate system and labyrinth origin.
+                        </figcaption>
+                    </figure>
+
+                    <h2 id="path-planning" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                        4. Path Planning
+                    </h2>
+                    <p>
+                        To traverse the labyrinth, we generate a sequence of valid end-effector poses in SE3. For each point <i>P<sub>i</sub></i> in the parametrized path, we create a local coordinate frame.
+                    </p>
+                    <h4>Local Frame Generation</h4>
+                    <p>
+                        The Z-axis is defined by the tangent vector between the current point and the next, representing the movement direction:
+                    </p>
+                    
+                    <div class="equation-line">
+                        Z<sub>i</sub> = (P<sub>i+1</sub> - P<sub>i</sub>)
+                    </div>
+
+                    <p>
+                        The X-axis is the cross product of an upright vector and the Z-axis, ensuring orthogonality, while Y is the orthogonal complement. This establishes the hoop's pose:
+                    </p>
+                    
+                    <div class="equation-line">
+                        X<sub>i</sub> = (0, 0, 1)<sup>T</sup> × Z<sub>i</sub>
+                    </div>
+                    
+                    <div class="equation-line">
+                        T<sub>Base Labyrinth</sub> = (P<sub>i</sub>, [X<sub>i</sub>, Y<sub>i</sub>, Z<sub>i</sub>])
+                    </div>
+
+                    <h4>Inverse Kinematics & Collision Checking</h4>
+                    <p>
+                        Since the hoop is rotationally symmetric, the robot can approach from any angle. We generate candidate end-effector poses by rotating the hoop 360 degrees in 1-degree increments. Each candidate is validated by checking for the existence of an inverse kinematics solution and performing collision detection. We strictly reject candidates where the end-effector dips more than 5cm below the hoop to prevent table collisions.
+                    </p>
+                    
+                    <figure class="my-8">
+                        <img src="hoop_poses.png" alt="Hoop Poses" class="mx-auto block rounded-lg shadow-lg">
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">
+                            Figure 5: Visualization of the robot path centerline and detected hoop poses.
+                        </figcaption>
+                    </figure>
+
+                    <h2 id="optimization" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">
+                        5. Traversal Optimization
+                    </h2>
+                    <p>
+                        With all admissible poses identified, we model the path planning as a "smallest distance" oriented graph traversal. Each step along the path represents a node that connects to all possible valid nodes in the subsequent step.
+                    </p>
+                    <h4>Cost Function</h4>
+                    <p>
+                        To ensure smooth movement, we penalize large changes in configuration. The distance metric weights the last two joints more heavily as they are crucial for smooth traversal, and avoids twisting the robot into extreme positions.
+                    </p>
+                    
+                    <div class="equation-line">
+                        distance = || [1, 1, 1, 1, 2, 2] · (q<sub>i</sub> - q<sub>i-1</sub>) ||<sub>2</sub>
+                    </div>
+
+                    <p>
+                        We iterate over all steps to build a distance graph. For every node, we store the reference to the best previous node that minimizes the total distance from the start.
+                    </p>
+                    <h4>Path Reconstruction</h4>
+                    <p>
+                        To reconstruct the path, we identify the node at the final step with the smallest total distance and backtrack to the beginning. This algorithm has a time complexity of O(n · m²) where <i>n</i> is the number of steps and <i>m</i> is the number of possibilities per step.
+                    </p>
+                    
+                 </div>
+            </div>
+        </main>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const sections = document.querySelectorAll('main h2[id], #video-demo');
+        const navLinks = document.querySelectorAll('#nav-menu a');
+
+        if (sections.length === 0 || navLinks.length === 0) {
+            console.error("Could not find sections or nav links for observer.");
+            return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            let activeSectionId = null;
+
+            // Find the last section in the document order that is intersecting
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    activeSectionId = entry.target.id;
+                }
+            });
+            
+            // If scrolling up and out of view, the last activeSectionId might disappear.
+            let currentActiveId = '';
+            sections.forEach(section => {
+                // A section is active if its top is above the trigger line (middle of the screen).
+                if(section.getBoundingClientRect().top < window.innerHeight / 2) {
+                    currentActiveId = section.id;
+                }
+            });
+
+
+            navLinks.forEach(link => {
+                const navText = link.querySelector('.nav-text');
+                const navIndicator = link.querySelector('.nav-indicator');
+                const linkId = link.getAttribute('href').substring(1);
+
+                if (linkId === currentActiveId) {
+                    // This is the active link
+                    navText.classList.add('active-nav-text');
+                    navIndicator.classList.add('w-16', 'bg-slate-800');
+                    navIndicator.classList.remove('w-8', 'bg-slate-400');
+                } else {
+                    // This is an inactive link
+                    navText.classList.remove('active-nav-text');
+                    navIndicator.classList.remove('w-16', 'bg-slate-800');
+                    navIndicator.classList.add('w-8', 'bg-slate-400');
+                }
+            });
+        }, { 
+            rootMargin: "-50% 0px -50% 0px", // Trigger when a section enters the middle of the viewport
+            threshold: 0 
+        });
+
+        sections.forEach(section => observer.observe(section));
+    });
+</script>
+
+</body>
+</html>
