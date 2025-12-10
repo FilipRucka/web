@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDIT School 2026 - Filip Ručka</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; } </style>
+</head>
+<body class="bg-slate-50 text-slate-700">
+    <div class="container mx-auto max-w-screen-lg px-6 py-12 md:py-20 lg:py-24">
+        
+        <!-- BACK LINK -->
+        <a href="./index.html" class="group flex items-center font-semibold text-blue-600 mb-12">
+            <i class="fas fa-arrow-left mr-2 transition-transform group-hover:-translate-x-1"></i>
+            Go Back to Portfolio
+        </a>
+
+        <header class="mb-12">
+            <h1 class="text-4xl font-bold text-slate-900 sm:text-5xl">EDIT School 2026</h1>
+            <p class="mt-3 text-lg text-slate-600">Excellence in Detector and Instrumentation Technologies at CERN.</p>
+        </header>
+
+        <main class="grid md:grid-cols-3 gap-x-12">
+            
+            <!-- LEFT COLUMN: POSTER & KEY DETAILS -->
+            <aside class="md:col-span-1 flex flex-col gap-8">
+                
+                <!-- THE POSTER -->
+                <div class="group">
+                    <!-- Replace 'poster.jpg' with the actual filename of the image you uploaded -->
+                    <img src="edit.jpg" alt="EDIT School 2026 Poster" class="rounded-lg w-full shadow-xl border border-slate-200 transition-transform duration-300 group-hover:scale-[1.02]">
+                    <p class="text-xs text-center text-slate-400 mt-2">Official Announcement Poster</p>
+                </div>
+
+                <!-- KEY DETAILS -->
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Event Details</h3>
+                    <dl class="text-sm">
+                        <dt class="font-semibold text-slate-800">Date:</dt>
+                        <dd class="text-slate-600 mb-3">3 — 13 March 2026</dd>
+                        
+                        <dt class="font-semibold text-slate-800">Location:</dt>
+                        <dd class="text-slate-600 mb-3">CERN, Geneva, Switzerland</dd>
+                        
+                        <dt class="font-semibold text-slate-800">Focus:</dt>
+                        <dd class="text-slate-600 mb-3">Instrumentation, Electronics, & Detector Physics</dd>
+                        
+                        <dt class="font-semibold text-slate-800">Website:</dt>
+                        <a href="https://edit-2024.web.cern.ch/" target="_blank" class="text-blue-600 hover:underline">Official Indico Page</a>
+                    </dl>
+                </div>
+            </aside>
+            
+            <!-- RIGHT COLUMN: DETAILED DESCRIPTION -->
+            <div class="md:col-span-2 mt-8 md:mt-0">
+                 
+                 <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">About the Program</h3>
+                 <div class="prose prose-slate max-w-none mb-10">
+                    <p>
+                        The <strong>Excellence in Detector and Instrumentation Technologies (EDIT)</strong> school is a prestigious training program aimed at young researchers, aimed to deepen their knowledge of detector technologies and instrumentation for particle physics.
+                    </p>
+                    <p>
+                        Through a combination of academic courses and hands-on laboratories, the curriculum covers the complete signal chain—from the interaction of particles with matter to the electronic readout and final signal processing.
+                    </p>
+                 </div>
+
+                 <!-- ELECTROTECHNICAL FOCUS SECTION -->
+                 <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Electrotechnical & Instrumentation Focus</h3>
+                 <div class="prose prose-slate max-w-none">
+                    <p>
+                        My primary motivation for attending EDIT 2026 is to bridge the gap between physical sensor hardware and high-level data analysis. Understanding the electrotechnical properties of detectors is crucial for designing robust robotic and measurement systems.
+                    </p>
+                    <ul class="list-none space-y-4 pl-0">
+                        <li class="relative pl-6">
+                            <i class="fas fa-microchip absolute left-0 top-1 text-blue-600"></i>
+                            <strong>Front-End Electronics:</strong> 
+                            Studying the design of low-noise pre-amplifiers, shapers, and digitization circuits (ADCs). The course dives into how minute analogue charges generated in sensors are converted into robust digital signals suitable for data acquisition.
+                        </li>
+                        <li class="relative pl-6">
+                            <i class="fas fa-wave-square absolute left-0 top-1 text-blue-600"></i>
+                            <strong>Signal Processing:</strong> 
+                            Techniques for filtering noise, baseline restoration, and feature extraction directly at the hardware level. This includes understanding the impact of capacitance and resistance in silicon and gaseous detectors on signal timing and resolution.
+                        </li>
+                        <li class="relative pl-6">
+                            <i class="fas fa-bolt absolute left-0 top-1 text-blue-600"></i>
+                            <strong>Detector Technologies:</strong> 
+                            Detailed analysis of Silicon Detectors, Gaseous Detectors, and Noble Liquid Detectors, focusing on their electrical characteristics (breakdown voltage, drift velocity, charge collection efficiency).
+                        </li>
+                         <li class="relative pl-6">
+                            <i class="fas fa-server absolute left-0 top-1 text-blue-600"></i>
+                            <strong>Data Acquisition (DAQ):</strong> 
+                            Integration of front-end electronics with high-speed data transmission systems, triggering logic, and real-time processing architectures often implemented on FPGAs.
+                        </li>
+                    </ul>
+                 </div>
+            </div>
+        </main>
+
+    </div>
+</body>
+</html>
