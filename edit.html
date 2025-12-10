@@ -28,11 +28,16 @@
             <!-- LEFT COLUMN: POSTER & KEY DETAILS -->
             <aside class="md:col-span-1 flex flex-col gap-8">
                 
-                <!-- THE POSTER -->
-                <div class="group">
-                    <!-- Replace 'poster.jpg' with the actual filename of the image you uploaded -->
-                    <img src="edit.png" alt="EDIT School 2026 Poster" class="rounded-lg w-full shadow-xl border border-slate-200 transition-transform duration-300 group-hover:scale-[1.02]">
-                    <p class="text-xs text-center text-slate-400 mt-2">Official Announcement Poster</p>
+                <!-- THE POSTER (Clickable) -->
+                <div class="group cursor-pointer" onclick="openModal()">
+                    <div class="relative overflow-hidden rounded-lg shadow-xl border border-slate-200">
+                        <img src="edit.png" alt="EDIT School 2026 Poster" class="w-full transition-transform duration-300 group-hover:scale-105 group-hover:opacity-90">
+                        <!-- Zoom Icon overlay -->
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/10">
+                            <i class="fas fa-search-plus text-white text-3xl drop-shadow-md"></i>
+                        </div>
+                    </div>
+                    <p class="text-xs text-center text-slate-400 mt-2 group-hover:text-blue-600 transition-colors">Click to expand</p>
                 </div>
 
                 <!-- KEY DETAILS -->
@@ -57,48 +62,100 @@
             <!-- RIGHT COLUMN: DETAILED DESCRIPTION -->
             <div class="md:col-span-2 mt-8 md:mt-0">
                  
-                 <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">About the Program</h3>
+                 <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Program Overview</h3>
                  <div class="prose prose-slate max-w-none mb-10">
                     <p>
-                        The <strong>Excellence in Detector and Instrumentation Technologies (EDIT)</strong> school is a prestigious training program aimed at young researchers, aimed to deepen their knowledge of detector technologies and instrumentation for particle physics.
-                    </p>
-                    <p>
-                        Through a combination of academic courses and hands-on laboratories, the curriculum covers the complete signal chain—from the interaction of particles with matter to the electronic readout and final signal processing.
+                        EDIT 2026 is a technical school focusing on the hardware and electronics of particle physics experiments. The curriculum covers the full signal processing chain: from sensor ionization and charge collection to analog signal conditioning, digitization, and data acquisition.
                     </p>
                  </div>
 
-                 <!-- ELECTROTECHNICAL FOCUS SECTION -->
-                 <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Electrotechnical & Instrumentation Focus</h3>
+                 <!-- ENGINEERING FOCUS SECTION -->
+                 <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Engineering & Instrumentation Modules</h3>
                  <div class="prose prose-slate max-w-none">
-                    <p>
-                        My primary motivation for attending EDIT 2026 is to bridge the gap between physical sensor hardware and high-level data analysis. Understanding the electrotechnical properties of detectors is crucial for designing robust robotic and measurement systems.
-                    </p>
-                    <ul class="list-none space-y-4 pl-0">
+                    
+                    <ul class="list-none space-y-6 pl-0">
+                        
+                        <!-- Silicon & Semiconductor -->
                         <li class="relative pl-6">
                             <i class="fas fa-microchip absolute left-0 top-1 text-blue-600"></i>
-                            <strong>Front-End Electronics:</strong> 
-                            Studying the design of low-noise pre-amplifiers, shapers, and digitization circuits (ADCs). The course dives into how minute analogue charges generated in sensors are converted into robust digital signals suitable for data acquisition.
+                            <strong>Silicon Detectors</strong> 
+                            <p class="text-sm mt-1">
+                                Analysis of semiconductor sensor properties: depletion voltage, leakage current, and capacitance. Comparison of Hybrid Pixel Sensors vs. Monolithic Active Pixel Sensors (MAPS/CMOS). Focus on bump-bonding interconnects and radiation-hard design layout.
+                            </p>
                         </li>
+
+                        <!-- Front-End Electronics -->
                         <li class="relative pl-6">
                             <i class="fas fa-wave-square absolute left-0 top-1 text-blue-600"></i>
-                            <strong>Signal Processing:</strong> 
-                            Techniques for filtering noise, baseline restoration, and feature extraction directly at the hardware level. This includes understanding the impact of capacitance and resistance in silicon and gaseous detectors on signal timing and resolution.
+                            <strong>Front-End Electronics & Signal Processing</strong> 
+                            <p class="text-sm mt-1">
+                                Design of low-noise analog readout chains. Topics include Charge Sensitive Amplifiers (CSA), pulse shaping (CR-RC filters), and noise matching (ENC optimization). Implementation of discriminators, ADCs, and TDCs (Time-to-Digital Converters) for high-precision timing.
+                            </p>
                         </li>
+
+                        <!-- Gaseous Detectors -->
                         <li class="relative pl-6">
-                            <i class="fas fa-bolt absolute left-0 top-1 text-blue-600"></i>
-                            <strong>Detector Technologies:</strong> 
-                            Detailed analysis of Silicon Detectors, Gaseous Detectors, and Noble Liquid Detectors, focusing on their electrical characteristics (breakdown voltage, drift velocity, charge collection efficiency).
+                            <i class="fas fa-wind absolute left-0 top-1 text-blue-600"></i>
+                            <strong>Gaseous Detectors</strong> 
+                            <p class="text-sm mt-1">
+                                Engineering of Micro-Pattern Gaseous Detectors (MPGDs) and GEM (Gas Electron Multiplier) foils. Focus on high-voltage biasing, electric field shaping, avalanche amplification mechanics, and signal induction on readout strips.
+                            </p>
                         </li>
+
+                        <!-- Photon & Noble Liquid -->
+                        <li class="relative pl-6">
+                            <i class="fas fa-lightbulb absolute left-0 top-1 text-blue-600"></i>
+                            <strong>Photon & Noble Liquid Detectors</strong> 
+                            <p class="text-sm mt-1">
+                                Characterization of photo-detectors: PMTs vs. SiPMs (Silicon Photomultipliers). Analysis of dark count rate, cross-talk, and quantum efficiency. Operations of Time Projection Chambers (TPC) in cryogenic liquid argon/xenon environments and related cold electronics.
+                            </p>
+                        </li>
+
+                        <!-- Simulation -->
                          <li class="relative pl-6">
-                            <i class="fas fa-server absolute left-0 top-1 text-blue-600"></i>
-                            <strong>Data Acquisition (DAQ):</strong> 
-                            Integration of front-end electronics with high-speed data transmission systems, triggering logic, and real-time processing architectures often implemented on FPGAs.
+                            <i class="fas fa-laptop-code absolute left-0 top-1 text-blue-600"></i>
+                            <strong>Modelling & Simulation</strong> 
+                            <p class="text-sm mt-1">
+                                Finite Element Method (FEM) and TCAD simulations for electric field distribution and charge transport within sensors. SPICE simulations for transient analysis of the analog front-end and readout circuitry.
+                            </p>
                         </li>
+
                     </ul>
                  </div>
             </div>
         </main>
-
     </div>
+
+    <!-- MODAL OVERLAY -->
+    <div id="imageModal" class="fixed inset-0 z-50 hidden bg-black/95 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeModal()">
+        <!-- Close Button -->
+        <button class="absolute top-4 right-4 text-white/70 hover:text-white text-4xl font-light p-2 transition-colors" onclick="closeModal()">&times;</button>
+        
+        <!-- Image Container -->
+        <div class="relative max-w-7xl w-full h-full flex items-center justify-center" onclick="event.stopPropagation()">
+            <img src="edit.png" alt="EDIT School Poster Full Size" class="max-h-[90vh] max-w-full object-contain rounded shadow-2xl">
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Restore background scrolling
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
