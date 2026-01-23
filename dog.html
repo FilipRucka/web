@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadruped Locomotion: PPO Implementation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <li><a href="#code" class="group flex items-center"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300"></span><span class="nav-text transition-colors duration-200">Source Code</span></a></li>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style> 
+        body { font-family: 'Inter', sans-serif; } 
+        .prose p { margin-bottom: 1.25rem; line-height: 1.7; color: #475569; }
+        .prose h2 { font-size: 1.5rem; font-weight: 700; margin-top: 3.5rem; margin-bottom: 1.25rem; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
+        .prose h3 { font-size: 1.15rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: #334155; }
+        .prose ul { list-style-type: disc; list-style-position: inside; margin-left: 0.5rem; margin-bottom: 1.25rem; color: #475569; }
+        .prose li { margin-bottom: 0.5rem; }
+        .active-nav-text { color: #2563eb; transform: translateX(4px); font-weight: 600; }
+        .caption { font-size: 0.8rem; color: #64748b; text-align: center; margin-top: 0.5rem; margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-700">
+    <div class="container mx-auto max-w-screen-lg px-6 py-12 md:py-20 lg:py-24">
+        
+        <a href="./index.html" class="group flex items-center font-semibold text-blue-700 mb-12 text-sm tracking-wide">
+            <i class="fas fa-arrow-left mr-2 transition-transform group-hover:-translate-x-1"></i>
+            RETURN TO PORTFOLIO
+        </a>
+
+        <header class="mb-16">
+            <h1 class="text-3xl font-bold text-slate-900 sm:text-4xl tracking-tight mb-4">Deep Reinforcement Learning for Quadruped Locomotion</h1>
+            <p class="text-lg text-slate-600 max-w-2xl">High-velocity gait optimization for an 8-DOF robot using a custom PPO implementation and Generalized Advantage Estimation.</p>
+        </header>
+
+        <main class="grid md:grid-cols-3 md:items-start gap-x-16">
+            <aside class="md:col-span-1 md:sticky md:top-24">
+                <h3 class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider border-b border-slate-200 pb-2">Performance Metrics</h3>
+                <dl class="text-sm space-y-4">
+                    <div>
+                        <dt class="text-slate-500 mb-1">Rank</dt>
+                        <dd class="font-bold text-slate-900">3rd / 100 (Top 3%)</dd>
+                    </div>
+                    <div>
+                        <dt class="text-slate-500 mb-1">Max Distance</dt>
+                        <dd class="font-medium text-slate-900">106 meters</dd>
+                    </div>
+                    <div>
+                        <dt class="text-slate-500 mb-1">Compute Resource</dt>
+                        <dd class="font-mono text-slate-700 text-xs">Laptop (CPU Training)</dd>
+                    </div>
+                </dl>
+                
+                <nav class="hidden md:block mt-12">
+                    <h3 class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider border-b border-slate-200 pb-2">Methodology</h3>
+                    <ul id="nav-menu" class="flex flex-col space-y-3 text-sm mt-4">
+                        <li><a href="#overview" class="group flex items-center"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300"></span><span class="nav-text transition-colors duration-200">Tournament Overview</span></a></li>
+                        <li><a href="#architecture" class="group flex items-center"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300"></span><span class="nav-text transition-colors duration-200">Policy Architecture</span></a></li>
+                        <li><a href="#optimization" class="group flex items-center"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300"></span><span class="nav-text transition-colors duration-200">Algorithm (PPO & GAE)</span></a></li>
+                        <li><a href="#reward" class="group flex items-center"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300"></span><span class="nav-text transition-colors duration-200">Reward Shaping</span></a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <div class="md:col-span-2 mt-12 md:mt-0 prose">
+                
+                <section id="overview">
+                    <h2>1. Tournament Overview</h2>
+                    <p>
+                        The goal was to train a quadruped to maximize forward distance within a 1000-step limit.
+                    </p>
+                    
+                    <div class="mt-6 mb-8">
+                        <video controls class="w-full rounded-lg shadow-sm border border-slate-200">
+                            <source src="dog_RL.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </section>
+
+                <section id="architecture">
+                    <h2>2. Policy Architecture</h2>
+                    <p>
+                        I implemented a custom actor-critic network using a <strong>Shared Backbone</strong> approach. The network processes the 29-dimensional state space through three linear layers (256 units), each stabilized by <strong>Layer Normalization</strong> and Tanh activations.
+                    </p>
+                    <p>
+                        Unlike standard Gaussian policies, I used a <strong>Beta Distribution</strong> for the action head. The network outputs shape parameters $\alpha$ and $\beta$, which are passed through a Softplus function and clamped. This ensures the agent's actions always stay within valid torque limits.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-10">
+                        <div class="flex flex-col items-center bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                            <svg viewBox="0 0 300 360" class="w-full max-w-[280px]" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                                        <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
+                                    </marker>
+                                </defs>
+                                
+                                <rect x="50" y="10" width="200" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+                                <text x="150" y="30" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#475569">State Input (29)</text>
+                                <line x1="150" y1="40" x2="150" y2="60" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
+                    
+                                <g transform="translate(0, 60)">
+                                    <rect x="30" y="0" width="240" height="70" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+                                    <text x="150" y="20" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#1e40af">Linear (256)</text>
+                                    <rect x="50" y="30" width="200" height="18" rx="2" fill="#ffffff" stroke="#bfdbfe"/>
+                                    <text x="150" y="43" font-family="sans-serif" font-size="10" text-anchor="middle" fill="#3b82f6">Layer Norm</text>
+                                    <rect x="50" y="52" width="200" height="10" rx="2" fill="#dbeafe"/>
+                                    <text x="150" y="61" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#1d4ed8">Tanh</text>
+                                </g>
+                                <line x1="150" y1="130" x2="150" y2="150" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
+                    
+                                <g transform="translate(0, 150)">
+                                    <rect x="30" y="0" width="240" height="70" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+                                    <text x="150" y="20" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#1e40af">Linear (256)</text>
+                                    <rect x="50" y="30" width="200" height="18" rx="2" fill="#ffffff" stroke="#bfdbfe"/>
+                                    <text x="150" y="43" font-family="sans-serif" font-size="10" text-anchor="middle" fill="#3b82f6">Layer Norm</text>
+                                    <rect x="50" y="52" width="200" height="10" rx="2" fill="#dbeafe"/>
+                                    <text x="150" y="61" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#1d4ed8">Tanh</text>
+                                </g>
+                                <line x1="150" y1="220" x2="150" y2="240" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
+                    
+                                <g transform="translate(0, 240)">
+                                    <rect x="30" y="0" width="240" height="70" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+                                    <text x="150" y="20" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#1e40af">Linear (256)</text>
+                                    <rect x="50" y="30" width="200" height="18" rx="2" fill="#ffffff" stroke="#bfdbfe"/>
+                                    <text x="150" y="43" font-family="sans-serif" font-size="10" text-anchor="middle" fill="#3b82f6">Layer Norm</text>
+                                    <rect x="50" y="52" width="200" height="10" rx="2" fill="#dbeafe"/>
+                                    <text x="150" y="61" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#1d4ed8">Tanh</text>
+                                </g>
+                                
+                                <line x1="150" y1="310" x2="150" y2="330" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
+                                <text x="150" y="345" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#0f172a" font-weight="bold">Latent Features</text>
+                            </svg>
+                            <p class="caption mt-4">Figure 2: Shared Backbone with LayerNorm.</p>
+                        </div>
+                    
+                        <div class="flex flex-col items-center bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                            <svg viewBox="0 0 300 360" class="w-full max-w-[280px]" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <marker id="arrow3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                                        <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
+                                    </marker>
+                                </defs>
+                    
+                                <text x="150" y="20" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#0f172a" font-weight="bold">Latent Features</text>
+                                <line x1="150" y1="30" x2="150" y2="50" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow3)"/>
+                    
+                                <rect x="60" y="50" width="180" height="40" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+                                <text x="150" y="75" font-family="sans-serif" font-size="11" text-anchor="middle" fill="#166534">Action Head (Linear)</text>
+                                
+                                <path d="M150,90 L100,120 M150,90 L200,120" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow3)"/>
+                    
+                                <g transform="translate(40, 120)">
+                                    <rect x="0" y="0" width="100" height="60" rx="4" fill="#fff7ed" stroke="#fdba74"/>
+                                    <text x="50" y="20" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#9a3412">&alpha; (Alpha)</text>
+                                    <text x="50" y="40" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#c2410c">Softplus() + 1</text>
+                                    <text x="50" y="52" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#c2410c">Clamp(max=20)</text>
+                                </g>
+                    
+                                <g transform="translate(160, 120)">
+                                    <rect x="0" y="0" width="100" height="60" rx="4" fill="#fff7ed" stroke="#fdba74"/>
+                                    <text x="50" y="20" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#9a3412">&beta; (Beta)</text>
+                                    <text x="50" y="40" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#c2410c">Softplus() + 1</text>
+                                    <text x="50" y="52" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#c2410c">Clamp(max=20)</text>
+                                </g>
+                    
+                                <path d="M90,180 L130,220 M210,180 L170,220" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow3)"/>
+                    
+                                <g transform="translate(80, 220)">
+                                    <rect x="0" y="0" width="140" height="80" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+                                    <text x="70" y="25" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#1e40af">Beta Distribution</text>
+                                    <path d="M30,60 Q70,10 110,60" fill="none" stroke="#2563eb" stroke-width="2"/>
+                                    <line x1="20" y1="60" x2="120" y2="60" stroke="#94a3b8" stroke-width="1"/>
+                                </g>
+                                
+                                <line x1="150" y1="300" x2="150" y2="320" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow3)"/>
+                                
+                                <rect x="80" y="320" width="140" height="30" rx="4" fill="#f8fafc" stroke="#64748b" stroke-dasharray="4"/>
+                                <text x="150" y="340" font-family="sans-serif" font-size="11" text-anchor="middle" fill="#334155">Sampled Torque [-1, 1]</text>
+                            </svg>
+                            <p class="caption mt-4">Figure 3: Beta Policy allows bounded action sampling.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="optimization">
+                    <h2>3. Algorithm & Optimization</h2>
+                    <p>
+                        The agent is trained using <strong>Proximal Policy Optimization (PPO)</strong>. I chose PPO because it provides a stable balance between ease of tuning and performance. To improve the quality of the learning signal, I paired it with <strong>Generalized Advantage Estimation (GAE)</strong>.
+                    </p>
+                
+                    <h3>Breaking Correlations (Mini-Batching)</h3>
+                    <p>
+                        Reinforcement learning data is naturally time-correlated (state $t$ is very similar to state $t+1$). To prevent the optimizer from overfitting to specific trajectories, I implemented a shuffling mechanism. Collected trajectories are flattened and randomized into mini-batches (size 4096), breaking these correlations and ensuring the neural network learns generalizable features rather than memorizing a specific sequence.
+                    </p>
+                
+                    <h3>Stabilizing Updates</h3>
+                    <p>
+                        A key optimization in my code is <strong>Advantage Normalization</strong>. Before every update, I rescale the calculated advantages to have zero mean and unit variance. This simple step ensures that the training remains stable regardless of the scale of the rewards, allowing the agent to learn consistently whether it's receiving small penalties or massive velocity bonuses.
+                    </p>
+                </section>
+                
+
+                <section id="reward">
+                    <h2>4. Reward Engineering</h2>
+                    <p>
+                        The reward function in `walker_reward` solves the multi-objective problem of speed versus stability:
+                    </p>
+                    <ul class="text-sm">
+                        <li><strong>Exponential Velocity Incentive:</strong> Forward velocity ($v_x$) is rewarded using a power of 1.5 ($v_x^{1.5}$). This makes the reward non-linear: doubling your speed more than doubles your reward, aggressively encouraging sprinting.</li>
+                        <li><strong>Threshold Boost:</strong> To break local optima, I added a "fast bonus" that only triggers when velocity exceeds 4.2 m/s. This creates a strong gradient pushing the agent toward top speeds.</li>
+                        <li><strong>Stability Constraints:</strong> Penalties are applied to vertical velocity ($v_z^2$) and lateral drift ($v_y^2$) to force an energy-efficient, planar gait.</li>
+                    </ul>
+                </section>
+
+
+
+
+                <section id="implementation">
+                    <h2>5. Full Implementation</h2>
+                    <p>The implementation is split into the neural network architecture (Beta Policy) and the training pipeline (PPO + GAE).</p>
+                
+                    <!-- WalkerPolicy.py -->
+                    <div class="mt-8">
+                        <div class="flex items-center justify-between bg-slate-800 text-slate-300 px-4 py-2 rounded-t-lg border-b border-slate-700">
+                            <span class="text-xs font-mono">WalkerPolicy.py</span>
+                            <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold">Python</span>
+                        </div>
+                        <pre class="bg-slate-900 text-slate-300 p-6 rounded-b-lg overflow-x-auto text-[12px] leading-relaxed mb-10 shadow-xl border border-slate-800"><code>
+                import torch
+                import torch.nn as nn
+                import torch.nn.functional as F
+                import numpy as np
+                
+                class WalkerPolicy(nn.Module):
+                    def __init__(self, state_dim=29, action_dim=8, load_weights: bool = False):
+                        super().__init__()
+                        
+                        self.net = nn.Sequential(
+                            nn.Linear(state_dim, 256),
+                            nn.LayerNorm(256),
+                            nn.Tanh(),
+                            nn.Linear(256, 256),
+                            nn.LayerNorm(256),
+                            nn.Tanh(),
+                            nn.Linear(256, 256), 
+                            nn.LayerNorm(256),
+                            nn.Tanh()
+                        )
+                        
+                        self.action_head = nn.Linear(256, 2 * action_dim)
+                        self.actor_logstd = nn.Parameter(torch.zeros(1, action_dim)) 
+                
+                        self.critic = nn.Sequential(
+                            nn.Linear(state_dim, 256),
+                            nn.LayerNorm(256),
+                            nn.Tanh(),
+                            nn.Linear(256, 256),
+                            nn.LayerNorm(256),
+                            nn.Tanh(),
+                            nn.Linear(256, 1)
+                        )
+                        
+                        self.apply(self._init_weights)
+                        nn.init.orthogonal_(self.action_head.weight, gain=0.01)
+                        nn.init.constant_(self.action_head.bias, 0)
+                
+                        if load_weights:
+                            self.load_weights()
+                        
+                    def _init_weights(self, module):
+                        if isinstance(module, nn.Linear):
+                            nn.init.orthogonal_(module.weight, gain=np.sqrt(2))
+                            if module.bias is not None:
+                                nn.init.constant_(module.bias, 0)
+                    
+                    def forward(self, state):
+                        if isinstance(state, np.ndarray):
+                            state = torch.from_numpy(state).float()
+                            
+                        x = self.net(state)
+                        out = self.action_head(x)
+                        
+                        alpha_raw, beta_raw = torch.chunk(out, 2, dim=-1)
+                        
+                        alpha = F.softplus(alpha_raw).clamp(max=200.0) + 1.0
+                        beta = F.softplus(beta_raw).clamp(max=200.0) + 1.0
+                        
+                        return alpha, beta
+                
+                    def get_value(self, state):
+                        if isinstance(state, np.ndarray):
+                            state = torch.from_numpy(state).float()
+                        return self.critic(state)
+                        
+                    def act(self, state):
+                        """
+                        Sample an action for training/exploration.
+                        """
+                        with torch.no_grad():
+                            alpha, beta = self.forward(state)
+                            dist = torch.distributions.Beta(alpha, beta)
+                            action_01 = dist.sample()
+                            # Scale [0, 1] -> [-1, 1]
+                            action = action_01 * 2.0 - 1.0
+                        return action.numpy()
+                    
+                    def determine_actions(self, state: torch.Tensor) -> torch.Tensor:
+                        """
+                        Deterministic action for evaluation (Mode of the distribution).
+                        Means = Alpha / (Alpha + Beta)
+                        """
+                        self.eval() 
+                        with torch.no_grad():
+                            if isinstance(state, np.ndarray):
+                                state = torch.from_numpy(state).float()
+                                
+                            alpha, beta = self.forward(state)
+                            action_01 = alpha / (alpha + beta)
+                            actions = action_01 * 2.0 - 1.0
+                            
+                        return actions
+                
+                    def save_weights(self, path: str = 'walker_weights.pt') -> None:
+                        torch.save(self.state_dict(), path)
+                
+                    def load_weights(self, path: str = 'walker_weights.pt') -> None:
+                        try:
+                            self.load_state_dict(torch.load(path, map_location=torch.device('cpu')))
+                            print(f"Loaded weights from {path}")
+                        except FileNotFoundError:
+                            print(f"Warning: Could not find weight file {path}")</code></pre>
+                    </div>
+                
+                    <!-- train_ppo.py -->
+                    <div class="mt-4">
+                        <div class="flex items-center justify-between bg-slate-800 text-slate-300 px-4 py-2 rounded-t-lg border-b border-slate-700">
+                            <span class="text-xs font-mono">train_ppo.py</span>
+                            <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold">Python</span>
+                        </div>
+                        <pre class="bg-slate-900 text-slate-300 p-6 rounded-b-lg overflow-x-auto text-[12px] leading-relaxed shadow-xl border border-slate-800"><code>
+                import torch
+                import torch.optim as optim
+                import torch.nn as nn
+                import torch.nn.functional as F
+                import numpy as np
+                from environment.WalkerEnv import WalkerEnv
+                from WalkerPolicy import WalkerPolicy
+                
+                def compute_gae(rewards, values, next_val, dones, gamma, lam):
+                    """
+                    Computes Generalized Advantage Estimation (GAE).
+                    """
+                    advantages = np.zeros_like(rewards, dtype=np.float32)
+                    last_gae_lam = 0
+                    
+                    for t in reversed(range(len(rewards))):
+                        if t == len(rewards) - 1:
+                            next_v = next_val
+                        else:
+                            next_v = values[t + 1]
+                            
+                        mask = 1.0 - dones[t]
+                        delta = rewards[t] + (gamma * next_v * mask) - values[t]
+                        advantages[t] = last_gae_lam = delta + (gamma * lam * mask * last_gae_lam)
+                        
+                    return torch.tensor(advantages, dtype=torch.float32)
+                
+                def ppo_loss(p_ratios, advantage_estimates, epsilon):
+                    surr1 = p_ratios * advantage_estimates
+                    surr2 = torch.clamp(p_ratios, 1.0 - epsilon, 1.0 + epsilon) * advantage_estimates
+                    return -torch.mean(torch.min(surr1, surr2))
+                
+                def value_loss(values, value_targets):
+                    return torch.mean((values - value_targets)**2)
+                
+                print("\nTraining: PRO MODE (Self-Contained)")
+                
+                best = {
+                    'lr': 0.000005,           
+                    'gamma': 0.99,
+                    'clip_ratio': 0.15,      
+                    'train_iters': 10,       
+                    'batch_size': 4096,      
+                    'entropy_coef': 0.01     
+                }
+                
+                MAX_EPOCHS = 15000 
+                STEPS_PER_EPOCH = 16384 
+                CURRICULUM = {
+                    "target_vx": 16.0,       
+                    "pen_z_weight":  0.1612,   
+                    "pen_drift": 0.37,        
+                    "fall_penalty": -1.47937304873362,    
+                    "forward_weight": 1,  
+                    "still_penalty": 1.7137    
+                }
+                
+                best_single_run_record = -float('inf')
+                
+                def walker_reward(state, action):
+                    TARGET_VX = CURRICULUM["target_vx"]
+                    TARGET_YAW = 0.0 
+                    
+                    vx = state[15]          
+                    vy = state[16]          
+                    wz = state[17]          
+                    vz = state[18]          
+                    roll, pitch = state[4], state[5] 
+                
+                    v_error = TARGET_VX - vx
+                    rew_forward = 18 * vx 
+                    
+                    is_healthy = 1.0 if (roll**2 + pitch**2) < 0.3 else 0.0
+                    rew_healthy = 0.1 * is_healthy
+                    pen_z_vel = CURRICULUM["pen_z_weight"] * vz**2                        
+                    pen_drift = CURRICULUM["pen_drift"] * vy**2                         
+                    
+                    threshold = 4.2 
+                    if vx > threshold:
+                        rew_fast = (vx - threshold) * 15.0
+                    else:
+                        rew_fast = 0.0
+                
+                    if vx > 0:
+                        rew_forward = CURRICULUM["forward_weight"] * (vx**1.5) 
+                    else:
+                        rew_forward = CURRICULUM["forward_weight"] * vx
+                    # --- TOTAL ---
+                    total_reward = (
+                        rew_forward + 
+                        rew_fast +
+                        rew_healthy 
+                    )
+                    return total_reward
+                
+                final_policy = WalkerPolicy(state_dim=29, action_dim=8)
+                
+                try:
+                    checkpoint = torch.load("project_Q/best_100m_PRO.pth")
+                    final_policy.load_state_dict(checkpoint)
+                    print("Loaded 100m checkpoint.")
+                except:
+                    print("Warning: Checkpoint not found! Starting from scratch.")
+                
+                optimizer = optim.Adam(final_policy.parameters(), lr=3e-4)
+                scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1000, gamma=0.5)
+                env = WalkerEnv({'N': 16, 'vis': False, "track": 0, "reward_fcn": walker_reward})
+                
+                best_single_run_record = -float('inf')
+                num_envs = 16
+                STEPS_PER_BATCH = STEPS_PER_EPOCH // num_envs 
+                
+                for epoch in range(MAX_EPOCHS):
+                    obs = env.vector_reset()
+                    max_episode_dist_in_epoch = 0.0
+                    current_episode_dists = np.zeros(num_envs) 
+                    previous_x = obs[:, 0].copy() 
+                    
+                    b_obs, b_acts, b_rews, b_dones, b_vals, b_logp = [], [], [], [], [], []
+                
+                    for t in range(STEPS_PER_BATCH):
+                        with torch.no_grad():
+                            obs_t = torch.FloatTensor(obs)
+                            alpha, beta = final_policy(obs_t)
+                            dist = torch.distributions.Beta(alpha, beta)
+                            action_01 = dist.sample()
+                            vx = torch.from_numpy(obs[:, 15]).float()
+                            log_prob = dist.log_prob(action_01).sum(axis=-1)
+                            val = final_policy.get_value(obs_t).squeeze()
+                        
+                        action_env = action_01.numpy() * 2.0 - 1.0
+                        next_obs, reward = env.vector_step(action_env)
+                        
+                        current_x = next_obs[:, 0]
+                        dx = current_x - previous_x
+                        dx[dx < -0.5] = 0.0 
+                        current_episode_dists += dx
+                        previous_x = current_x.copy()
+                        
+                        is_flipped = (next_obs[:, 4]**2 + next_obs[:, 5]**2) > 0.6
+                        dones = is_flipped.astype(float)
+                
+                        for i in range(num_envs):
+                            if is_flipped[i] or t == STEPS_PER_BATCH - 1:
+                                if current_episode_dists[i] > max_episode_dist_in_epoch:
+                                    max_episode_dist_in_epoch = current_episode_dists[i]
+                                if is_flipped[i]:
+                                    current_episode_dists[i] = 0.0
+                
+                        b_obs.append(obs); b_acts.append(action_01); b_rews.append(reward)
+                        b_dones.append(dones); b_vals.append(val); b_logp.append(log_prob)
+                        obs = next_obs
+                
+                    t_obs = torch.tensor(np.array(b_obs), dtype=torch.float32) 
+                    t_acts = torch.stack(b_acts)                               
+                    t_rews = torch.tensor(np.array(b_rews), dtype=torch.float32)
+                    t_dones = torch.tensor(np.array(b_dones), dtype=torch.float32)
+                    t_vals = torch.stack(b_vals)                              
+                    t_logp = torch.stack(b_logp)                              
+                
+                    with torch.no_grad():
+                        last_val = final_policy.get_value(torch.FloatTensor(obs)).squeeze() 
+                
+                    t_obs = t_obs.permute(1, 0, 2)   
+                    t_acts = t_acts.permute(1, 0, 2)
+                    t_rews = t_rews.permute(1, 0)   
+                    t_dones = t_dones.permute(1, 0) 
+                    t_vals = t_vals.permute(1, 0)    
+                    t_logp = t_logp.permute(1, 0)   
+                    
+                    adv_list = []
+                    ret_list = []
+                    
+                    for i in range(num_envs):
+                        adv = compute_gae(
+                            t_rews[i].numpy(), 
+                            t_vals[i].numpy(), 
+                            last_val[i].item(), 
+                            t_dones[i].numpy(), 
+                            best['gamma'], 
+                            0.95 
+                        )
+                        adv_list.append(adv)
+                        ret_list.append(adv + t_vals[i])
+                
+                    t_adv = torch.stack(adv_list)
+                    t_ret = torch.stack(ret_list)
+                
+                    full_obs = t_obs.reshape(-1, 29)
+                    full_acts = t_acts.reshape(-1, 8)
+                    full_logp = t_logp.reshape(-1)
+                    full_adv = t_adv.reshape(-1)
+                    full_ret = t_ret.reshape(-1)
+                
+                    full_adv = (full_adv - full_adv.mean()) / (full_adv.std() + 1e-8)
+                
+                    total_samples = full_obs.shape[0] 
+                    indices = np.arange(total_samples)
+                    batch_size = best['batch_size']   
+                
+                    for _ in range(best['train_iters']):
+                        np.random.shuffle(indices) 
+                        for start_idx in range(0, total_samples, batch_size):
+                            end_idx = start_idx + batch_size
+                            mb_idxs = indices[start_idx:end_idx]
+                
+                            mb_obs = full_obs[mb_idxs]
+                            mb_acts = full_acts[mb_idxs]
+                            mb_logp_old = full_logp[mb_idxs]
+                            mb_adv = full_adv[mb_idxs]
+                            mb_ret = full_ret[mb_idxs]
+                
+                            optimizer.zero_grad()
+                            alpha, beta = final_policy(mb_obs)
+                            dist = torch.distributions.Beta(alpha, beta)
+                            
+                            new_log_p = dist.log_prob(mb_acts).sum(axis=-1)
+                            ratio = torch.exp(new_log_p - mb_logp_old)
+                            
+                            loss_pi = ppo_loss(ratio, mb_adv, epsilon=best['clip_ratio'])
+                            v_pred = final_policy.get_value(mb_obs).squeeze()
+                            loss_v = value_loss(v_pred, mb_ret)
+                            
+                            entropy = dist.entropy().mean()
+                            loss = loss_pi + 0.5 * loss_v - best['entropy_coef'] * entropy
+                            
+                            loss.backward()
+                            torch.nn.utils.clip_grad_norm_(final_policy.parameters(), 0.5)
+                            optimizer.step()
+                            scheduler.step()
+                   
+                    print("cur run: {:.2f}m | epoch: {}/{}".format(
+                        max_episode_dist_in_epoch, epoch + 1, MAX_EPOCHS))
+                    if max_episode_dist_in_epoch > best_single_run_record:
+                        best_single_run_record = max_episode_dist_in_epoch
+                        print(f"NEW RECORD: {best_single_run_record:.2f}m")
+                        torch.save(final_policy.state_dict(), f"ggs/policy.pth")</code></pre>
+                    </div>
+                </section>
+
+                
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('#nav-menu a');
+            
+            const observer = new IntersectionObserver((entries) => {
+                let currentActiveId = '';
+                sections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top < window.innerHeight / 2 && rect.bottom > 0) {
+                        currentActiveId = section.id;
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    const navText = link.querySelector('.nav-text');
+                    const navIndicator = link.querySelector('.nav-indicator');
+                    const linkId = link.getAttribute('href').substring(1);
+
+                    if (linkId === currentActiveId) {
+                        navText.classList.add('active-nav-text');
+                        navIndicator.classList.add('w-12', 'bg-slate-800');
+                        navIndicator.classList.remove('w-6', 'bg-slate-300');
+                    } else {
+                        navText.classList.remove('active-nav-text');
+                        navIndicator.classList.remove('w-12', 'bg-slate-800');
+                        navIndicator.classList.add('w-6', 'bg-slate-300');
+                    }
+                });
+            }, { 
+                rootMargin: "-20% 0px -50% 0px",
+                threshold: [0, 0.1, 0.5, 1.0]
+            });
+
+            sections.forEach(section => observer.observe(section));
+        });
+    </script>
+</body>
+</html>
