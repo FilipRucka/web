@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autonomous Exploration: Sim to Real</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style> 
+        body { font-family: 'Inter', sans-serif; } 
+        .prose p { margin-bottom: 1.25rem; line-height: 1.7; color: #475569; }
+        .prose h2 { font-size: 1.5rem; font-weight: 700; margin-top: 3.5rem; margin-bottom: 1.25rem; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
+        .prose h3 { font-size: 1.15rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: #334155; }
+        .prose ul { list-style-type: disc; list-style-position: inside; margin-left: 0.5rem; margin-bottom: 1.25rem; color: #475569; }
+        .prose li { margin-bottom: 0.5rem; }
+        .active-nav-text { color: #2563eb; transform: translateX(4px); font-weight: 600; }
+        .caption { font-size: 0.8rem; color: #64748b; text-align: center; margin-top: 0.5rem; margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-700">
+    <div class="container mx-auto max-w-screen-lg px-6 py-12 md:py-20 lg:py-24">
+        
+        <a href="#" class="group flex items-center font-semibold text-blue-700 mb-12 text-sm tracking-wide">
+            <i class="fas fa-arrow-left mr-2 transition-transform group-hover:-translate-x-1"></i>
+            RETURN TO PORTFOLIO
+        </a>
+
+        <header class="mb-16">
+            <h1 class="text-3xl font-bold text-slate-900 sm:text-4xl tracking-tight mb-4">Autonomous Exploration & Mapping</h1>
+            <p class="text-lg text-slate-600 max-w-2xl">Implementing frontier-based navigation for autonomous map construction in unknown environments.</p>
+        </header>
+
+        <main class="grid md:grid-cols-3 md:items-start gap-x-16">
+            <aside class="md:col-span-1 md:sticky md:top-24">
+                <h3 class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider border-b border-slate-200 pb-2">Project Status</h3>
+                <dl class="text-sm space-y-4">
+                    <div>
+                        <dt class="text-slate-500 mb-1">Current State</dt>
+                        <dd class="font-bold text-slate-900 flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-blue-500 mr-2"></span>
+                            Gazebo Simulation
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="text-slate-500 mb-1">Next Phase</dt>
+                        <dd class="font-medium text-slate-900">Real Robot Deployment</dd>
+                    </div>
+                    <div>
+                        <dt class="text-slate-500 mb-1">Skills</dt>
+                        <dd class="font-mono text-slate-700 text-xs">Gazebo</dd>
+                        <dd class="font-mono text-slate-700 text-xs">LiDar</dd>
+                        <dd class="font-mono text-slate-700 text-xs">c++</dd>
+                    </div>
+                </dl>
+                
+                <nav class="hidden md:block mt-12">
+                    <h3 class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider border-b border-slate-200 pb-2">Navigation</h3>
+                    <ul id="nav-menu" class="flex flex-col space-y-3 text-sm mt-4">
+                        <li><a href="#overview" class="group flex items-center"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300"></span><span class="nav-text transition-colors duration-200">Project Overview</span></a></li>
+                        <li><a href="#progress" class="group flex items-center"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300"></span><span class="nav-text transition-colors duration-200">Current Progress</span></a></li>
+                        <li><a href="#roadmap" class="group flex items-center"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300"></span><span class="nav-text transition-colors duration-200">Future Roadmap</span></a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <div class="md:col-span-2 mt-8 md:mt-0 prose">
+                
+                <section id="overview">
+                    <h2>1. Project Overview</h2>
+                    <p>
+                        I am developing an autonomous exploration system that enables a mobile robot to navigate an unknown environment.
+                    </p>
+                    <p>
+                        The core logic relies on <strong>Occupancy Grid Maps</strong> to model the environment probabilistically and a <strong>Frontier-Based Exploration</strong> strategy to determine where to move next. The robot iteratively identifies frontiers and navigates to them until the entire reachable space is mapped.
+                    </p>
+                </section>
+
+                <section id="progress">
+                    <h2>2. Current Progress: Simulation</h2>
+                    <p>
+                        Currently, the algorithm is fully operational within the <strong>Gazebo simulation environment</strong>. The video below demonstrates the robot's ability to process laser scan data, update the occupancy grid in real-time using Bayesian rule, and autonomously select goals to explore the labyrinth.
+                    </p>
+                    
+                    <div class="mt-6 mb-8">
+                        <div class="w-full rounded-lg shadow-sm border border-slate-200 overflow-hidden bg-slate-900 aspect-video relative group">
+                            <video controls class="w-full h-full object-cover">
+                                <source src="par.mp4" type="video/mp4">
+                            </video>
+                           
+                        </div>
+                        <p class="caption">Figure 1: Current progress showing autonomous exploration in Gazebo.</p>
+                    </div>
+                </section>
+
+                <section id="roadmap">
+                    <h2>3. More is Coming: Sim-to-Real</h2>
+                    <p>
+                        While the simulation results are promising, this is just the first phase. I am currently working on porting this software stack to a <strong>real physical robot</strong> and trying more interesting things.
+                    </p>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('#nav-menu a');
+            
+            const observer = new IntersectionObserver((entries) => {
+                let currentActiveId = '';
+                sections.forEach(section => {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top < window.innerHeight / 2 && rect.bottom > 0) {
+                        currentActiveId = section.id;
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    const navText = link.querySelector('.nav-text');
+                    const navIndicator = link.querySelector('.nav-indicator');
+                    const linkId = link.getAttribute('href').substring(1);
+
+                    if (linkId === currentActiveId) {
+                        navText.classList.add('active-nav-text');
+                        navIndicator.classList.add('w-12', 'bg-slate-800');
+                        navIndicator.classList.remove('w-6', 'bg-slate-300');
+                    } else {
+                        navText.classList.remove('active-nav-text');
+                        navIndicator.classList.remove('w-12', 'bg-slate-800');
+                        navIndicator.classList.add('w-6', 'bg-slate-300');
+                    }
+                });
+            }, { 
+                rootMargin: "-20% 0px -50% 0px",
+                threshold: [0, 0.1, 0.5, 1.0]
+            });
+
+            sections.forEach(section => observer.observe(section));
+        });
+    </script>
+</body>
+</html>
