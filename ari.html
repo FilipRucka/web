@@ -162,7 +162,7 @@
                
                     <h4>Linearization and Equilibrium</h4>
                     <p>
-                        To apply linear control techniques, these nonlinear equations were linearized around the stable equilibrium point of -90° (-π/2 radians). By computing the Jacobian matrices at this point, we obtained the linear state-space matrices A, B, C, and D, which approximate the system's behavior for small deviations.
+                        To apply linear control techniques, these nonlinear equations were linearized around the stable equilibrium point of -90° (-π/2 radians). By computing the Jacobian matrices at this point, I obtained the linear state-space matrices A, B, C, and D, which approximate the system's behavior for small deviations.
                     </p>
 
                     <h4>Identifying Static Nonlinearities</h4>
@@ -170,7 +170,7 @@
                         Real-world systems exhibit nonlinearities that are not captured by linearization. Two key nonlinearities were identified experimentally:
                     </p>
                     <ul>
-                        <li><b>Saturation:</b> By progressively increasing the input voltage, we found that the system's response ceased to change beyond a certain point. This input saturation limit was identified at ±12V.</li>
+                        <li><b>Saturation:</b> By progressively increasing the input voltage, I found that the system's response ceased to change beyond a certain point. This input saturation limit was identified at ±12V.</li>
                         <li><b>Insensitivity (Dead Zone):</b> At very low input voltages, the system showed no response. This insensitivity band was identified to be ±0.25V.</li>
                     </ul>
                      <figure class="my-8">
@@ -194,7 +194,7 @@
                     </p>
                     <span class="equation">G(s) = φ(0) + (kω<sub>n</sub>²)/(s² + 2ζω<sub>n</sub>s + ω<sub>n</sub>²)</span>
                     <p>
-                            From the system's response to a 5° deviation, we calculated the damping factor (ζ) and natural frequency (ω<sub>n</sub>) using the logarithmic decrement method.
+                            From the system's response to a 5° deviation, I calculated the damping factor (ζ) and natural frequency (ω<sub>n</sub>) using the logarithmic decrement method.
                     </p>
                     <p>
                         The mathematical model was then validated against the simulator, showing a close match in frequency and damping.
@@ -215,7 +215,7 @@
                     </p>
                     <span class="equation">G(s) = k / (s(Ts + 1))</span>
                     <p>
-                        The gain k (the asymptote's slope) and the time constant T (the asymptote's x-intercept) were determined from the step response graph. We identified the key motor parameters k<sub>m</sub> and k<sub>b</sub>.
+                        The gain k (the asymptote's slope) and the time constant T (the asymptote's x-intercept) were determined from the step response graph. I identified the key motor parameters k<sub>m</sub> and k<sub>b</sub>.
                     </p>
 
                     <h4>Identifying Cross-Correlated Terms</h4>
@@ -277,7 +277,7 @@
                             </figcaption>
                         </figure>
 
-                        Because we can't always measure all states, I built a Luenberger observer to estimate their velocities. With the observer in place, I tested the system's response for a 20 unit step.
+                        Because I can't always measure all states, I built a Luenberger observer to estimate their velocities. With the observer in place, I tested the system's response for a 20 unit step.
 
                         <figure class="my-8">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
