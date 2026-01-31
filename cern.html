@@ -7,7 +7,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style> body { font-family: 'Inter', sans-serif; } </style>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style> 
+        body { font-family: 'Inter', sans-serif; } 
+        /* Custom scrollbar for tables if needed */
+        .table-container { overflow-x: auto; }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-700">
     <div class="container mx-auto max-w-screen-lg px-6 py-12 md:py-20 lg:py-24">
@@ -18,83 +24,364 @@
         </a>
 
         <header class="mb-12">
-            <h1 class="text-4xl font-bold text-slate-900 sm:text-5xl">Machine Learning Researcher at CERN</h1>
-            <p class="mt-3 text-lg text-slate-600">Analyzing particle collision data from the ATLAS Experiment at the Large Hadron Collider.</p>
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="text-4xl font-bold text-slate-900 sm:text-5xl">Study of Higgs Boson Production</h1>
+                    <p class="mt-3 text-lg text-slate-600">Association with a single top quark \( tH(H\rightarrow b\overline{b}) \) using the ATLAS detector.</p>
+                </div>
+                <div class="hidden md:block text-right text-sm text-slate-500">
+                    <p>ATL-COM-PHYS-2025-1003</p>
+                    <p>Summer Student Project</p>
+                </div>
+            </div>
         </header>
 
-        <!-- MAIN IMAGE -->
         <figure class="mb-12">
-            <img src="cern2.png" alt="A candidate event for a Higgs boson decaying to two electrons and two muons in the ATLAS detector." class="rounded-lg w-full shadow-lg border border-slate-200">
+            <img src="cern2.png" alt="ATLAS Detector Event Display" class="rounded-lg w-full shadow-lg border border-slate-200">
             <figcaption class="text-sm text-center text-slate-500 mt-3">
-                A Higgs boson candidate event display from the ATLAS experiment. My work involves developing machine learning models to automatically identify such events from petabytes of data.
+                Visualizing particle collision data from the ATLAS Experiment.
             </figcaption>
         </figure>
 
-        <main class="grid md:grid-cols-3 gap-x-12">
-            <!-- LEFT COLUMN: KEY DETAILS -->
-            <aside class="md:col-span-1">
+        <main class="grid md:grid-cols-4 gap-x-12">
+            
+            <aside class="md:col-span-1 h-fit sticky top-10">
                 <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Key Details</h3>
-                <dl class="text-sm">
-                    <dt class="font-semibold text-slate-800">Role:</dt>
-                    <dd class="text-slate-600 mb-3">Machine Learning Researcher</dd>
-                    
-                    <dt class="font-semibold text-slate-800">Duration:</dt>
-                    <dd class="text-slate-600 mb-3">February 2025 — Present</dd>
-                    
-                    <dt class="font-semibold text-slate-800">Technologies:</dt>
-                    <dd class="text-slate-600">
-                        <ul class="list-disc list-inside">
-                            <li>Python</li>
-                            <li>Optuna Framework</li>
-                            <li>XGBoost</li>
-                            <li>ROOT</li>
-                            <li>TRExFitter for statistical analysis</li>
-                        </ul>
-                    </dd>
-                    <br>
-                    <dt class="font-semibold text-slate-800">Supervisor Andre Sopczak</dt>
-                    <a href="https://sopczak.web.cern.ch/sopczak/">https://sopczak.web.cern.ch/sopczak/</a>
+                <dl class="text-sm space-y-4">
+                    <div>
+                        <dt class="font-semibold text-slate-800">Role:</dt>
+                        <dd class="text-slate-600">Machine Learning Researcher</dd>
+                    </div>
+                    <div>
+                        <dt class="font-semibold text-slate-800">Date:</dt>
+                        <dd class="text-slate-600">January 31, 2026</dd>
+                    </div>
+                    <div>
+                        <dt class="font-semibold text-slate-800">Frameworks:</dt>
+                        <dd class="text-slate-600">
+                            <ul class="list-disc list-inside mt-1">
+                                <li>ATLAS Release 22</li>
+                                <li>XGBoost</li>
+                                <li>TRExFitter</li>
+                                <li>Optuna</li>
+                            </ul>
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="font-semibold text-slate-800">Supervisor:</dt>
+                        <dd><a href="https://sopczak.web.cern.ch/sopczak/" class="text-blue-600 hover:underline">André Sopczak</a></dd>
+                    </div>
                 </dl>
             </aside>
             
-            <!-- RIGHT COLUMN: DETAILED DESCRIPTION -->
-            <div class="md:col-span-2 mt-8 md:mt-0">
-                 <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Project Deep Dive</h3>
-                 <div class="prose prose-slate max-w-none">
-                    <p>
-                        My research focuses on the performance optimisation for the tH(bb) process, a rare interaction where a Higgs boson is produced alongside a single top quark. The primary challenge is to isolate the faint signal of this event from immense background noise generated by other particle interactions.
+            <div class="md:col-span-3 mt-8 md:mt-0">
+                 
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 mb-10 italic text-slate-600">
+                    <strong>Abstract:</strong> This project focuses on the analysis of the \( tH(b\overline{b}) \) production channel using the ATLAS software Release 22. It addresses performance gaps between Release 21 and 22 through a two-step reproduction and migration strategy.
+                </div>
+
+                <section class="mb-12">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4">1. Introduction</h2>
+                    <p class="mb-4 leading-relaxed">
+                        This report details the analysis of the \( tH(b\overline{b}) \) production channel using the ATLAS software Release 22. A significant discrepancy was observed between the established Release 21 results (performed by Martin Vatrt and Jassimar Singh) and the Release 22.
                     </p>
-                    <ul>
-                        <li><strong>Model Optimization:</strong> I fine-tuned an XGBoost model for signal-background classification. This involved extensive hyperparameter optimization and a comparative analysis against other architectures, including Neural Networks, to push for the highest possible performance.</li>
-                        <li><strong>Statistical Analysis & Validation:</strong> I utilized the TRExFitter framework to perform statistical analysis of the model's output.</li>
-                        <li><strong>Maximizing Discovery Potential:</strong> The core objective was to maximize the "significance" metric—a key statistical measure in particle physics. The final model demonstrated a consistently high significance, improving upon previous benchmarks.</li>
-                        <li>Collaborating with an international research team and presenting analysis results at conferences (Göttingen, 2025).</li>
-                    </ul>
-                 </div>
+                    <p class="mb-4 leading-relaxed">
+                        To address this performance gap, a two-step approach was adopted. First, the analysis from Release 21 was fully reproduced to establish a reliable baseline. Second, the analysis was fully migrated to Release 22 with the intention to bridge the performance gap between the two analyses.
+                    </p>
+                    <p class="leading-relaxed">
+                        Consequently, the first chapter focuses exclusively on the reproduction of the Release 21 analysis. The subsequent chapters detail the migration to Release 22 and the optimization strategies employed.
+                    </p>
+                </section>
+
+                <section class="mb-12">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4">2. Release 21 Analysis</h2>
+                    
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">2.1 Input Data</h3>
+                    <p class="mb-4 leading-relaxed">
+                        The reproduction phase utilizes <code>mc16a</code>, <code>mc16d</code>, and <code>mc16e</code> minintuples stored in the ATLAS group disk.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">2.2 Code Adaptation</h3>
+                    <p class="mb-4 leading-relaxed">
+                        These ntuples were slightly different than the ones that Martin Vatrt used in his analysis. Therefore, the reproduction of the Release 21 analysis required adapting the code to handle technical inconsistencies in the input Ntuples. Several features used in the previous analysis were missing, renamed, or stored as different variable types. Additionally, missing sections of the original code had to be reconstructed to restore the full analysis.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">2.3 Hyperparameter Optimization</h3>
+                    <p class="mb-4 leading-relaxed">
+                        To match the baseline performance, a two-phase optimization was conducted. First, a Grid Search was applied to the XGBoost model to establish fundamental parameters such as learning rate and tree depth.
+                    </p>
+                    
+                    <figure class="mb-8">
+                        <img src="grid_search.png" alt="Grid Search Results" class="w-full rounded border border-slate-200">
+                        <figcaption class="text-sm text-center text-slate-500 mt-2">
+                            <strong>Figure 1:</strong> Comparison of AUC scores for the top hyperparameter combinations obtained from the Grid Search phase.
+                        </figcaption>
+                    </figure>
+
+                    <p class="mb-4 leading-relaxed">
+                        Second, the Optuna framework (using TPE and NSGA-II samplers) was employed to fine-tune regularization and scaling parameters.
+                    </p>
+
+                    <figure class="mb-8">
+                        <img src="10models_AUC.png" alt="Optuna AUC Distribution" class="w-full rounded border border-slate-200">
+                        <figcaption class="text-sm text-center text-slate-500 mt-2">
+                            <strong>Figure 2:</strong> Distribution of AUC scores across 10 XGBoost models.
+                        </figcaption>
+                    </figure>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">2.4 Performance Verification</h3>
+                    <p class="mb-4 leading-relaxed">
+                        The validity of the Release 21 reproduction was assessed by benchmarking the classifier's performance and the final statistical limits against the reference results. The resulting metrics for the XGBoost model are visualized in Figure 3. As shown in Figure 3a, the ROC curve exhibits strong discrimination power comparable to the reference analysis. This is further corroborated by the significance scan in Figure 3b, which demonstrates a maximum sensitivity at a classifier threshold of approximately 0.40. This threshold behavior mirrors the reference study.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <figure>
+                            <img src="roc21.png" alt="ROC Curve" class="w-full rounded border border-slate-200">
+                            <figcaption class="text-xs text-center text-slate-500 mt-2">(a) ROC Curve</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="sig21.png" alt="Significance vs Threshold" class="w-full rounded border border-slate-200">
+                            <figcaption class="text-xs text-center text-slate-500 mt-2">(b) Significance vs. Threshold</figcaption>
+                        </figure>
+                    </div>
+                    <p class="text-sm text-center text-slate-500 mb-8 italic">
+                        <strong>Figure 3:</strong> Performance metrics for the reproduced Release 21 BDT.
+                    </p>
+
+                    <p class="mb-4 leading-relaxed">
+                        With the classifier performance validated, the analysis proceeded to the statistical inference stage using TRExFitter. Figure 4 presents a comparison of the pre-fit distributions for the signal region. The reproduced distribution (b) shows agreement with the reference (a) regarding background composition and event yields.
+                    </p>
+                    <p class="mb-4 leading-relaxed">
+                        This visual agreement is quantified by the expected upper limit on the signal strength parameter (\( \mu \)). Considering statistical uncertainties only, the expected median limit for this reproduction is determined to be 4.30, which stands in close agreement with the reference value of 4.02.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <figure>
+                            <img src="jasimar_sr21.png" alt="Reference Release 21" class="w-full rounded border border-slate-200">
+                            <figcaption class="text-xs text-center text-slate-500 mt-2">(a) Reference (Release 21)</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="my_sr_21.png" alt="Reproduction Study" class="w-full rounded border border-slate-200">
+                            <figcaption class="text-xs text-center text-slate-500 mt-2">(b) My Study (Reproduction)</figcaption>
+                        </figure>
+                    </div>
+                    <p class="text-sm text-center text-slate-500 mb-8 italic">
+                        <strong>Figure 4:</strong> Comparison of the TRExFitter pre-fit distributions for the Signal Region.
+                    </p>
+
+                    <p class="leading-relaxed">
+                        These results demonstrate that the Release 21 analysis is fully reproducible and behaves as expected. Therefore, the focus of the study can shift to diagnosing and resolving the specific issues affecting the Release 22 performance.
+                    </p>
+                </section>
+
+                <section class="mb-12">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4">3. Initial Release 22 Study</h2>
+                    <p class="mb-4 leading-relaxed">
+                        Before detailing my Release 22 analysis, it is useful to review an initial study performed by summer student Noor Ahmad. This project established the technical workflow for the new software release, utilizing TopCPToolkit and FastFrames to train a TabNet machine learning model.
+                    </p>
+                    <p class="mb-4 leading-relaxed">
+                        While the technical migration was successful, the study observed a substantial reduction in the available statistics compared to the Release 21 baseline. The background yield decreased from approximately 237,000 to 9,000 events, while the signal yield dropped from 74.8 to 7.4 events.
+                    </p>
+                    <p class="leading-relaxed">
+                        As a result of this reduced statistical power, the expected upper limit on the signal strength was calculated to be \( \mu=22.4 \) compared to the reference value of \( \mu \approx 4.0 \). The report identified this reduction in event yields as a key area for further investigation. The subsequent chapters of this report address these discrepancies, implementing corrections to recover the full dataset and restore the expected sensitivity.
+                    </p>
+                </section>
+
+                <section class="mb-12">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4">4. Datasets and Simulation</h2>
+                    <p class="mb-6 leading-relaxed">
+                        The analysis utilizes Monte Carlo (MC) simulation samples to model both the signal (tH) and the dominant background processes. The background contributions include \( t\overline{t} \) production, single top quark production, \( t\overline{t}H \), \( t\overline{t}\gamma \), \( tZ \), \( t\overline{t}W \), \( t\overline{t}t\overline{t} \), and other minor processes. The specific dataset IDs (DSIDs) used for each process category are listed in Table 1.
+                    </p>
+
+                    <div class="overflow-x-auto mb-8">
+                        <table class="min-w-full text-sm text-left text-slate-600 border border-slate-200">
+                            <thead class="bg-slate-100 text-slate-900 font-semibold">
+                                <tr>
+                                    <th class="px-4 py-2 border-b">Process</th>
+                                    <th class="px-4 py-2 border-b">DSIDs</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr><td class="px-4 py-2">tH</td><td class="px-4 py-2 font-mono text-xs">545796</td></tr>
+                                <tr><td class="px-4 py-2">tt</td><td class="px-4 py-2 font-mono text-xs">410470</td></tr>
+                                <tr><td class="px-4 py-2">SingleTop</td><td class="px-4 py-2 font-mono text-xs">410644, 410645, 410658, 410659</td></tr>
+                                <tr><td class="px-4 py-2">ttH</td><td class="px-4 py-2 font-mono text-xs">346343, 346344, 346345</td></tr>
+                                <tr><td class="px-4 py-2">tt&gamma;</td><td class="px-4 py-2 font-mono text-xs">500800, 504554</td></tr>
+                                <tr><td class="px-4 py-2">tZ</td><td class="px-4 py-2 font-mono text-xs">410560</td></tr>
+                                <tr><td class="px-4 py-2">ttW</td><td class="px-4 py-2 font-mono text-xs">701260, 701261, 701262</td></tr>
+                                <tr><td class="px-4 py-2">tttt</td><td class="px-4 py-2 font-mono text-xs">412043</td></tr>
+                                <tr><td class="px-4 py-2">Others</td><td class="px-4 py-2 font-mono text-xs">304014, 500460, 500461, 410081, 500463, 504334, 504342, 500462, 346645, 346646, 410408, 504330</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="text-xs text-slate-500 mt-2"><strong>Table 1:</strong> DSID for the background and signal processes considered for the study.</p>
+                    </div>
+                </section>
+
+                <section class="mb-12">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4">5. Features to Separate Signal and Background</h2>
+                    <p class="mb-6 leading-relaxed">
+                        Each event in this study is characterized by physical features that are useful to distinguish between signal and background processes. By incorporating these features into the machine learning model, the algorithm will learn which variables most effectively distinguish the tH signal from the background. The most relevant features used in this analysis are summarized in Table 2.
+                    </p>
+
+                    <div class="overflow-x-auto mb-8">
+                        <table class="min-w-full text-sm text-left text-slate-600 border border-slate-200">
+                            <thead class="bg-slate-100 text-slate-900 font-semibold">
+                                <tr>
+                                    <th class="px-4 py-2 border-b w-1/3">Feature</th>
+                                    <th class="px-4 py-2 border-b">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr><td class="px-4 py-2 font-mono text-xs">jets_n</td><td class="px-4 py-2">The total number of jets in the event.</td></tr>
+                                <tr><td class="px-4 py-2 font-mono text-xs">dEta_maxMjj_frwdjet</td><td class="px-4 py-2">The pseudorapidity separation between the two jets forming the maximum invariant mass and the forward jet.</td></tr>
+                                <tr><td class="px-4 py-2 font-mono text-xs">MLepMet</td><td class="px-4 py-2">The invariant mass of the lepton and missing transverse energy system.</td></tr>
+                                <tr><td class="px-4 py-2 font-mono text-xs">HT</td><td class="px-4 py-2">Sum of transverse momenta of reconstructed objects (overall event energy).</td></tr>
+                                <tr><td class="px-4 py-2 font-mono text-xs">leps_charge_0</td><td class="px-4 py-2">The charge of the selected lepton.</td></tr>
+                                <tr><td class="px-4 py-2 font-mono text-xs">sphericity_l10tau</td><td class="px-4 py-2">Event-shape variable characterizing overall geometry.</td></tr>
+                                <tr><td class="px-4 py-2 font-mono text-xs">bjets70_pt_0</td><td class="px-4 py-2">Transverse momentum of leading b-jet with \( p_T > 70 \) GeV.</td></tr>
+                                <tr><td class="px-4 py-2 font-mono text-xs">aplanarity_l10tau</td><td class="px-4 py-2">Event-shape variable measuring isotropy.</td></tr>
+                                <tr><td class="px-4 py-2 font-mono text-xs">Jets_fwd_pt_0</td><td class="px-4 py-2">Momentum of the leading forward jet.</td></tr>
+                                <tr><td class="px-4 py-2 font-mono text-xs">MtLepMet</td><td class="px-4 py-2">Transverse mass of lepton and missing energy (identifies leptonic W decays).</td></tr>
+                                <tr><td class="px-4 py-2 font-mono text-xs">DeltaR_min_lep_jet_fwd</td><td class="px-4 py-2">Minimum angular separation \( \Delta R \) between lepton and forward jet.</td></tr>
+                                <tr><td class="px-4 py-2 font-mono text-xs">nbJets70</td><td class="px-4 py-2">Number of b-tagged jets.</td></tr>
+                                <tr><td class="px-4 py-2 font-mono text-xs">sumPsBtag</td><td class="px-4 py-2">Combined b-tagging score sum.</td></tr>
+                                <tr><td class="px-4 py-2 font-mono text-xs">Delta_Eta_tH</td><td class="px-4 py-2">Pseudorapidity separation between reconstructed top quark and Higgs boson.</td></tr>
+                                <tr><td class="px-4 py-2 font-mono text-xs">bjets70_eta_0</td><td class="px-4 py-2">Pseudorapidity (\( \eta \)) of the leading b-jet.</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="text-xs text-slate-500 mt-2"><strong>Table 2:</strong> Features and their descriptions.</p>
+                    </div>
+                </section>
+
+                <section class="mb-12">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-4">6. Multivariate Analysis</h2>
+                    <p class="mb-4 leading-relaxed">
+                        To separate the signal (tH) from the background, a multivariate analysis is performed using the XGBOOST library. Several boosting methods were tested, including standard gradient boosting and DART. However, the best results came from using the Histogram-based algorithm combined with native support for categorical features.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">6.1 Data Preparation</h3>
+                    <p class="mb-4 leading-relaxed">
+                        A Python script converts the ROOT files into CSV format for training. It groups the files by their Dataset IDs (DSIDs) using the <code>uproot</code> and <code>pandas</code> libraries. If a variable is missing from an event (for example, a 4th jet that does not exist), it is filled with NaN instead of a mean value. This is effective because XGBOOST handles missing values natively. The algorithm learns the optimal path in the decision tree for these NaN entries, treating the absence of an object as real physical information rather than a numerical error.
+                    </p>
+                    <p class="mb-4 leading-relaxed">
+                        The final dataset is randomly split into training (80%) and testing (20%) sets. The training set is further divided during cross-validation to provide a validation subset, ensuring the model does not just memorize the data.
+                    </p>
+
+                    <h4 class="text-lg font-semibold text-slate-800 mb-2">Event Reweighting</h4>
+                    <p class="mb-4 leading-relaxed">
+                        Unlike previous analyses that ignored event weights during training, this study uses full event weights. To stop the training from becoming unstable due to very large or small weights, a renormalization step was applied. For each class, the weights were scaled so that their sum equals the total number of raw events. This keeps the physical probability density of the data while making the mathematical optimization stable.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">6.2 Model Configuration</h3>
+                    <p class="mb-4 leading-relaxed">
+                        The classifier minimizes the binary logistic loss. To handle the large number of background events compared to the signal, the <code>scale_pos_weight</code> parameter is set to 10.5. The hyperparameters (Table 3) were tuned to maximize the Area Under the Curve (AUC).
+                    </p>
+
+                    <div class="overflow-x-auto mb-8 w-full md:w-2/3">
+                        <table class="min-w-full text-sm text-left text-slate-600 border border-slate-200">
+                            <thead class="bg-slate-100 text-slate-900 font-semibold">
+                                <tr>
+                                    <th class="px-4 py-2 border-b">Parameter</th>
+                                    <th class="px-4 py-2 border-b">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr><td class="px-4 py-2">Objective</td><td class="px-4 py-2 font-mono">binary:logistic</td></tr>
+                                <tr><td class="px-4 py-2">Tree Method</td><td class="px-4 py-2 font-mono">Hist</td></tr>
+                                <tr><td class="px-4 py-2 font-bold">Enable Categorical</td><td class="px-4 py-2 font-bold font-mono">True</td></tr>
+                                <tr><td class="px-4 py-2">Learning Rate (&eta;)</td><td class="px-4 py-2 font-mono">0.031</td></tr>
+                                <tr><td class="px-4 py-2">Max Depth</td><td class="px-4 py-2 font-mono">7</td></tr>
+                                <tr><td class="px-4 py-2">Min child weight</td><td class="px-4 py-2 font-mono">10</td></tr>
+                                <tr><td class="px-4 py-2">Num. Boosting Rounds</td><td class="px-4 py-2 font-mono">5000</td></tr>
+                                <tr><td class="px-4 py-2">Early Stopping</td><td class="px-4 py-2 font-mono">200</td></tr>
+                                <tr><td class="px-4 py-2">Scale Pos Weight</td><td class="px-4 py-2 font-mono">10.5</td></tr>
+                                <tr><td class="px-4 py-2">&lambda; (L2 reg.)</td><td class="px-4 py-2 font-mono">1.74</td></tr>
+                                <tr><td class="px-4 py-2">&alpha; (L1 reg.)</td><td class="px-4 py-2 font-mono">1.26</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="text-xs text-slate-500 mt-2"><strong>Table 3:</strong> Hyperparameters used for the XGBOOST classifier.</p>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">6.3 Overfitting Check</h3>
+                    <p class="mb-4 leading-relaxed">
+                        During training, there was a gap of about 6% between the weighted training and testing scores. This looked like overfitting, but it was actually caused by a few events with very high weights. To prove this, the model was checked using unweighted scores. The difference dropped to less than 2.0%, confirming that the model is stable and generalizes well.
+                    </p>
+
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">6.4 Performance</h3>
+                    <p class="mb-4 leading-relaxed">
+                        The XGBoost model achieves a final unweighted AUC score of 0.8090. Figure 5 shows the distribution of the classifier output in the Signal Region. While the event yields remain lower than the Release 21 baseline, they show a significant recovery compared to the initial Release 22 study. The total background is approximately 48,725 events (increased from ~9,000), and the signal yield is 23.5 events. The plot shows good separation, with the signal (red dashed line) peaking clearly in the high-score bins.
+                    </p>
+
+                    <figure class="mb-8">
+                        <img src="my_sr_22.png" alt="Release 22 Signal Region" class="w-full rounded border border-slate-200">
+                        <figcaption class="text-sm text-center text-slate-500 mt-2">
+                            <strong>Figure 5:</strong> The TRExFitter pre-fit distribution for the Release 22 Signal Region.
+                        </figcaption>
+                    </figure>
+
+                    <p class="mb-4 leading-relaxed">
+                        Figure 6 shows the statistical limit calculation. The expected upper limit on the signal strength is \( \mu=7.54 \) at 95% CL. This is a major improvement over the preliminary result of 22.4.
+                    </p>
+
+                    <figure class="mb-8">
+                        <img src="limit_22_my.png" alt="Asymptotic Limit Estimate" class="w-full rounded border border-slate-200">
+                        <figcaption class="text-sm text-center text-slate-500 mt-2">
+                            <strong>Figure 6:</strong> The asymptotic limit estimate from TRExFitter.
+                        </figcaption>
+                    </figure>
+                </section>
+
+                <section class="border-t border-slate-200 pt-8">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-6">Comparison Tables</h2>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm text-left text-slate-600 border border-slate-200">
+                            <thead class="bg-slate-100 text-slate-900 font-semibold">
+                                <tr>
+                                    <th class="px-4 py-2 border-b">Analysis</th>
+                                    <th class="px-4 py-2 border-b">Ntuple</th>
+                                    <th class="px-4 py-2 border-b">Background</th>
+                                    <th class="px-4 py-2 border-b">Systematics</th>
+                                    <th class="px-4 py-2 border-b">Exp. limit</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr><td class="px-4 py-2">Martin Vatrt</td><td class="px-4 py-2">old</td><td class="px-4 py-2">full</td><td class="px-4 py-2">none</td><td class="px-4 py-2">3.89</td></tr>
+                                <tr><td class="px-4 py-2">Martin Vatrt</td><td class="px-4 py-2">old</td><td class="px-4 py-2">partial</td><td class="px-4 py-2">partial</td><td class="px-4 py-2">6.35</td></tr>
+                                <tr><td class="px-4 py-2">Jassimar</td><td class="px-4 py-2">new</td><td class="px-4 py-2">full</td><td class="px-4 py-2">none</td><td class="px-4 py-2 text-red-600 font-bold">4.02</td></tr>
+                                <tr><td class="px-4 py-2">Jassimar</td><td class="px-4 py-2">old</td><td class="px-4 py-2">partial</td><td class="px-4 py-2">partial</td><td class="px-4 py-2">6.35</td></tr>
+                                <tr><td class="px-4 py-2">Jassimar</td><td class="px-4 py-2">new</td><td class="px-4 py-2">partial</td><td class="px-4 py-2">partial</td><td class="px-4 py-2">7.09</td></tr>
+                                <tr><td class="px-4 py-2">Jassimar</td><td class="px-4 py-2">new</td><td class="px-4 py-2">full</td><td class="px-4 py-2">partial</td><td class="px-4 py-2">7.5</td></tr>
+                                <tr><td class="px-4 py-2">Jassimar</td><td class="px-4 py-2">new</td><td class="px-4 py-2">full</td><td class="px-4 py-2">full</td><td class="px-4 py-2">8.15</td></tr>
+                                <tr><td class="px-4 py-2">Mo Aly</td><td class="px-4 py-2">new</td><td class="px-4 py-2">full</td><td class="px-4 py-2">full</td><td class="px-4 py-2">13.9</td></tr>
+                                <tr class="bg-blue-50 font-bold text-slate-900"><td class="px-4 py-2">Initial study (Rel.22)</td><td class="px-4 py-2">new</td><td class="px-4 py-2">full</td><td class="px-4 py-2">none</td><td class="px-4 py-2 text-red-600">22.4</td></tr>
+                                <tr class="bg-blue-50 font-bold text-slate-900"><td class="px-4 py-2">This study (Rel.22)</td><td class="px-4 py-2">new</td><td class="px-4 py-2">full</td><td class="px-4 py-2">none</td><td class="px-4 py-2 text-red-600">7.54</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="text-xs text-slate-500 mt-2"><strong>Table 4:</strong> Expected limit comparison between analyses. Note: The "22.4" value refers to the preliminary result before corrections.</p>
+                    </div>
+                </section>
+
             </div>
         </main>
         
-    <!-- CONFERENCE PRESENTATION SECTION (UPDATED FOR 2 IMAGES) -->
-    <section class="mt-20"> <!-- Increased top margin for more separation -->
-        <h3 class="text-2xl font-bold text-slate-900 mb-6 text-center">Highlight: Conference Presentation</h3>
-        <div class="grid md:grid-cols-2 gap-10 items-center"> <!-- Increased gap -->
-            <!-- PHOTOS OF YOU PRESENTING -->
-            <div class="grid grid-cols-2 gap-4">
-                <img src="gottingen.jpeg" alt="Filip Ručka presenting at the DPG meeting" class="rounded-lg shadow-xl border border-slate-200 w-full object-cover aspect-square">
-                <img src="gottingen1.jpeg" alt="Presentation slide at the DPG meeting" class="rounded-lg shadow-xl border border-slate-200 w-full object-cover aspect-square">
+        <section class="mt-20 border-t border-slate-200 pt-12">
+            <h3 class="text-2xl font-bold text-slate-900 mb-6 text-center">Highlight: Conference Presentation</h3>
+            <div class="grid md:grid-cols-2 gap-10 items-center"> 
+                <div class="grid grid-cols-2 gap-4">
+                    <img src="gottingen.jpeg" alt="Filip Ručka presenting at the DPG meeting" class="rounded-lg shadow-xl border border-slate-200 w-full object-cover aspect-square">
+                    <img src="gottingen1.jpeg" alt="Presentation slide at the DPG meeting" class="rounded-lg shadow-xl border border-slate-200 w-full object-cover aspect-square">
+                </div>
+                <div class="text-center md:text-left">
+                    <p class="text-slate-600">
+                        I had the privilege of presenting our latest analysis results on top-Higgs boson production at the <strong>Deutsche Physikalische Gesellschaft (DPG)</strong> meeting in Göttingen, Germany.
+                    </p>
+                    <p class="text-slate-600 mt-2">
+                        This was an incredible opportunity to share my work with the wider physics community, engage in discussions with leading researchers, and represent the contributions of our team on an international stage.
+                    </p>
+                </div>
             </div>
-
-            <!-- TEXT DESCRIPTION -->
-            <div class="text-center md:text-left">
-                <p class="text-slate-600">
-                    I had the privilege of presenting our latest analysis results on top-Higgs boson production at the <strong>Deutsche Physikalische Gesellschaft (DPG)</strong> meeting in Göttingen, Germany.
-                </p>
-                <p class="text-slate-600 mt-2">
-                    This was an incredible opportunity to share my work with the wider physics community, engage in discussions with leading researchers, and represent the contributions of our team on an international stage.
-                </p>
-            </div>
-        </div>
-    </section>
+        </section>
     </div>
 </body>
 </html>
