@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quadruped Locomotion: PPO Implementation</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-   
+    
     <script>
         window.MathJax = {
             tex: {
@@ -21,12 +22,26 @@
     
     <style> 
         body { font-family: 'Inter', sans-serif; } 
-        .prose p { margin-bottom: 1.25rem; line-height: 1.7; color: #475569; }
-        .prose h2 { font-size: 1.5rem; font-weight: 700; margin-top: 3.5rem; margin-bottom: 1.25rem; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
-        .prose h3 { font-size: 1.15rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; color: #334155; }
-        .prose ul { list-style-type: disc; list-style-position: inside; margin-left: 0.5rem; margin-bottom: 1.25rem; color: #475569; }
-        .prose li { margin-bottom: 0.5rem; }
-        .active-nav-text { color: #2563eb; transform: translateX(4px); font-weight: 600; }
+        
+        /* Offset for scroll jumping so headers aren't hidden */
+        .prose h2 { scroll-margin-top: 6rem; }
+        .prose h3 { scroll-margin-top: 6rem; }
+
+        /* Navigation styling */
+        .active-nav-text { 
+            color: #2563eb; 
+            transform: translateX(4px); 
+            font-weight: 600; 
+        }
+        
+        /* Math/Equation horizontal scroll for mobile */
+        .equation-container {
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 0.5rem 0;
+            margin: 1rem 0;
+        }
+
         .caption { font-size: 0.8rem; color: #64748b; text-align: center; margin-top: 0.5rem; margin-bottom: 1.5rem; }
     </style>
 </head>
@@ -43,8 +58,9 @@
             <p class="text-lg text-slate-600 max-w-2xl">High-velocity gait optimization for an 8-DOF robot using a custom PPO implementation and Generalized Advantage Estimation.</p>
         </header>
 
-        <main class="grid md:grid-cols-3 md:items-start gap-x-16">
-            <aside class="md:col-span-1 md:sticky md:top-24">
+        <div class="lg:flex lg:justify-between lg:gap-16">
+            
+            <aside class="lg:sticky lg:top-24 lg:w-1/3 h-full mb-12 lg:mb-0">
                 <h3 class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider border-b border-slate-200 pb-2">Performance Metrics</h3>
                 <dl class="text-sm space-y-4">
                     <div>
@@ -64,179 +80,178 @@
                 <nav class="hidden md:block mt-12">
                     <h3 class="text-sm font-bold text-slate-900 mb-4 uppercase tracking-wider border-b border-slate-200 pb-2">Methodology</h3>
                     <ul id="nav-menu" class="flex flex-col space-y-3 text-sm mt-4">
-                        <li><a href="#overview" class="group flex items-center"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300"></span><span class="nav-text transition-colors duration-200">Tournament Overview</span></a></li>
-                        <li><a href="#architecture" class="group flex items-center"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300"></span><span class="nav-text transition-colors duration-200">Policy Architecture</span></a></li>
-                        <li><a href="#optimization" class="group flex items-center"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300"></span><span class="nav-text transition-colors duration-200">Algorithm (PPO & GAE)</span></a></li>
-                        <li><a href="#reward" class="group flex items-center"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300"></span><span class="nav-text transition-colors duration-200">Reward Shaping</span></a></li>
+                        <li><a href="#overview" class="group flex items-center transition-all duration-300"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300 group-hover:w-12 group-hover:bg-slate-800"></span><span class="nav-text transition-colors duration-200 text-slate-600 group-hover:text-slate-900">Tournament Overview</span></a></li>
+                        <li><a href="#architecture" class="group flex items-center transition-all duration-300"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300 group-hover:w-12 group-hover:bg-slate-800"></span><span class="nav-text transition-colors duration-200 text-slate-600 group-hover:text-slate-900">Policy Architecture</span></a></li>
+                        <li><a href="#optimization" class="group flex items-center transition-all duration-300"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300 group-hover:w-12 group-hover:bg-slate-800"></span><span class="nav-text transition-colors duration-200 text-slate-600 group-hover:text-slate-900">Algorithm (PPO & GAE)</span></a></li>
+                        <li><a href="#reward" class="group flex items-center transition-all duration-300"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300 group-hover:w-12 group-hover:bg-slate-800"></span><span class="nav-text transition-colors duration-200 text-slate-600 group-hover:text-slate-900">Reward Shaping</span></a></li>
+                        <li><a href="#implementation" class="group flex items-center transition-all duration-300"><span class="nav-indicator mr-3 h-px w-6 bg-slate-300 transition-all duration-300 group-hover:w-12 group-hover:bg-slate-800"></span><span class="nav-text transition-colors duration-200 text-slate-600 group-hover:text-slate-900">Implementation</span></a></li>
                     </ul>
                 </nav>
             </aside>
 
-            <div class="md:col-span-2 mt-12 md:mt-0 prose">
+            <main class="lg:w-2/3 mt-8 lg:mt-0">
+                <div class="prose prose-slate max-w-none">
                 
-                <section id="overview">
-                    <h2>1. Tournament Overview</h2>
-                    <p>
-                        The goal was to train a quadruped to maximize forward distance within a 1000-step limit.
-                    </p>
-                    
-                    <div class="mt-6 mb-8">
-                        <video controls class="w-full rounded-lg shadow-sm border border-slate-200">
-                            <source src="dog_RL.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                </section>
-
-                <section id="architecture">
-                    <h2>2. Policy Architecture</h2>
-                    <p>
-                        I implemented a custom actor-critic network using a <strong>Shared Backbone</strong> approach. The network processes the 29-dimensional state space through three linear layers (256 units), each stabilized by <strong>Layer Normalization</strong> and Tanh activations.
-                    </p>
-                    <p>
-                        Unlike standard Gaussian policies, I used a <strong>Beta Distribution</strong> for the action head. The network outputs shape parameters $\alpha$ and $\beta$, which are passed through a Softplus function and clamped. This ensures the agent's actions always stay within valid torque limits.
-                    </p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-10">
-                        <div class="flex flex-col items-center bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                            <svg viewBox="0 0 300 360" class="w-full max-w-[280px]" xmlns="http://www.w3.org/2000/svg">
-                                <defs>
-                                    <marker id="arrow2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-                                        <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
-                                    </marker>
-                                </defs>
-                                
-                                <rect x="50" y="10" width="200" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
-                                <text x="150" y="30" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#475569">State Input (29)</text>
-                                <line x1="150" y1="40" x2="150" y2="60" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
-                    
-                                <g transform="translate(0, 60)">
-                                    <rect x="30" y="0" width="240" height="70" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
-                                    <text x="150" y="20" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#1e40af">Linear (256)</text>
-                                    <rect x="50" y="30" width="200" height="18" rx="2" fill="#ffffff" stroke="#bfdbfe"/>
-                                    <text x="150" y="43" font-family="sans-serif" font-size="10" text-anchor="middle" fill="#3b82f6">Layer Norm</text>
-                                    <rect x="50" y="52" width="200" height="10" rx="2" fill="#dbeafe"/>
-                                    <text x="150" y="61" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#1d4ed8">Tanh</text>
-                                </g>
-                                <line x1="150" y1="130" x2="150" y2="150" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
-                    
-                                <g transform="translate(0, 150)">
-                                    <rect x="30" y="0" width="240" height="70" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
-                                    <text x="150" y="20" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#1e40af">Linear (256)</text>
-                                    <rect x="50" y="30" width="200" height="18" rx="2" fill="#ffffff" stroke="#bfdbfe"/>
-                                    <text x="150" y="43" font-family="sans-serif" font-size="10" text-anchor="middle" fill="#3b82f6">Layer Norm</text>
-                                    <rect x="50" y="52" width="200" height="10" rx="2" fill="#dbeafe"/>
-                                    <text x="150" y="61" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#1d4ed8">Tanh</text>
-                                </g>
-                                <line x1="150" y1="220" x2="150" y2="240" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
-                    
-                                <g transform="translate(0, 240)">
-                                    <rect x="30" y="0" width="240" height="70" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
-                                    <text x="150" y="20" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#1e40af">Linear (256)</text>
-                                    <rect x="50" y="30" width="200" height="18" rx="2" fill="#ffffff" stroke="#bfdbfe"/>
-                                    <text x="150" y="43" font-family="sans-serif" font-size="10" text-anchor="middle" fill="#3b82f6">Layer Norm</text>
-                                    <rect x="50" y="52" width="200" height="10" rx="2" fill="#dbeafe"/>
-                                    <text x="150" y="61" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#1d4ed8">Tanh</text>
-                                </g>
-                                
-                                <line x1="150" y1="310" x2="150" y2="330" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
-                                <text x="150" y="345" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#0f172a" font-weight="bold">Latent Features</text>
-                            </svg>
-                            <p class="caption mt-4">Figure 2: Shared Backbone with LayerNorm.</p>
+                    <section id="overview">
+                        <h2>1. Tournament Overview</h2>
+                        <p>
+                            The goal was to train a quadruped to maximize forward distance within a 1000-step limit.
+                        </p>
+                        
+                        <div class="mt-6 mb-8 not-prose">
+                            <video controls class="w-full rounded-lg shadow-sm border border-slate-200">
+                                <source src="dog_RL.mp4" type="video/mp4">
+                            </video>
                         </div>
-                    
-                        <div class="flex flex-col items-center bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                            <svg viewBox="0 0 300 360" class="w-full max-w-[280px]" xmlns="http://www.w3.org/2000/svg">
-                                <defs>
-                                    <marker id="arrow3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
-                                        <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
-                                    </marker>
-                                </defs>
-                    
-                                <text x="150" y="20" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#0f172a" font-weight="bold">Latent Features</text>
-                                <line x1="150" y1="30" x2="150" y2="50" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow3)"/>
-                    
-                                <rect x="60" y="50" width="180" height="40" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
-                                <text x="150" y="75" font-family="sans-serif" font-size="11" text-anchor="middle" fill="#166534">Action Head (Linear)</text>
+                    </section>
+
+                    <section id="architecture">
+                        <h2>2. Policy Architecture</h2>
+                        <p>
+                            I implemented a custom actor-critic network using a <strong>Shared Backbone</strong> approach. The network processes the 29-dimensional state space through three linear layers (256 units), each stabilized by <strong>Layer Normalization</strong> and Tanh activations.
+                        </p>
+                        <p>
+                            Unlike standard Gaussian policies, I used a <strong>Beta Distribution</strong> for the action head. The network outputs shape parameters $\alpha$ and $\beta$, which are passed through a Softplus function and clamped. This ensures the agent's actions always stay within valid torque limits.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-10 not-prose">
+                            <div class="flex flex-col items-center bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                                <svg viewBox="0 0 300 360" class="w-full max-w-[280px]" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <marker id="arrow2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                                            <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
+                                        </marker>
+                                    </defs>
+                                    
+                                    <rect x="50" y="10" width="200" height="30" rx="4" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.5"/>
+                                    <text x="150" y="30" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#475569">State Input (29)</text>
+                                    <line x1="150" y1="40" x2="150" y2="60" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
                                 
-                                <path d="M150,90 L100,120 M150,90 L200,120" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow3)"/>
-                    
-                                <g transform="translate(40, 120)">
-                                    <rect x="0" y="0" width="100" height="60" rx="4" fill="#fff7ed" stroke="#fdba74"/>
-                                    <text x="50" y="20" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#9a3412">&alpha; (Alpha)</text>
-                                    <text x="50" y="40" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#c2410c">Softplus() + 1</text>
-                                    <text x="50" y="52" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#c2410c">Clamp(max=20)</text>
-                                </g>
-                    
-                                <g transform="translate(160, 120)">
-                                    <rect x="0" y="0" width="100" height="60" rx="4" fill="#fff7ed" stroke="#fdba74"/>
-                                    <text x="50" y="20" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#9a3412">&beta; (Beta)</text>
-                                    <text x="50" y="40" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#c2410c">Softplus() + 1</text>
-                                    <text x="50" y="52" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#c2410c">Clamp(max=20)</text>
-                                </g>
-                    
-                                <path d="M90,180 L130,220 M210,180 L170,220" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow3)"/>
-                    
-                                <g transform="translate(80, 220)">
-                                    <rect x="0" y="0" width="140" height="80" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
-                                    <text x="70" y="25" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#1e40af">Beta Distribution</text>
-                                    <path d="M30,60 Q70,10 110,60" fill="none" stroke="#2563eb" stroke-width="2"/>
-                                    <line x1="20" y1="60" x2="120" y2="60" stroke="#94a3b8" stroke-width="1"/>
-                                </g>
+                                    <g transform="translate(0, 60)">
+                                        <rect x="30" y="0" width="240" height="70" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+                                        <text x="150" y="20" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#1e40af">Linear (256)</text>
+                                        <rect x="50" y="30" width="200" height="18" rx="2" fill="#ffffff" stroke="#bfdbfe"/>
+                                        <text x="150" y="43" font-family="sans-serif" font-size="10" text-anchor="middle" fill="#3b82f6">Layer Norm</text>
+                                        <rect x="50" y="52" width="200" height="10" rx="2" fill="#dbeafe"/>
+                                        <text x="150" y="61" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#1d4ed8">Tanh</text>
+                                    </g>
+                                    <line x1="150" y1="130" x2="150" y2="150" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
                                 
-                                <line x1="150" y1="300" x2="150" y2="320" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow3)"/>
+                                    <g transform="translate(0, 150)">
+                                        <rect x="30" y="0" width="240" height="70" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+                                        <text x="150" y="20" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#1e40af">Linear (256)</text>
+                                        <rect x="50" y="30" width="200" height="18" rx="2" fill="#ffffff" stroke="#bfdbfe"/>
+                                        <text x="150" y="43" font-family="sans-serif" font-size="10" text-anchor="middle" fill="#3b82f6">Layer Norm</text>
+                                        <rect x="50" y="52" width="200" height="10" rx="2" fill="#dbeafe"/>
+                                        <text x="150" y="61" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#1d4ed8">Tanh</text>
+                                    </g>
+                                    <line x1="150" y1="220" x2="150" y2="240" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
                                 
-                                <rect x="80" y="320" width="140" height="30" rx="4" fill="#f8fafc" stroke="#64748b" stroke-dasharray="4"/>
-                                <text x="150" y="340" font-family="sans-serif" font-size="11" text-anchor="middle" fill="#334155">Sampled Torque [-1, 1]</text>
-                            </svg>
-                            <p class="caption mt-4">Figure 3: Beta Policy allows bounded action sampling.</p>
+                                    <g transform="translate(0, 240)">
+                                        <rect x="30" y="0" width="240" height="70" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+                                        <text x="150" y="20" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="#1e40af">Linear (256)</text>
+                                        <rect x="50" y="30" width="200" height="18" rx="2" fill="#ffffff" stroke="#bfdbfe"/>
+                                        <text x="150" y="43" font-family="sans-serif" font-size="10" text-anchor="middle" fill="#3b82f6">Layer Norm</text>
+                                        <rect x="50" y="52" width="200" height="10" rx="2" fill="#dbeafe"/>
+                                        <text x="150" y="61" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#1d4ed8">Tanh</text>
+                                    </g>
+                                    
+                                    <line x1="150" y1="310" x2="150" y2="330" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow2)"/>
+                                    <text x="150" y="345" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#0f172a" font-weight="bold">Latent Features</text>
+                                </svg>
+                                <p class="caption mt-4">Figure 2: Shared Backbone with LayerNorm.</p>
+                            </div>
+                        
+                            <div class="flex flex-col items-center bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                                <svg viewBox="0 0 300 360" class="w-full max-w-[280px]" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <marker id="arrow3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                                            <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
+                                        </marker>
+                                    </defs>
+                                
+                                    <text x="150" y="20" font-family="sans-serif" font-size="12" text-anchor="middle" fill="#0f172a" font-weight="bold">Latent Features</text>
+                                    <line x1="150" y1="30" x2="150" y2="50" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow3)"/>
+                                
+                                    <rect x="60" y="50" width="180" height="40" rx="4" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+                                    <text x="150" y="75" font-family="sans-serif" font-size="11" text-anchor="middle" fill="#166534">Action Head (Linear)</text>
+                                    
+                                    <path d="M150,90 L100,120 M150,90 L200,120" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow3)"/>
+                                
+                                    <g transform="translate(40, 120)">
+                                        <rect x="0" y="0" width="100" height="60" rx="4" fill="#fff7ed" stroke="#fdba74"/>
+                                        <text x="50" y="20" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#9a3412">&alpha; (Alpha)</text>
+                                        <text x="50" y="40" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#c2410c">Softplus() + 1</text>
+                                        <text x="50" y="52" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#c2410c">Clamp(max=20)</text>
+                                    </g>
+                                
+                                    <g transform="translate(160, 120)">
+                                        <rect x="0" y="0" width="100" height="60" rx="4" fill="#fff7ed" stroke="#fdba74"/>
+                                        <text x="50" y="20" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#9a3412">&beta; (Beta)</text>
+                                        <text x="50" y="40" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#c2410c">Softplus() + 1</text>
+                                        <text x="50" y="52" font-family="sans-serif" font-size="9" text-anchor="middle" fill="#c2410c">Clamp(max=20)</text>
+                                    </g>
+                                
+                                    <path d="M90,180 L130,220 M210,180 L170,220" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arrow3)"/>
+                                
+                                    <g transform="translate(80, 220)">
+                                        <rect x="0" y="0" width="140" height="80" rx="6" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+                                        <text x="70" y="25" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#1e40af">Beta Distribution</text>
+                                        <path d="M30,60 Q70,10 110,60" fill="none" stroke="#2563eb" stroke-width="2"/>
+                                        <line x1="20" y1="60" x2="120" y2="60" stroke="#94a3b8" stroke-width="1"/>
+                                    </g>
+                                    
+                                    <line x1="150" y1="300" x2="150" y2="320" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow3)"/>
+                                    
+                                    <rect x="80" y="320" width="140" height="30" rx="4" fill="#f8fafc" stroke="#64748b" stroke-dasharray="4"/>
+                                    <text x="150" y="340" font-family="sans-serif" font-size="11" text-anchor="middle" fill="#334155">Sampled Torque [-1, 1]</text>
+                                </svg>
+                                <p class="caption mt-4">Figure 3: Beta Policy allows bounded action sampling.</p>
+                            </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                <section id="optimization">
-                    <h2>3. Algorithm & Optimization</h2>
-                    <p>
-                        The agent is trained using <strong>Proximal Policy Optimization (PPO)</strong>. I chose PPO because it provides a stable balance between ease of tuning and performance. To improve the quality of the learning signal, I paired it with <strong>Generalized Advantage Estimation (GAE)</strong>.
-                    </p>
-                
-                    <h3>Breaking Correlations (Mini-Batching)</h3>
-                    <p>
-                        Reinforcement learning data is naturally time-correlated (state $t$ is very similar to state $t+1$). To prevent the optimizer from overfitting to specific trajectories, I implemented a shuffling mechanism. Collected trajectories are flattened and randomized into mini-batches (size 4096), breaking these correlations and ensuring the neural network learns generalizable features rather than memorizing a specific sequence.
-                    </p>
-                
-                    <h3>Stabilizing Updates</h3>
-                    <p>
-                        A key optimization in my code is <strong>Advantage Normalization</strong>. Before every update, I rescale the calculated advantages to have zero mean and unit variance. This simple step ensures that the training remains stable regardless of the scale of the rewards, allowing the agent to learn consistently whether it's receiving small penalties or massive velocity bonuses.
-                    </p>
-                </section>
-                
+                    <section id="optimization">
+                        <h2>3. Algorithm & Optimization</h2>
+                        <p>
+                            The agent is trained using <strong>Proximal Policy Optimization (PPO)</strong>. I chose PPO because it provides a stable balance between ease of tuning and performance. To improve the quality of the learning signal, I paired it with <strong>Generalized Advantage Estimation (GAE)</strong>.
+                        </p>
+                    
+                        <h3>Breaking Correlations (Mini-Batching)</h3>
+                        <p>
+                            Reinforcement learning data is naturally time-correlated (state $t$ is very similar to state $t+1$). To prevent the optimizer from overfitting to specific trajectories, I implemented a shuffling mechanism. Collected trajectories are flattened and randomized into mini-batches (size 4096), breaking these correlations and ensuring the neural network learns generalizable features rather than memorizing a specific sequence.
+                        </p>
+                    
+                        <h3>Stabilizing Updates</h3>
+                        <p>
+                            A key optimization in my code is <strong>Advantage Normalization</strong>. Before every update, I rescale the calculated advantages to have zero mean and unit variance. This simple step ensures that the training remains stable regardless of the scale of the rewards, allowing the agent to learn consistently whether it's receiving small penalties or massive velocity bonuses.
+                        </p>
+                    </section>
+                    
 
-                <section id="reward">
-                    <h2>4. Reward Engineering</h2>
-                    <p>
-                        The reward function in `walker_reward` solves the multi-objective problem of speed versus stability:
-                    </p>
-                    <ul class="text-sm">
-                        <li><strong>Exponential Velocity Incentive:</strong> Forward velocity ($v_x$) is rewarded using a power of 1.5 ($v_x^{1.5}$). This makes the reward non-linear: doubling your speed more than doubles your reward, aggressively encouraging sprinting.</li>
-                        <li><strong>Threshold Boost:</strong> To break local optima, I added a "fast bonus" that only triggers when velocity exceeds 4.2 m/s. This creates a strong gradient pushing the agent toward top speeds.</li>
-                        <li><strong>Stability Constraints:</strong> Penalties are applied to vertical velocity ($v_z^2$) and lateral drift ($v_y^2$) to force an energy-efficient, planar gait.</li>
-                    </ul>
-                </section>
-
+                    <section id="reward">
+                        <h2>4. Reward Engineering</h2>
+                        <p>
+                            The reward function in `walker_reward` solves the multi-objective problem of speed versus stability:
+                        </p>
+                        <ul class="text-sm">
+                            <li><strong>Exponential Velocity Incentive:</strong> Forward velocity ($v_x$) is rewarded using a power of 1.5 ($v_x^{1.5}$). This makes the reward non-linear: doubling your speed more than doubles your reward, aggressively encouraging sprinting.</li>
+                            <li><strong>Threshold Boost:</strong> To break local optima, I added a "fast bonus" that only triggers when velocity exceeds 4.2 m/s. This creates a strong gradient pushing the agent toward top speeds.</li>
+                            <li><strong>Stability Constraints:</strong> Penalties are applied to vertical velocity ($v_z^2$) and lateral drift ($v_y^2$) to force an energy-efficient, planar gait.</li>
+                        </ul>
+                    </section>
 
 
-
-                <section id="implementation">
-                    <h2>5. Full Implementation</h2>
-                    <p>The implementation is split into the neural network architecture (Beta Policy) and the training pipeline (PPO + GAE).</p>
-                
-                    <!-- WalkerPolicy.py -->
-                    <div class="mt-8">
-                        <div class="flex items-center justify-between bg-slate-800 text-slate-300 px-4 py-2 rounded-t-lg border-b border-slate-700">
-                            <span class="text-xs font-mono">WalkerPolicy.py</span>
-                            <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold">Python</span>
-                        </div>
-                        <pre class="bg-slate-900 text-slate-300 p-6 rounded-b-lg overflow-x-auto text-[12px] leading-relaxed mb-10 shadow-xl border border-slate-800"><code>
+                    <section id="implementation">
+                        <h2>5. Full Implementation</h2>
+                        <p>The implementation is split into the neural network architecture (Beta Policy) and the training pipeline (PPO + GAE).</p>
+                    
+                        <div class="mt-8 not-prose">
+                            <div class="flex items-center justify-between bg-slate-800 text-slate-300 px-4 py-2 rounded-t-lg border-b border-slate-700">
+                                <span class="text-xs font-mono">WalkerPolicy.py</span>
+                                <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold">Python</span>
+                            </div>
+                            <pre class="bg-slate-900 text-slate-300 p-6 rounded-b-lg overflow-x-auto text-[12px] leading-relaxed mb-10 shadow-xl border border-slate-800"><code>
                 import torch
                 import torch.nn as nn
                 import torch.nn.functional as F
@@ -340,15 +355,14 @@
                             print(f"Loaded weights from {path}")
                         except FileNotFoundError:
                             print(f"Warning: Could not find weight file {path}")</code></pre>
-                    </div>
-                
-                    <!-- train_ppo.py -->
-                    <div class="mt-4">
-                        <div class="flex items-center justify-between bg-slate-800 text-slate-300 px-4 py-2 rounded-t-lg border-b border-slate-700">
-                            <span class="text-xs font-mono">train_ppo.py</span>
-                            <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold">Python</span>
                         </div>
-                        <pre class="bg-slate-900 text-slate-300 p-6 rounded-b-lg overflow-x-auto text-[12px] leading-relaxed shadow-xl border border-slate-800"><code>
+                    
+                        <div class="mt-4 not-prose">
+                            <div class="flex items-center justify-between bg-slate-800 text-slate-300 px-4 py-2 rounded-t-lg border-b border-slate-700">
+                                <span class="text-xs font-mono">train_ppo.py</span>
+                                <span class="text-[10px] uppercase tracking-widest opacity-50 font-bold">Python</span>
+                            </div>
+                            <pre class="bg-slate-900 text-slate-300 p-6 rounded-b-lg overflow-x-auto text-[12px] leading-relaxed shadow-xl border border-slate-800"><code>
                 import torch
                 import torch.optim as optim
                 import torch.nn as nn
@@ -503,7 +517,7 @@
                         obs = next_obs
                 
                     t_obs = torch.tensor(np.array(b_obs), dtype=torch.float32) 
-                    t_acts = torch.stack(b_acts)                               
+                    t_acts = torch.stack(b_acts)                              
                     t_rews = torch.tensor(np.array(b_rews), dtype=torch.float32)
                     t_dones = torch.tensor(np.array(b_dones), dtype=torch.float32)
                     t_vals = torch.stack(b_vals)                              
@@ -579,32 +593,44 @@
                             torch.nn.utils.clip_grad_norm_(final_policy.parameters(), 0.5)
                             optimizer.step()
                             scheduler.step()
-                   
+                    
                     print("cur run: {:.2f}m | epoch: {}/{}".format(
                         max_episode_dist_in_epoch, epoch + 1, MAX_EPOCHS))
                     if max_episode_dist_in_epoch > best_single_run_record:
                         best_single_run_record = max_episode_dist_in_epoch
                         print(f"NEW RECORD: {best_single_run_record:.2f}m")
                         torch.save(final_policy.state_dict(), f"ggs/policy.pth")</code></pre>
-                    </div>
-                </section>
+                        </div>
+                    </section>
 
-                
-
-            </div>
-        </main>
+                </div>
+            </main>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const sections = document.querySelectorAll('section');
+            const sections = document.querySelectorAll('main section[id]');
             const navLinks = document.querySelectorAll('#nav-menu a');
-            
+
+            if (sections.length === 0 || navLinks.length === 0) {
+                return;
+            }
+
             const observer = new IntersectionObserver((entries) => {
                 let currentActiveId = '';
+                
+                // Logic to determine which section is currently most visible
+                let maxVisibleRatio = -1;
                 sections.forEach(section => {
                     const rect = section.getBoundingClientRect();
-                    if (rect.top < window.innerHeight / 2 && rect.bottom > 0) {
+                    const topBoundary = 0;
+                    const bottomBoundary = window.innerHeight / 2; // Look at top half of screen
+                    const visibleHeight = Math.max(0, Math.min(rect.bottom, bottomBoundary) - Math.max(rect.top, topBoundary));
+                    const visibleRatio = visibleHeight / rect.height;
+
+                    if (visibleRatio > maxVisibleRatio) {
+                        maxVisibleRatio = visibleRatio;
                         currentActiveId = section.id;
                     }
                 });
@@ -625,8 +651,8 @@
                     }
                 });
             }, { 
-                rootMargin: "-20% 0px -50% 0px",
-                threshold: [0, 0.1, 0.5, 1.0]
+                root: null,
+                threshold: Array.from(Array(101).keys(), i => i / 100)
             });
 
             sections.forEach(section => observer.observe(section));
