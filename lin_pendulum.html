@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reinforcement Learning: Inverted Pendulum</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -13,23 +14,9 @@
     <style> 
         body { font-family: 'Inter', sans-serif; } 
         
-        /* Prose styling */
-        .prose p { margin-bottom: 1.5rem; line-height: 1.75; }
-        .prose h2 { font-size: 1.8rem; font-weight: 700; margin-top: 4rem; margin-bottom: 1.5rem; color: #1e293b; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
-        .prose h3 { font-size: 1.4rem; font-weight: 600; margin-top: 2rem; margin-bottom: 1rem; color: #334155; }
-        .prose h4 { font-size: 1.25rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 1rem; color: #1e293b; }
-        .prose ul { list-style-type: disc; list-style-position: inside; margin-left: 1rem; margin-bottom: 1rem; }
+        /* Offset for scroll jumping so headers aren't hidden */
+        .prose h2 { scroll-margin-top: 6rem; }
         
-        /* Equation styling */
-        .prose .equation {
-            display: block;
-            text-align: center;
-            font-size: 1.1rem;
-            margin: 2rem 0;
-            color: #334155;
-            overflow-x: auto;
-        }
-
         /* Navigation styling */
         .active-nav-text {
             color: #2563eb; 
@@ -37,6 +24,14 @@
             font-weight: 600;
         }
         
+        /* Equation horizontal scroll for mobile */
+        .equation-container {
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 1rem 0;
+            margin: 1rem 0;
+        }
+
         /* Minimalist Caption Styling */
         .caption {
             font-size: 0.875rem;
@@ -44,13 +39,6 @@
             text-align: center;
             margin-top: 0.5rem;
             margin-bottom: 1rem;
-        }
-        
-        /* Media Styling */
-        img, video {
-            display: block;
-            max-width: 100%;
-            height: auto;
         }
     </style>
 </head>
@@ -67,224 +55,243 @@
             <p class="mt-3 text-lg text-slate-600">Implementation of Policy Gradient methods, from Simple PG to PPO.</p>
         </header>
 
-        <main class="grid md:grid-cols-3 md:items-start gap-x-12">
-            <aside class="md:col-span-1 md:sticky md:top-24">
+        <div class="lg:flex lg:justify-between lg:gap-16">
+            
+            <aside class="lg:sticky lg:top-24 lg:w-1/3 h-full mb-12 lg:mb-0">
                 <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Key Details</h3>
-                <dl class="text-sm">
-                    <dt class="font-semibold text-slate-800">Project Type:</dt>
-                    <dd class="text-slate-600 mb-3">Deep Learning / Control</dd>
-                    
-                    <dt class="font-semibold text-slate-800">Stack:</dt>
-                    <dd class="text-slate-600 mb-3">PyTorch, Mujoco, Python</dd>
-                    
-                    <dt class="font-semibold text-slate-800">Algorithms:</dt>
-                    <dd class="text-slate-600">
-                        <ul class="list-disc list-inside">
-                            <li>Simple Policy Gradient</li>
-                            <li>Discounted Policy Gradient</li>
-                            <li>Advantage Estimation</li>
-                            <li>PPO</li>
-                        </ul>
-                    </dd>
+                <dl class="text-sm space-y-4">
+                    <div>
+                        <dt class="font-semibold text-slate-800">Project Type:</dt>
+                        <dd class="text-slate-600">Deep Learning / Control</dd>
+                    </div>
+                    <div>
+                        <dt class="font-semibold text-slate-800">Stack:</dt>
+                        <dd class="text-slate-600">PyTorch, Mujoco, Python</dd>
+                    </div>
+                    <div>
+                        <dt class="font-semibold text-slate-800">Algorithms:</dt>
+                        <dd class="text-slate-600">
+                            <ul class="list-disc list-inside mt-1">
+                                <li>Simple Policy Gradient</li>
+                                <li>Discounted Policy Gradient</li>
+                                <li>Advantage Estimation</li>
+                                <li>PPO</li>
+                            </ul>
+                        </dd>
+                    </div>
                 </dl>
                 
                 <nav class="hidden md:block mt-12">
                     <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Contents</h3>
                     <ul id="nav-menu" class="flex flex-col space-y-3 text-sm font-medium mt-4">
-                        <li><a href="#task1" class="group flex items-center"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300"></span><span class="nav-text">Simple Policy Gradient</span></a></li>
-                        <li><a href="#task2" class="group flex items-center"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300"></span><span class="nav-text">Discounted PG</span></a></li>
-                        <li><a href="#task3" class="group flex items-center"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300"></span><span class="nav-text">Advantage Estimation</span></a></li>
-                        <li><a href="#task4" class="group flex items-center"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300"></span><span class="nav-text">PPO</span></a></li>
+                        <li><a href="#task1" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Simple Policy Gradient</span></a></li>
+                        <li><a href="#task2" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Discounted PG</span></a></li>
+                        <li><a href="#task3" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Advantage Estimation</span></a></li>
+                        <li><a href="#task4" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">PPO</span></a></li>
                     </ul>
                 </nav>
             </aside>
 
-            <div class="md:col-span-2 mt-8 md:mt-0 prose">
+            <main class="lg:w-2/3 mt-8 lg:mt-0">
+                <div class="prose prose-slate max-w-none">
                 
-                <section id="task1">
-                    <h2>Task 1) Simple Policy Gradient</h2>
-                    <p>
-                        I modeled the system as a Markov Decision Process (MDP) with a stochastic policy $\pi_\theta(a_t | s_t)$ parameterized by a neural network. I implemented the REINFORCE algorithm, approximating the gradient via the log-product rule:
-                    </p>
-
-                    <div class="equation">
-                        $$
-                        \hat{g} = \dfrac{1}{N}\dfrac{1}{T} \sum_{i=1}^N R(\tau_i) \sum_{t=0}^{T-1} \nabla_\theta \log (\pi_\theta(a^i_t | s^i_t))
-                        $$
-                    </div>
-
-                    <p>
-                        The results indicated that the policy learned a control law resembling a PD controller. However, the training process exhibited high variance and instability.
-                    </p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-                        <div>
-                            <img src="Simple_policy_gradient_graph.png" alt="Action vs Angle" class="w-full rounded-lg">
-                            <p class="caption">Fig 1: Action vs Angle</p>
+                    <section id="task1">
+                        <h2>Task 1) Simple Policy Gradient</h2>
+                        <p>
+                            I modeled the system as a Markov Decision Process (MDP) with a stochastic policy $\pi_\theta(a_t | s_t)$ parameterized by a neural network. I implemented the REINFORCE algorithm, approximating the gradient via the log-product rule:
+                        </p>
+                        
+                        <div class="equation-container">
+                            $$
+                            \hat{g} = \dfrac{1}{N}\dfrac{1}{T} \sum_{i=1}^N R(\tau_i) \sum_{t=0}^{T-1} \nabla_\theta \log (\pi_\theta(a^i_t | s^i_t))
+                            $$
                         </div>
-                        <div>
-                            <img src="Simple_policy_gradient.png" alt="Training Curve Task 1" class="w-full rounded-lg">
-                            <p class="caption">Fig 2: Training Reward</p>
+
+                        <p>
+                            The results indicated that the policy learned a control law resembling a PD controller. However, the training process exhibited high variance and instability.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8 not-prose">
+                            <div>
+                                <img src="Simple_policy_gradient_graph.png" alt="Action vs Angle" class="w-full rounded-lg shadow-md border border-slate-200">
+                                <p class="caption">Fig 1: Action vs Angle</p>
+                            </div>
+                            <div>
+                                <img src="Simple_policy_gradient.png" alt="Training Curve Task 1" class="w-full rounded-lg shadow-md border border-slate-200">
+                                <p class="caption">Fig 2: Training Reward</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="my-8">
-                        <video controls class="w-full rounded-lg">
-                            <source src="Simple_policy_gradient.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                        <p class="caption">Video 1: Simple PG Demo</p>
-                    </div>
-                </section>
-
-                <section id="task2">
-                    <h2>Task 2) Discounted Policy Gradient</h2>
-                    <p>
-                        The simple trajectory return $R(\tau_i)$ does not account for the temporal influence of actions, leading to high variance in gradient estimation. To address this, I introduced a discount factor $\gamma \in (0,1)$ to reduce the weighting of distant future rewards.
-                    </p>
-
-                    <div class="equation">
-                        $$
-                        R(\tau) = \sum_{t=0}^{\infty} \gamma^{t} r_t
-                        $$
-                    </div>
-
-                    <p>
-                        The implemented gradient estimate with discounted returns is:
-                    </p>
-
-                    <div class="equation" style="color: #ef4444;">
-                        $$
-                        \hat{g} = \dfrac{1}{N}\dfrac{1}{T} \sum_{i=1}^N \sum_{t=0}^{T-1} \left( \sum_{t'=t}^{T-1} \gamma^{t'-t} r_{t'} \right)\nabla_\theta \log (\pi_\theta(a^i_t | s^i_t))
-                        $$
-                    </div>
-
-                    <p>
-                        This formulation reduced variance significantly, though it introduces bias into the gradient estimate.
-                    </p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-                        <div>
-                            <img src="Discounted_policy_gradient_graph.png" alt="Discounted PG Action vs Angle" class="w-full rounded-lg">
-                            <p class="caption">Fig 3: Action vs Angle</p>
+                        <div class="my-8 not-prose">
+                            <video controls class="w-full rounded-lg shadow-lg">
+                                <source src="Simple_policy_gradient.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                            <p class="caption">Video 1: Simple PG Demo</p>
                         </div>
-                        <div>
-                            <img src="Discounted_policy_gradient.png" alt="Discounted PG Training" class="w-full rounded-lg">
-                            <p class="caption">Fig 4: Training Reward</p>
+                    </section>
+
+                    <section id="task2">
+                        <h2 class="mt-12">Task 2) Discounted Policy Gradient</h2>
+                        <p>
+                            The simple trajectory return $R(\tau_i)$ does not account for the temporal influence of actions, leading to high variance in gradient estimation. To address this, I introduced a discount factor $\gamma \in (0,1)$ to reduce the weighting of distant future rewards.
+                        </p>
+
+                        <div class="equation-container">
+                            $$
+                            R(\tau) = \sum_{t=0}^{\infty} \gamma^{t} r_t
+                            $$
                         </div>
-                    </div>
 
-                    <div class="my-8">
-                        <video controls class="w-full rounded-lg">
-                            <source src="Discounted policy gradient.mp4" type="video/mp4">
-                        </video>
-                        <p class="caption">Video 2: Discounted PG Agent</p>
-                    </div>
-                </section>
+                        <p>
+                            The implemented gradient estimate with discounted returns is:
+                        </p>
 
-                <section id="task3">
-                    <h2>Task 3) Advantage Estimation</h2>
-                    <p>
-                        To further reduce variance and improve stability, I replaced discounted returns with an Advantage function estimate.
-                    </p>
-
-                    <div class="equation">
-                        $$
-                        A^{\pi}(s,a) = Q^{\pi}(s,a) - V^{\pi}(s)
-                        $$
-                    </div>
-
-                    <p>
-                        I implemented a value network $\hat{V}_\theta$ to approximate $V^{\pi}(s)$, trained via regression on value targets $V^*(s)$ minimizing the L2 distance:
-                    </p>
-
-                    <div class="equation" style="color: #ef4444;">
-                        $$
-                        L_v(\theta) = \dfrac{1}{N}\dfrac{1}{T} \sum_{i=1}^N \sum_{t=0}^{T-1}  \left( \hat{V}_\theta(s_t^i) - V^*(s_t^i)\right)^2
-                        $$
-                    </div>
-
-                    <p>
-                        The resulting policy gradient estimate using the computed advantages is:
-                    </p>
-
-                    <div class="equation" style="color: #ef4444;">
-                        $$
-                        \hat{g} = \dfrac{1}{N}\dfrac{1}{T} \sum_{i=1}^N \sum_{t=0}^{T-1} \hat{A}(s_t^i, a_t^i)\nabla_\theta \log (\pi_\theta(a^i_t | s^i_t))
-                        $$
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-                        <div>
-                            <img src="policy gradient estimate_using_advantage_GRAPH.png" alt="Advantage Action vs Angle" class="w-full rounded-lg">
-                            <p class="caption">Fig 5: Action vs Angle</p>
+                        <div class="equation-container text-red-500">
+                            $$
+                            \hat{g} = \dfrac{1}{N}\dfrac{1}{T} \sum_{i=1}^N \sum_{t=0}^{T-1} \left( \sum_{t'=t}^{T-1} \gamma^{t'-t} r_{t'} \right)\nabla_\theta \log (\pi_\theta(a^i_t | s^i_t))
+                            $$
                         </div>
-                        <div>
-                            <img src="policy gradient_estimate_using advantage.png" alt="Advantage Training Graph" class="w-full rounded-lg">
-                            <p class="caption">Fig 6: Training Reward</p>
+
+                        <p>
+                            This formulation reduced variance significantly, though it introduces bias into the gradient estimate.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8 not-prose">
+                            <div>
+                                <img src="Discounted_policy_gradient_graph.png" alt="Discounted PG Action vs Angle" class="w-full rounded-lg shadow-md border border-slate-200">
+                                <p class="caption">Fig 3: Action vs Angle</p>
+                            </div>
+                            <div>
+                                <img src="Discounted_policy_gradient.png" alt="Discounted PG Training" class="w-full rounded-lg shadow-md border border-slate-200">
+                                <p class="caption">Fig 4: Training Reward</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="my-8">
-                        <video controls class="w-full rounded-lg">
-                            <source src="policy gradient estimate using advantage.mp4" type="video/mp4">
-                        </video>
-                        <p class="caption">Video 3: Advantage Actor-Critic Agent</p>
-                    </div>
-                </section>
-
-                <section id="task4">
-                    <h2>Task 4) Proximal Policy Optimization (PPO)</h2>
-                    <p>
-                        To mitigate catastrophic forgetting and training instability inherent in standard policy gradients, I implemented PPO. This method constrains policy updates using a clipped surrogate objective.
-                    </p>
-                    <p>
-                        Defining the probability ratio $r_\theta(a_t | s_t) = \frac{\pi_\theta(a_t | s_t)}{\pi_{\theta_{old}}(a_t | s_t)}$, the objective is:
-                    </p>
-
-                    <div class="equation">
-                        $$
-                        L_{PPO}(a_t, s_t) = \min \left( \hat{A} \cdot r_\theta(a_t | s_t), \quad \hat{A} \cdot \text{clip}(r_\theta(a_t | s_t), 1-\epsilon, 1+\epsilon) \right)
-                        $$
-                    </div>
-
-                    <p>
-                        This objective prevents the new policy from diverging excessively from the old policy, ensuring monotonic improvement. The clipping ratio was set to $\epsilon = 0.2$.
-                    </p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-                        <div>
-                            <img src="PPO-GRAPH.png" alt="PPO Action vs Angle" class="w-full rounded-lg">
-                            <p class="caption">Fig 7: Action vs Angle</p>
+                        <div class="my-8 not-prose">
+                            <video controls class="w-full rounded-lg shadow-lg">
+                                <source src="Discounted policy gradient.mp4" type="video/mp4">
+                            </video>
+                            <p class="caption">Video 2: Discounted PG Agent</p>
                         </div>
-                        <div>
-                            <img src="ppo.png" alt="PPO Training Graph" class="w-full rounded-lg">
-                            <p class="caption">Fig 8: Training Reward</p>
+                    </section>
+
+                    <section id="task3">
+                        <h2 class="mt-12">Task 3) Advantage Estimation</h2>
+                        <p>
+                            To further reduce variance and improve stability, I replaced discounted returns with an Advantage function estimate.
+                        </p>
+
+                        <div class="equation-container">
+                            $$
+                            A^{\pi}(s,a) = Q^{\pi}(s,a) - V^{\pi}(s)
+                            $$
                         </div>
-                    </div>
 
-                    <div class="my-8">
-                        <video controls class="w-full rounded-lg">
-                            <source src="PPO.mp4" type="video/mp4">
-                        </video>
-                        <p class="caption">Video 4: PPO Agent</p>
-                    </div>
-                </section>
+                        <p>
+                            I implemented a value network $\hat{V}_\theta$ to approximate $V^{\pi}(s)$, trained via regression on value targets $V^*(s)$ minimizing the L2 distance:
+                        </p>
 
-            </div>
-        </main>
+                        <div class="equation-container text-red-500">
+                            $$
+                            L_v(\theta) = \dfrac{1}{N}\dfrac{1}{T} \sum_{i=1}^N \sum_{t=0}^{T-1}  \left( \hat{V}_\theta(s_t^i) - V^*(s_t^i)\right)^2
+                            $$
+                        </div>
+
+                        <p>
+                            The resulting policy gradient estimate using the computed advantages is:
+                        </p>
+
+                        <div class="equation-container text-red-500">
+                            $$
+                            \hat{g} = \dfrac{1}{N}\dfrac{1}{T} \sum_{i=1}^N \sum_{t=0}^{T-1} \hat{A}(s_t^i, a_t^i)\nabla_\theta \log (\pi_\theta(a^i_t | s^i_t))
+                            $$
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8 not-prose">
+                            <div>
+                                <img src="policy gradient estimate_using_advantage_GRAPH.png" alt="Advantage Action vs Angle" class="w-full rounded-lg shadow-md border border-slate-200">
+                                <p class="caption">Fig 5: Action vs Angle</p>
+                            </div>
+                            <div>
+                                <img src="policy gradient_estimate_using advantage.png" alt="Advantage Training Graph" class="w-full rounded-lg shadow-md border border-slate-200">
+                                <p class="caption">Fig 6: Training Reward</p>
+                            </div>
+                        </div>
+
+                        <div class="my-8 not-prose">
+                            <video controls class="w-full rounded-lg shadow-lg">
+                                <source src="policy gradient estimate using advantage.mp4" type="video/mp4">
+                            </video>
+                            <p class="caption">Video 3: Advantage Actor-Critic Agent</p>
+                        </div>
+                    </section>
+
+                    <section id="task4">
+                        <h2 class="mt-12">Task 4) Proximal Policy Optimization (PPO)</h2>
+                        <p>
+                            To mitigate catastrophic forgetting and training instability inherent in standard policy gradients, I implemented PPO. This method constrains policy updates using a clipped surrogate objective.
+                        </p>
+                        <p>
+                            Defining the probability ratio $r_\theta(a_t | s_t) = \frac{\pi_\theta(a_t | s_t)}{\pi_{\theta_{old}}(a_t | s_t)}$, the objective is:
+                        </p>
+
+                        <div class="equation-container">
+                            $$
+                            L_{PPO}(a_t, s_t) = \min \left( \hat{A} \cdot r_\theta(a_t | s_t), \quad \hat{A} \cdot \text{clip}(r_\theta(a_t | s_t), 1-\epsilon, 1+\epsilon) \right)
+                            $$
+                        </div>
+
+                        <p>
+                            This objective prevents the new policy from diverging excessively from the old policy, ensuring monotonic improvement. The clipping ratio was set to $\epsilon = 0.2$.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8 not-prose">
+                            <div>
+                                <img src="PPO-GRAPH.png" alt="PPO Action vs Angle" class="w-full rounded-lg shadow-md border border-slate-200">
+                                <p class="caption">Fig 7: Action vs Angle</p>
+                            </div>
+                            <div>
+                                <img src="ppo.png" alt="PPO Training Graph" class="w-full rounded-lg shadow-md border border-slate-200">
+                                <p class="caption">Fig 8: Training Reward</p>
+                            </div>
+                        </div>
+
+                        <div class="my-8 not-prose">
+                            <video controls class="w-full rounded-lg shadow-lg">
+                                <source src="PPO.mp4" type="video/mp4">
+                            </video>
+                            <p class="caption">Video 4: PPO Agent</p>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const sections = document.querySelectorAll('section');
+            const sections = document.querySelectorAll('main section[id]');
             const navLinks = document.querySelectorAll('#nav-menu a');
-            
+
+            if (sections.length === 0 || navLinks.length === 0) {
+                return;
+            }
+
             const observer = new IntersectionObserver((entries) => {
                 let currentActiveId = '';
+                
+                // Logic to determine which section is currently most visible
+                let maxVisibleRatio = -1;
                 sections.forEach(section => {
                     const rect = section.getBoundingClientRect();
-                    if (rect.top < window.innerHeight / 2 && rect.bottom > 0) {
+                    const topBoundary = 0;
+                    const bottomBoundary = window.innerHeight / 2; // Look at top half of screen
+                    const visibleHeight = Math.max(0, Math.min(rect.bottom, bottomBoundary) - Math.max(rect.top, topBoundary));
+                    const visibleRatio = visibleHeight / rect.height;
+
+                    if (visibleRatio > maxVisibleRatio) {
+                        maxVisibleRatio = visibleRatio;
                         currentActiveId = section.id;
                     }
                 });
@@ -305,8 +312,8 @@
                     }
                 });
             }, { 
-                rootMargin: "-20% 0px -50% 0px",
-                threshold: [0, 0.1, 0.5, 1.0]
+                root: null,
+                threshold: Array.from(Array(101).keys(), i => i / 100)
             });
 
             sections.forEach(section => observer.observe(section));
