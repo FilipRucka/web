@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="cs" dir="ltr"> <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ONLINE FORMULÁŘ</title>
+
+    <link rel="stylesheet" href="onlineForm.css">
+    <link rel="stylesheet" href="tablet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <header>
+      <a href="index.html" class="logo"> <img src="logo.jpg" alt="Logo"> </a>
+
+      <input type="checkbox" id="nav-toggle" class="nav-toggle">
+      <div class="nav-box2">
+        <ul>
+          <li><i style="font-size:24px" class="fa">&#xf095;</i></li> <li><p>+420 792 322 012</p></li>
+          <li><p>sestra@cevnimelnik.cz</p></li>
+          <li><a href="https://www.facebook.com/C%C3%A9vn%C3%AD-ambulance-M%C4%9Bln%C3%ADk-110261321624572" class="fa fa-facebook"></a></li>
+        </ul>
+      </div>
+      <nav>
+            <ul>
+             <li><a href="about.html">MUDr. David Ručka, Ph.D.</a></li>
+             <li><a href="sluzby.html">SLUŽBY</a></li>
+             <li><a href="ordinacniHodiny.html">ORDINAČNÍ HODINY</a></li>
+             <li><a href="pojistovny.html">POJIŠŤOVNY</a></li>
+             <li><a href="kontakt.html">KONTAKT</a></li>
+             <li><a href="blog.html">BLOG</a></li>
+           </ul>
+      </nav>
+      <br>
+
+      <label for="nav-toggle" class="nav-toggle-label">
+        <span></span>
+      </label>
+    </header>
+    <br>
+
+    <h1 class="folmularTitel">Objednávkový formulář</h1>
+
+    <form action="https://formsubmit.co/filip.ruc@icloud.com" method="POST">
+
+      <input type="text" name="jmeno" required placeholder="Jméno">
+      <input type="email" name="email" required placeholder="Email">
+      
+      <input type="text" name="telefon" required placeholder="Telefon">
+
+      <input type="hidden" name="_captcha" value="true">
+      <input type="hidden" name="_next" value="https://cevnimelnik.cz/thanks.html">
+      <input type="hidden" name="_subject" value="Nová zpráva z webu">
+
+      <textarea placeholder="Vaše zpráva" class="form-control" name="zprava" rows="10" required></textarea>
+      
+      <button class="myButton" type="submit">ODESLAT</button>
+
+    </form>
+    <br>
+    <div class="souhlas">
+       <p>Odesláním formuláře potvrzujete souhlas se zpracováním osobních údajů.</p>
+    </div>
+
+  </body>
+</html>
