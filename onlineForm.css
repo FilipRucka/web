@@ -1,0 +1,687 @@
+body {
+  background-repeat: no-repeat;
+  margin: 0;
+
+
+}
+* {
+    margin: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+/*-----------nav----------*/
+
+header {
+  text-align: center;
+  position: fixed;
+  z-index: 999;
+  width: 100%;
+  background: white;
+
+
+}
+
+.logo {
+text-decoration: none;
+font-family: 'Bangers', cursive;
+color: #7FDBFF;
+font-size:  1.5rem;
+width: 50%;
+}
+.logo img {
+  width: 50%;
+}
+
+
+nav {
+  position: absolute;
+  text-align: left;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  transform: scale(1, 0);
+  transform-origin: top;
+  transition: transform 400ms ease-in-out;
+
+}
+
+nav ul {
+  background: white;
+  padding: 0;
+  list-style: none;
+
+}
+
+nav li {
+  margin-bottom: 1em;
+  margin-left: 1em;
+
+}
+
+nav a {
+  left: 0;
+  color: black;
+  padding: 0.5rem 0.5rem;
+  font-family: Lato,sans-serif;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+
+}
+
+nav a:hover {
+  color: #acd1ff;
+}
+
+
+.nav-toggle:checked ~ nav {
+  transform: scale(1,1);
+}
+
+.nav-toggle:checked ~ nav a {
+  opacity: 1;
+  transition: opacity 250ms ease-in-out 250ms;
+}
+
+.nav-toggle {
+  display: none;
+}
+
+.nav-toggle-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: 1.5em;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.nav-toggle-label span,
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  display: block;
+  background: black;
+  height: 2px;
+  width: 2em;
+  border-radius: 2px;
+  position: relative;
+}
+.nav-toggle-label span::before,
+.nav-toggle-label span::after {
+  content: '';
+  position: absolute;
+}
+
+.nav-toggle-label span::before {
+  bottom: 7px;
+}
+.nav-toggle-label span::after {
+  top:7px;
+
+}
+
+.mainPhoto{
+  position: relative;
+  margin-top: 3rem;
+  width: 98%;
+  transform: translateX(-50%);
+  left: 50%;
+
+}
+.phonePhoto {
+  width: 40%;
+  float: left;
+  margin-top: 5rem;
+}
+
+.nav-box2 {
+  display: none;
+  position: absolute;
+  background: #80acd3;
+  width: 100%;
+  color: white;
+}
+
+
+.AktualityAbteiliung p{
+  all: unset;
+  font-size: 1.2rem;
+}
+
+.AktulBoxHOver {
+  padding: 1.5rem;
+  text-decoration: none;
+  color: #222222;
+  font-family: "Open Sans", sans-serif;
+
+}
+
+  footer{
+    position: relative;
+    bottom: 0px;
+  }
+.box{
+  width: 100%;
+  text-align: center;
+}
+  .container{
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+.container .box{
+    margin: 5px 0;
+  }
+}
+.bbb{
+  margin-bottom: 5%;
+}
+iframe{
+width: 100%;
+}
+
+footer{
+  background:  #80acd3 ;
+
+}
+footer h2{
+  color: white;
+}
+
+.box h2{
+  font-family: 'RocknRoll One', sans-serif;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+.box{
+  font-family: 'RocknRoll One', sans-serif;
+  color: white;
+}
+
+.levý{
+text-align: center;
+}
+.center{
+text-align: center;
+}
+.pravý{
+}
+.social{
+  color: white;
+  margin-top: 1rem;
+}
+.place{
+  padding-bottom: 1rem;
+  font-size: 25px;
+}
+.phone{
+  padding-bottom: 1rem;
+  font-size: 25px;
+}
+.email{
+  padding-bottom: 1rem;
+  font-size: 25px;
+}
+.sikon{
+  color: white;
+
+}
+.ikon{
+  font-size: 1.5rem;
+}
+.text{
+  font-size: 1.5rem;
+}
+
+.levý  .social a span{
+  height: 40px;
+  width: 40px;
+  background:  #001f3f ;
+  line-height: 40px;
+  text-align: center;
+  font-size: 18px;
+  border-radius: 5px;
+  transition: 0.3s;
+
+}
+.levý .social a span:hover{
+  background:  white  ;
+}
+
+.btn button{
+
+    text-align: center;
+    height: 2rem;
+    width: 80%;
+    background: #001f3f;
+    color: white;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+  	font-family: 'RocknRoll One', sans-serif;
+    transition: 0.3s;
+    border: none;
+    cursor: pointer;
+    transition-duration: 0.5s;
+}
+.bbb:hover{
+  background: #FF851B;
+}
+
+.Aktuality {
+  margin-left: 15%;
+  margin-top: 2rem;
+  padding: 1rem;
+  border: solid white 1px;
+  width: 70%;
+  transition: transform .5s ease;
+}
+
+.Aktuality:hover{
+  transform: scale(1.1);
+  }
+
+
+  form {
+    width: 90%;
+    position: relative;
+    transform: translateX(-50%);
+    left: 50%;
+
+    background: #80acd3;;
+    padding-right: 2rem;
+
+  }
+  form input {
+    border: none;
+    font-size: 1rem;
+    padding: 1rem;
+    width: 100%;
+    margin: 1rem;
+  }
+
+  form textarea {
+    font-family: sans-serif;
+    margin: 1rem;
+    font-size: 1rem;
+    width: 100%;
+    height: 200px;
+    border: none;
+    padding: 1rem;
+  }
+
+  form button {
+    border: none;
+    color: #80acd3;
+    padding: 1rem;
+    font-size: 1rem;
+    background: white;
+    margin: 1rem;
+    width: 100%;
+  }
+
+  form button:hover {
+     background: black;
+     color: white
+  }
+
+  .folmularTitel {
+    text-align: center;
+    margin-top: 7rem;
+    font-family: sans-serif;
+  }
+
+  .souhlas p{
+    opacity: 0.5;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-family: 'RocknRoll One', sans-serif;
+    font-size: 15px;
+  }
+
+/*-----------Big Screen-------------------*/
+@media screen and (min-width: 1100px) {
+  .nav-toggle-label {
+    display: none
+  }
+
+    form {
+      all: unset;
+      width: 30%;
+      position: absolute;
+      transform: translateX(-50%);
+      left: 50%;
+      top:12rem;
+      background: #80acd3;;
+      padding-right: 2rem;
+
+    }
+    form input {
+      border: none;
+      font-size: 1rem;
+      padding: 1rem;
+      width: 100%;
+      margin: 1rem;
+    }
+
+    form textarea {
+      font-family: sans-serif;
+      margin: 1rem;
+      font-size: 1rem;
+      width: 100%;
+      height: 200px;
+      border: none;
+      padding: 1rem;
+    }
+
+    form button {
+      border: none;
+      color: #80acd3;
+      padding: 1rem;
+      font-size: 1rem;
+      background: white;
+      margin: 1rem;
+      width: 100%;
+    }
+
+    form button:hover {
+       background: black;
+       color: white
+    }
+
+    .folmularTitel {
+      text-align: center;
+      margin-top: 7rem;
+      font-family: sans-serif;
+    }
+
+
+  nav {
+    all: unset;
+    text-decoration: none;
+    display: flex;
+    font-size: 18px;
+    margin-top: 1.6rem;
+    flex-direction: row;
+    justify-content: space-evenly;
+    position: absolute;
+    left: 36%;
+
+
+  }
+  header {
+    height: 123px;
+    background-color: white;
+  }
+
+  nav li {
+    all: unset;
+    display: inline-block;
+  }
+
+  nav ul {
+
+    margin-top: 3.3rem;
+  }
+
+  nav a {
+    all: unset;
+    opacity: 1;
+    text-decoration: none;
+    color: black;
+    padding: 0.5rem 0.5rem;
+    font-family: Lato,sans-serif;
+  }
+  nav a:hover {
+    color: #acd1ff;
+  }
+
+  .logo {
+    text-decoration: none;
+    text-align: center;
+    display: flex;
+    width: 30%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    position: absolute;
+    padding: 1.4rem;
+    margin-top: 1.9rem;
+
+  }
+
+  .logo img {
+    width: 100%;
+  }
+  .fa {
+
+  border-radius: 5px;
+  font-size: 30px;
+  width: 1rem;
+  text-align: center;
+  text-decoration: none;
+
+}
+  .fa-facebook:hover {
+  color: black;
+  }
+
+  .fa-facebook {
+  color: white;
+  position: relative;
+
+}
+
+.nav-box2 {
+  display: flex;
+  background: #80acd3;
+  width: 100%;
+  padding: 0.5rem;
+  color: white;
+
+}
+
+.contextBox button:hover{
+  background: #001f3f;
+}
+
+.nav-box2 p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: sans-serif;
+}
+.nav-box2 ul {
+  list-style: none;
+  margin-left: 60%;
+}
+.nav-box2 li {
+  display: inline-block;
+  margin-left: 1rem;
+  margin-top: 0;
+}
+.nav-box2 p:hover {
+  color: black;
+}
+
+
+.AktualityText {
+  margin-top: 29rem;
+  color: #80acd3;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-family: "Open Sans", sans-serif;
+
+}
+.AktualityAbteiliung {
+  display: flex;
+  margin-top: 5rem;
+
+}
+.actualityBox1 {
+  width: 33%;
+
+}
+.actualityBox2 {
+  width: 33%;
+}
+.actualityBox3 {
+  width: 33%;
+}
+.AktualityAbteiliung p{
+  all: unset;
+  font-size: 1.2rem;
+}
+
+.AktulBoxHOver:hover{
+  padding: 1rem;
+  border-radius: 1rem;
+}
+
+.AktulBoxHOver {
+  padding: 1.5rem;
+  text-decoration: none;
+  color: #222222;
+  font-family: "Open Sans", sans-serif;
+
+}
+.AktulBoxHOver h2{
+  margin-bottom: 1rem;
+}
+
+.BlogText {
+
+  color: #80acd3;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  font-family: "Open Sans", sans-serif;
+}
+footer{
+  margin-top: 3rem;
+  background:  #80acd3 ;
+
+}
+footer h2{
+  color: white;
+}
+
+.box h2{
+  font-family: 'RocknRoll One', sans-serif;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+.box{
+  font-family: 'RocknRoll One', sans-serif;
+  color: white;
+  width: 33%;
+  margin-bottom: 5%;
+}
+.Footercontainer{
+  display: flex;
+}
+.levý{
+text-align: center;
+}
+.center{
+text-align: center;
+}
+.pravý{
+
+}
+.social{
+  color: white;
+  margin-top: 1rem;
+}
+.place{
+  padding-bottom: 1rem;
+  font-size: 25px;
+}
+.phone{
+  padding-bottom: 1rem;
+  font-size: 25px;
+}
+.email{
+  padding-bottom: 1rem;
+  font-size: 25px;
+}
+.sikon{
+  color: white;
+
+}
+.ikon{
+  font-size: 1.5rem;
+}
+.text{
+  font-size: 1.5rem;
+}
+
+.levý  .social a span{
+  height: 40px;
+  width: 40px;
+  background:  #001f3f ;
+  line-height: 40px;
+  text-align: center;
+  font-size: 18px;
+  border-radius: 5px;
+  transition: 0.3s;
+
+}
+.levý .social a span:hover{
+  background:  white  ;
+}
+
+.btn button{
+
+    text-align: center;
+    height: 2rem;
+    width: 80%;
+    background: #001f3f;
+    color: white;
+    margin-top: 1rem;
+    font-size: 1.2rem;
+  	font-family: 'RocknRoll One', sans-serif;
+    transition: 0.3s;
+    border: none;
+    cursor: pointer;
+    transition-duration: 0.5s;
+}
+.bbb:hover{
+  background: #FF851B;
+}
+.Aktuality {
+  margin-left: 15%;
+  margin-top: 2rem;
+  padding: 1rem;
+  border: solid white 1px;
+  width: 70%;
+  transition: transform .5s ease;
+}
+
+.Aktuality:hover{
+  transform: scale(1.1);
+  }
+  .CevníText p{
+    all: unset
+  }
+
+  .bububu {
+    font-size: 1.5rem;
+    font-family: "Open Sans", sans-serif;
+    margin-top: 10rem;
+    margin-bottom: 10rem;
+    color: #222222;
+    width: 70%;
+    position: relative;
+    transform: translateX(-50%);
+    left: 50%;
+  }
+
+  .bububu p {
+    margin: 1rem;
+  }
+  .souhlas p{
+    margin-top: 37rem;
+    opacity: 0.5;
+    font-family: 'RocknRoll One', sans-serif;
+  }
+}
