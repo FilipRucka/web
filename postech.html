@@ -1,1 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Technical walkthrough of model-based quadruped walking, vertical climbing, mixed-contact transition and soft-tail control at POSTECH.">
+    <title>Bio-Inspired Quadruped Robotics - Filip Ručka</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Copied from the styling of the Rotary Pendulum project page. */
+        .prose p { margin-bottom: 1rem; }
+        .prose h4 { font-size: 1.25rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; color: #1e293b; }
+        .prose ul { list-style-position: inside; margin-left: 1rem; margin-bottom: 1rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose .equation {
+            display: block; text-align: center; font-family: 'Times New Roman', serif;
+            font-size: 1.2rem; margin: 1.5rem 0; color: #334155;
+            overflow-x: auto; padding: .25rem 0;
+        }
+        .active-nav-text { color: #2563eb; transform: translateX(5px); font-weight: 600; }
+        .technical-table { width: 100%; border-collapse: collapse; font-size: .875rem; margin: 1.5rem 0; }
+        .technical-table th, .technical-table td { border-bottom: 1px solid #e2e8f0; padding: .65rem .65rem; text-align: left; vertical-align: top; }
+        .technical-table th { color: #1e293b; background: #f1f5f9; font-weight: 600; }
+        .technical-table td:last-child, .technical-table th:last-child { text-align: right; }
+        .media-placeholder {
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            min-height: 0; background: #f8fafc; border: 2px dashed #cbd5e1;
+            border-radius: .5rem; text-align: center; padding: 1.5rem;
+        }
+        .media-placeholder i { font-size: 2rem; color: #94a3b8; margin-bottom: .75rem; }
+        .media-placeholder strong { color: #475569; font-size: .875rem; font-weight: 600; }
+        .media-placeholder code { color: #64748b; font-size: .75rem; margin-top: .5rem; overflow-wrap: anywhere; }
+        .media-slot.media-loaded { background: none; border: 0; padding: 0; min-height: 0; }
+        .media-slot img, .media-slot video { width: 100%; border-radius: .5rem; border: 1px solid #e2e8f0; box-shadow: 0 8px 16px -8px rgb(15 23 42 / .15); }
+        .media-slot video { background: #0f172a; }
+        .flow-node { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: .375rem; padding: .7rem .85rem; font-weight: 600; font-size: .875rem; color: #334155; text-align: center; }
+        .flow-arrow { text-align: center; color: #94a3b8; padding: .2rem; }
+        .prose a.inline-link { color: #2563eb; font-weight: 500; text-decoration: underline; text-underline-offset: 2px; }
+        /* Small Tailwind-compatible fallback so the page remains readable offline. */
+        *, *::before, *::after { box-sizing: border-box; }
+        figure { margin-left: 0; margin-right: 0; }
+        body { margin: 0; background: #f8fafc; color: #334155; line-height: 1.5; }
+        a { color: inherit; text-decoration: none; }
+        .container { width: 100%; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .max-w-screen-lg { max-width: 1024px; }
+        .max-w-none { max-width: none; }
+        .max-w-md { max-width: 448px; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+        .mt-3 { margin-top: .75rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-8 { margin-top: 2rem; }
+        .mt-12 { margin-top: 3rem; }
+        .mb-3 { margin-bottom: .75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-12 { margin-bottom: 3rem; }
+        .my-7 { margin-top: 1.75rem; margin-bottom: 1.75rem; }
+        .my-8 { margin-top: 2rem; margin-bottom: 2rem; }
+        .mr-2 { margin-right: .5rem; }
+        .mr-4 { margin-right: 1rem; }
+        .pb-2 { padding-bottom: .5rem; }
+        .flex { display: flex; }
+        .grid { display: grid; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .font-semibold { font-weight: 600; }
+        .font-medium { font-weight: 500; }
+        .font-bold { font-weight: 700; }
+        .text-sm { font-size: .875rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+        .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+        .text-center { text-align: center; }
+        .text-slate-500 { color: #64748b; }
+        .text-slate-600 { color: #475569; }
+        .text-slate-700 { color: #334155; }
+        .text-slate-800 { color: #1e293b; }
+        .text-slate-900 { color: #0f172a; }
+        .text-blue-600 { color: #2563eb; }
+        .border-b { border-bottom: 1px solid #e2e8f0; }
+        .border-slate-200 { border-color: #e2e8f0; }
+        .border { border: 1px solid #e2e8f0; }
+        .rounded-lg { border-radius: .5rem; }
+        .w-8 { width: 2rem; }
+        .w-16 { width: 4rem; }
+        .h-px { height: 1px; }
+        .bg-slate-400 { background: #94a3b8; }
+        .bg-slate-800 { background: #1e293b; }
+        .aspect-video { aspect-ratio: 16/9; }
+        .hidden { display: none; }
+        .list-disc { list-style-type: disc; }
+        .list-inside { list-style-position: inside; }
+        .space-y-3 > :not(:first-child) { margin-top: .75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-x-12 { column-gap: 3rem; }
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        main > aside, main > div { min-width: 0; }
+        main.grid { grid-template-columns: minmax(0, 1fr); }
+        .nav-indicator { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+        #nav-menu { list-style: none; padding: 0; }
+        #nav-menu a { display: flex; align-items: center; }
+        .prose h2 { margin-top: 2rem; margin-bottom: 1rem; }
+        .prose p, .prose li { line-height: 1.65; }
+        @media (min-width: 640px) { .sm\:text-5xl { font-size: 3rem; line-height: 1.1; } }
+        @media (min-width: 768px) {
+            .md\:py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+            .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            main.md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .md\:col-span-1 { grid-column: span 1 / span 1; }
+            .md\:col-span-2 { grid-column: span 2 / span 2; }
+            .md\:items-start { align-items: start; }
+            .md\:sticky { position: sticky; }
+            .md\:top-24 { top: 6rem; }
+            .md\:block { display: block; }
+            .md\:mt-0 { margin-top: 0; }
+        }
+        @media (min-width: 1024px) { .lg\:py-24 { padding-top: 6rem; padding-bottom: 6rem; } }
+        @media (max-width: 640px) { .prose .equation { font-size: 1rem; } .technical-table { font-size: .76rem; } .media-placeholder { min-height: 145px; } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-700">
+    <div class="container mx-auto max-w-screen-lg px-6 py-12 md:py-20 lg:py-24">
+
+        <a href="./index.html" class="group flex items-center font-semibold text-blue-600 mb-12">
+            <i class="fas fa-arrow-left mr-2 transition-transform group-hover:-translate-x-1"></i>
+            Go Back to Portfolio
+        </a>
+
+        <header class="mb-12">
+            <h1 class="text-4xl font-bold text-slate-900 sm:text-5xl">Bio-Inspired Quadruped Robotics</h1>
+            <p class="mt-3 text-lg text-slate-600">Model-based walking, vertical climbing, mixed-contact transitions, and tendon-driven soft-tail control for robotic exploration.</p>
+        </header>
+
+        <main class="grid md:grid-cols-3 md:items-start gap-x-12">
+            <!-- LEFT COLUMN: KEY DETAILS & NAVIGATION. Same layout as the original website. -->
+            <aside class="md:col-span-1 md:sticky md:top-24">
+                <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Key Details</h3>
+                <dl class="text-sm">
+                    <dt class="font-semibold text-slate-800">Project Type:</dt>
+                    <dd class="text-slate-600 mb-3">Academic Research / Ongoing</dd>
+
+                    <dt class="font-semibold text-slate-800">Institution:</dt>
+                    <dd class="text-slate-600 mb-3">POSTECH — Bio-Inspired Robotics &amp; Design Lab</dd>
+
+                    <dt class="font-semibold text-slate-800">Period:</dt>
+                    <dd class="text-slate-600 mb-3">September 2026 – Present</dd>
+
+                    <dt class="font-semibold text-slate-800">Tools:</dt>
+                    <dd class="text-slate-600 mb-3">Python, MuJoCo, OSQP, NumPy, build123d / CAD</dd>
+
+                    <dt class="font-semibold text-slate-800">Core Concepts:</dt>
+                    <dd class="text-slate-600">
+                        <ul class="list-disc list-inside">
+                            <li>Model Predictive Control (MPC)</li>
+                            <li>Convex Optimization / QP</li>
+                            <li>Whole-Body Inverse Kinematics</li>
+                            <li>Contact-Force Planning</li>
+                            <li>Quadruped Locomotion</li>
+                            <li>Vertical Wall Climbing</li>
+                            <li>Mixed-Contact Transitions</li>
+                            <li>Piecewise Constant Curvature</li>
+                            <li>Tendon-Driven Soft Robotics</li>
+                            <li>Parametric Mechanical Design</li>
+                        </ul>
+                    </dd>
+                </dl>
+
+                <nav class="hidden md:block mt-12">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">On this page</h3>
+                    <ul id="nav-menu" class="flex flex-col space-y-3 text-sm font-medium mt-4">
+                        <li><a href="#overview" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Project Overview</span></a></li>
+                        <li><a href="#locomotion" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Locomotion Architecture</span></a></li>
+                        <li><a href="#mpc" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Model Predictive Control</span></a></li>
+                        <li><a href="#whole-body" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Whole-Body QP &amp; PD</span></a></li>
+                        <li><a href="#climbing" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Vertical Climbing</span></a></li>
+                        <li><a href="#transition" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Walking-to-Wall Transition</span></a></li>
+                        <li><a href="#tail" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Soft-Tail Control</span></a></li>
+                        <li><a href="#results" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Results &amp; Future Work</span></a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- RIGHT COLUMN: TECHNICAL WALKTHROUGH. Same 2/3 width as original. -->
+            <div class="md:col-span-2 mt-8 md:mt-0">
+                <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Technical Walkthrough</h3>
+                <div class="prose max-w-none">
+                    <p>
+                        At POSTECH's Bio-Inspired Robotics &amp; Design Lab, I am developing a model-based control and simulation framework for a bio-inspired quadruped intended for challenging terrain and, ultimately, planetary exploration. The central idea is to use <b>the same optimization-based control architecture</b> for ordinary walking, vertical climbing, and transitions between surfaces, while investigating a compliant tail for stabilization and manipulation.
+                    </p>
+                    <p>
+                        The current platform is a torque-actuated Unitree Go1 model simulated in MuJoCo. Walking, climbing, mixed contacts, and tail manipulation have been tested in simulation; the custom robot and physical climbing hardware remain development goals.
+                    </p>
+
+                    <h2 id="overview" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">1. Project Overview</h2>
+                    <p>
+                        Most quadruped locomotion controllers assume contact with a horizontal floor. Climbing introduces different contact-force directions, while a ground-to-wall transition requires the robot to support its weight with feet attached to <i>different surfaces at the same time</i>. The research investigates how much of a single controller can be retained across these modes.
+                    </p>
+                    <figure class="my-8">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="media/robot-overview.jpg" data-media-alt="Overview of the bio-inspired quadruped and soft tail in simulation">
+                            <i class="fas fa-image" aria-hidden="true"></i>
+                            <strong>Robot overview / simulation render</strong>
+                            <code>media/robot-overview.jpg</code>
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">Overview of the quadruped simulation platform and the proposed tail-equipped research system.</figcaption>
+                    </figure>
+                    <p>
+                        The project currently comprises four connected tracks: quadruped crawling, wall locomotion with prescribed contacts, a continuous floor-to-wall maneuver, and a four-tendon continuum tail. A separate parametric CAD workspace is being developed to translate the simulated geometry into manufacturable parts.
+                    </p>
+
+                    <h2 id="locomotion" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">2. Model-Based Locomotion Architecture</h2>
+                    <p>
+                        I implemented a hierarchical whole-body controller in which every layer solves a specific problem. The gait scheduler chooses <i>when</i> a foot moves; the foothold planner chooses <i>where</i> it should land; MPC plans the supporting contact forces; a velocity-level QP translates body and foot motion into joint commands; and a joint controller produces actuator torques.
+                    </p>
+
+                    <div class="my-7 mx-auto max-w-md" role="img" aria-label="Gait scheduler and foothold planner feed a contact-force MPC; whole-body IK-QP computes joint targets; joint PD with force feedforward commands the robot.">
+                        <div class="flow-node">Gait Scheduler &amp; Foothold Planner</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-down"></i></div>
+                        <div class="flow-node">Centroidal MPC — Contact Forces</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-down"></i></div>
+                        <div class="flow-node">Whole-Body Velocity IK-QP</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-down"></i></div>
+                        <div class="flow-node">Joint PD + MPC Force Feedforward</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-down"></i></div>
+                        <div class="flow-node">Torque-Actuated MuJoCo Robot</div>
+                    </div>
+                    <p>
+                        The baseline uses a slow, statically supported crawl with one swinging foot at a time. A Raibert-style foothold rule accounts for desired and measured body velocity. During swing, the foot follows a smooth fifth-order trajectory with a vertical clearance bump.
+                    </p>
+                    <div class="equation">\[p_d(s)=p_0+(10s^3-15s^4+6s^5)(p_1-p_0)+\begin{bmatrix}0\\0\\H\,64s^3(1-s)^3\end{bmatrix}\]</div>
+                    <p>
+                        Here, \(s\in[0,1]\) is the normalized swing phase, \(p_0\) and \(p_1\) are the liftoff and touchdown positions, and \(H=0.045\,\mathrm{m}\). The resulting desired foot velocity becomes a task in the whole-body QP.
+                    </p>
+                    <figure class="my-8">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="media/walking-demo.mp4" data-media-alt="Simulation video of the quadruped crawl on flat ground">
+                            <i class="fas fa-circle-play" aria-hidden="true"></i>
+                            <strong>Video demo — model-based quadruped walking</strong>
+                            <code>media/walking-demo.mp4</code>
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">MuJoCo crawl driven by MPC, whole-body IK-QP, and joint-level torque control.</figcaption>
+                    </figure>
+
+                    <h2 id="mpc" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">3. Model Predictive Control</h2>
+                    <p>
+                        The core of the system is a <b>convex receding-horizon MPC</b> that predicts the robot's center-of-mass motion and selects the ground-reaction forces required to track the desired body trajectory. A simplified single-rigid-body model keeps the optimization fast enough for repeated online solving.
+                    </p>
+                    <h4>State and Dynamics</h4>
+                    <p>The 12-dimensional robot state and 12-dimensional input are:</p>
+                    <div class="equation">\[x=\begin{bmatrix}p^T&v^T&\eta^T&\omega^T\end{bmatrix}^{T},\qquad u=\begin{bmatrix}f_{FL}^T&f_{FR}^T&f_{RL}^T&f_{RR}^T\end{bmatrix}^{T}\]</div>
+                    <p>
+                        Position \(p\), velocity \(v\), orientation \(\eta\), and angular velocity \(\omega\) define the predicted body motion. The four foot forces \(f_i\) influence both the linear and angular acceleration:
+                    </p>
+                    <div class="equation">\[m\ddot p=\sum_{i=1}^{4}f_i+mg,\qquad I_W\dot\omega=\sum_{i=1}^{4}(r_i-p)\times f_i\]</div>
+                    <p>
+                        After discretization, the system has affine dynamics \(x_{k+1}=Ax_k+B_ku_k+d\), allowing the controller to solve a quadratic program. It uses <b>15 prediction steps of 40 ms</b>, providing a 0.60 s look-ahead horizon.
+                    </p>
+                    <h4>Optimization Objective</h4>
+                    <p>
+                        The controller balances accurate body-state tracking against the magnitude and rate of change of support forces:
+                    </p>
+                    <div class="equation">\[\min_{x,u}\sum_{k=0}^{N-1}\!\left[\|x_{k+1}-x^{ref}_{k+1}\|^2_Q+\|u_k\|^2_R+\|u_k-u_{k-1}\|^2_S\right]\]</div>
+                    <p>
+                        Contact constraints require stance feet to push within a linearized friction cone, while a swinging foot must apply zero force. The scheduled contact sequence is supplied externally; <b>MPC optimizes forces, not gait timing or foothold locations</b>. I use OSQP to solve the convex QP and apply only the first optimized force action before replanning.
+                    </p>
+                    <figure class="my-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="media/walking-trajectory.png" data-media-alt="Body position and velocity tracking plot">
+                                <i class="fas fa-chart-line" aria-hidden="true"></i>
+                                <strong>Trajectory tracking</strong>
+                                <code>media/walking-trajectory.png</code>
+                            </div>
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="media/contact-forces.png" data-media-alt="Planned and simulated foot contact forces plot">
+                                <i class="fas fa-chart-area" aria-hidden="true"></i>
+                                <strong>Contact-force distribution</strong>
+                                <code>media/contact-forces.png</code>
+                            </div>
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">Suggested plots: center-of-mass tracking (left) and time-varying optimized foot forces (right).</figcaption>
+                    </figure>
+
+                    <h2 id="whole-body" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">4. Whole-Body IK-QP and Torque Control</h2>
+                    <p>
+                        The MPC determines how the body should move and how support forces should be distributed, but it does not directly compute the twelve motor commands. For this, I implemented a separate whole-body <b>velocity inverse-kinematics QP</b> that works at a higher update rate.
+                    </p>
+                    <h4>Instantaneous Velocity Optimization</h4>
+                    <p>
+                        The optimization variable is the 18-dimensional generalized velocity \(\nu\): six floating-base velocities and twelve joint velocities. MuJoCo provides the COM, body rotation, and foot Jacobians. The QP follows the desired COM and body orientation, tracks the swinging foot, and regularizes joint posture while imposing approximately stationary stance feet.
+                    </p>
+                    <div class="equation">\[\min_{\nu}\;w_b^2\|J_C\nu-v_b^*\|^2+w_a^2\|J_R\nu-\omega_b^*\|^2+\sum_{i\in\mathcal S}w_f^2\|J_i\nu-v_i^*\|^2+\cdots\]</div>
+                    <p>
+                        Joint-position and velocity limits are enforced in the QP. The optimized joint velocities are integrated into position targets, then tracked by an explicit joint PD controller. Planned MPC contact forces enter the motors through a separate Jacobian-transpose feedforward term.
+                    </p>
+                    <div class="equation">\[\tau=\tau_{PD}+\tau_{ff}\]</div>
+                    <p>
+                        The simulation advances at <b>500 Hz</b>, whole-body IK-QP updates at <b>250 Hz</b>, and the centroidal MPC runs at <b>25 Hz</b>. This separation allows slower force planning and faster joint-level motion tracking.
+                    </p>
+
+                    <h2 id="climbing" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">5. Vertical Climbing with the Same Controller</h2>
+                    <p>
+                        The next step was to extend the walking architecture to a vertical wall. Rather than introducing an entirely different controller, I retained the MPC, whole-body QP, and PD structure and changed the <b>surface geometry, contact-force constraints, and body-orientation reference</b>.
+                    </p>
+                    <h4>Surface-Aligned Contact Forces</h4>
+                    <p>
+                        For each contacting foot, a surface frame defines a forward direction \(t_f\), a lateral direction \(t_l\), and a normal \(n\). The optimized forces still live in world coordinates; the surface frame only transforms them for contact constraints.
+                    </p>
+                    <div class="equation">\[R_{s,i}=\begin{bmatrix}t_{f,i}&t_{l,i}&n_i\end{bmatrix},\qquad f_i^s=R_{s,i}^T f_i^W\]</div>
+                    <p>
+                        A ground contact can push on the floor but not pull it. An attached wall foot, by contrast, must also be able to supply tensile forces against gravity. The simulation models wall attachment with <b>ideal MuJoCo constraints</b>; real microspine or adhesive gripping is not yet validated.
+                    </p>
+                    <h4>Feline-Inspired Climbing Posture</h4>
+                    <p>
+                        I also explored an alternative climbing posture inspired by feline movement: the trunk is referenced closer to the wall, the front feet are placed higher, and the rear feet lower. The wall orientation is tracked through a local rotation-vector error instead of an absolute Euler-angle representation, avoiding the singularity near the head-up wall pose.
+                    </p>
+                    <figure class="my-8">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="media/climbing-demo.mp4" data-media-alt="Video of simulated quadruped climbing a vertical wall">
+                            <i class="fas fa-circle-play" aria-hidden="true"></i>
+                            <strong>Video demo — vertical wall climbing</strong>
+                            <code>media/climbing-demo.mp4</code>
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">The same optimization-based control chain operates with wall-specific contact constraints and body references.</figcaption>
+                    </figure>
+                    <figure class="my-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="media/standard-climb.jpg" data-media-alt="Standard quadruped posture while climbing">
+                                <i class="fas fa-image" aria-hidden="true"></i>
+                                <strong>Standard wall posture</strong>
+                                <code>media/standard-climb.jpg</code>
+                            </div>
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="media/feline-climb.jpg" data-media-alt="Feline-inspired quadruped posture while climbing">
+                                <i class="fas fa-image" aria-hidden="true"></i>
+                                <strong>Feline-inspired posture</strong>
+                                <code>media/feline-climb.jpg</code>
+                            </div>
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">Comparison of the conventional and feline-inspired body and foothold references.</figcaption>
+                    </figure>
+
+                    <h2 id="transition" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">6. Walking-to-Wall Transition</h2>
+                    <p>
+                        Walking and climbing separately are not enough: the difficult part is the transition in which rear feet remain on the ground while front feet attach to the wall. This is a <b>mixed-contact optimization problem</b>, because each foot may have a different surface orientation and force model at the same instant.
+                    </p>
+                    <p>
+                        I extended the contact representation from a single global surface to <b>per-foot, per-horizon-step modes</b>:
+                    </p>
+                    <div class="equation">\[m_{i,k}\in\{\mathrm{GROUND},\;\mathrm{WALL},\;\mathrm{SWING}\}\]</div>
+                    <p>
+                        A foot in ground contact receives unilateral friction constraints; a wall-attached foot receives an idealized attachment force box; and a swinging foot receives zero contact force. The centroidal dynamics, MPC objective, and solver remain unchanged. The transition itself uses a prescribed sequence of approach, rearing, front attachment, incremental climbing steps, rear transfer, and final wall locomotion.
+                    </p>
+                    <figure class="my-8">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="media/transition-demo.mp4" data-media-alt="Video of the complete floor-to-wall quadruped transition">
+                            <i class="fas fa-circle-play" aria-hidden="true"></i>
+                            <strong>Video demo — complete floor-to-wall transition</strong>
+                            <code>media/transition-demo.mp4</code>
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">Prescribed gait phases transfer the robot from all-ground contacts to all-wall contacts without switching to an unrelated control architecture.</figcaption>
+                    </figure>
+                    <p>
+                        A stored 47-second MuJoCo run completes the transition, attaches all four feet to the wall, enters feline-style climbing, and records <b>no MPC or IK-QP failures</b>. The result is an important proof of the mixed-contact software architecture, but does not yet demonstrate autonomous contact selection or physical attachment mechanics.
+                    </p>
+
+                    <h2 id="tail" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">7. Tendon-Driven Soft-Tail Control</h2>
+                    <p>
+                        In parallel with locomotion, I am investigating a compliant tail as a potential tool for stabilization, exploration, and manipulation. The simulated experimental tail is <b>43 cm long</b>, uses four antagonistic tendons, and contains three regions of progressively decreasing bending stiffness. The tail is modeled as an elastic cable in MuJoCo rather than as a chain of rigid actuated joints.
+                    </p>
+                    <figure class="my-8">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="media/soft-tail-model.jpg" data-media-alt="Three-section elastic tendon-driven robotic tail model">
+                            <i class="fas fa-image" aria-hidden="true"></i>
+                            <strong>Three-section soft-tail model</strong>
+                            <code>media/soft-tail-model.jpg</code>
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">Graded elastic backbone with continuous tendon routing and compliant distal section.</figcaption>
+                    </figure>
+                    <h4>Three-Section PCC and Gravity-Aware Modeling</h4>
+                    <p>
+                        I model the continuum geometry using <b>Piecewise Constant Curvature (PCC)</b>, representing each section with two bending coordinates. Four tendon lengths form two aggregate antagonistic bending commands; the section distribution is obtained using calibrated gains or an experimental gravity-aware equilibrium model. The sections are not independently actuated.
+                    </p>
+                    <div class="equation">\[q=\begin{bmatrix}b_{y,1}&b_{z,1}&b_{y,2}&b_{z,2}&b_{y,3}&b_{z,3}\end{bmatrix}^{T}\]</div>
+                    <p>
+                        The gravity-aware model predicts a plausible elastic equilibrium from tendon constraints, stiffness, and gravity; PCC forward kinematics then estimate the tail-tip position. A tendon-to-tip Jacobian describes how changing tendon lengths moves the tip:
+                    </p>
+                    <div class="equation">\[\hat p_{tip}=f_{PCC}(q^*(l)),\qquad J=\frac{\partial \hat p_{tip}}{\partial l}=\frac{\partial \hat p_{tip}}{\partial q^*}\frac{\partial q^*}{\partial l}\]</div>
+                    <h4>Tendon QP and Force Control</h4>
+                    <p>
+                        A convex tendon-rate QP selects four tendon motions that best realize a target tip velocity while respecting travel limits, tendon speed limits, smoothing, and neutral-length regularization. The desired tendon lengths are integrated from those rates, then tracked with low-level PID tension control.
+                    </p>
+                    <div class="equation">\[\dot l^*=\arg\min_{\dot l}\;w_t\|J\dot l-v_{target}\|^2+w_m\|\dot l\|^2+w_s\|\dot l-\dot l_{prev}\|^2+\cdots\]</div>
+                    <p>
+                        Separate experiments also investigate coupling tail curvature to the centroidal MPC through an inertial-reaction model. In a matched disturbance test with the earlier one-section tail, the tail-aware controller reduced pitch RMS by <b>8.16%</b> over the disturbance-and-recovery window. The improvement was not uniform across other metrics, so this remains exploratory.
+                    </p>
+                    <h4>Object Wrapping and Pickup</h4>
+                    <p>
+                        The graded tail has also completed an isolated simulated grasp: it wraps laterally around a small cylinder, then bends in an orthogonal plane to lift it. The recorded experiment sustained a <b>23.45 mm cylinder-center lift</b> and retained the free object in the air for <b>4 seconds</b>, without an artificial weld. The scene uses a fixed object pose and staging collar; it is not a perception-driven autonomous grasp.
+                    </p>
+                    <figure class="my-8">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="media/tail-grasp-demo.mp4" data-media-alt="Video showing simulated soft tail wrapping around and lifting a cylinder">
+                            <i class="fas fa-circle-play" aria-hidden="true"></i>
+                            <strong>Video demo — continuum-tail wrapping and pickup</strong>
+                            <code>media/tail-grasp-demo.mp4</code>
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">Orthogonal-plane tail manipulation: lateral wrap followed by lift.</figcaption>
+                    </figure>
+
+                    <h2 id="results" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">8. Simulation Results &amp; Future Work</h2>
+                    <p>
+                        The current implementation has a validated walking baseline and separately recorded climbing, transition, and tail experiments. The following measurements come from saved MuJoCo logs and test summaries, not physical hardware trials.
+                    </p>
+                    <table class="technical-table">
+                        <thead><tr><th>Experiment</th><th>Recorded Result</th></tr></thead>
+                        <tbody>
+                            <tr><td>30 s walking, 0.15 m/s command</td><td>0.1509 m/s mean velocity</td></tr>
+                            <tr><td>Walking COM-height tracking</td><td>2.35 mm RMS error</td></tr>
+                            <tr><td>Walking roll / pitch RMS</td><td>0.20° / 0.20°</td></tr>
+                            <tr><td>Walking MPC / IK-QP mean solve time</td><td>2.09 / 0.37 ms</td></tr>
+                            <tr><td>Standalone wall climb</td><td>0.383 m upward COM gain</td></tr>
+                            <tr><td>Floor-to-wall transition</td><td>47 s; completed successfully</td></tr>
+                            <tr><td>Soft-tail cylinder pickup</td><td>23.45 mm lift; 4 s hold</td></tr>
+                        </tbody>
+                    </table>
+                    <p>
+                        The simulation establishes that a single model-based control stack can accommodate very different contact orientations. The next challenges are replacing ideal wall attachments with realistic gripping mechanics, estimating contact geometry from perception, planning contact transitions autonomously, and transferring the algorithms to a custom physical robot.
+                    </p>
+                    <h4>Mechanical Design</h4>
+                    <p>
+                        A separate parametric CAD model contains the chassis, leg interfaces, actuator placeholders, and a tail mount. It exports STEP and STL files and shares geometry conventions with the MuJoCo model. These are preliminary mechanical designs, not yet a validated manufactured prototype.
+                    </p>
+                    <figure class="my-8">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="media/cad-assembly.jpg" data-media-alt="Parametric CAD of the quadruped with soft-tail adapter">
+                            <i class="fas fa-cubes" aria-hidden="true"></i>
+                            <strong>Parametric CAD assembly / prototype image</strong>
+                            <code>media/cad-assembly.jpg</code>
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">Space reserved for the evolving CAD assembly or a photograph of the physical prototype.</figcaption>
+                    </figure>
+                    <p>
+                        <b>Research context:</b> Ongoing work at POSTECH's Bio-Inspired Robotics &amp; Design Lab. This page documents the implementation as a research prototype; the experiments and results above are from simulation unless explicitly stated otherwise.
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Media slots auto-activate when the corresponding file is placed into ./media/.
+        // Missing media retain attractive, labeled placeholders rather than broken images.
+        document.querySelectorAll('[data-media-src]').forEach(slot => {
+            const src = slot.getAttribute('data-media-src');
+            const alt = slot.getAttribute('data-media-alt') || 'Project media';
+            const kind = slot.getAttribute('data-media-type');
+            if (kind === 'image') {
+                const img = new Image();
+                img.alt = alt;
+                img.loading = 'lazy';
+                img.addEventListener('load', () => {
+                    slot.classList.add('media-loaded');
+                    slot.classList.remove('media-placeholder', 'aspect-video');
+                    slot.replaceChildren(img);
+                });
+                img.src = src;
+            } else if (kind === 'video') {
+                const video = document.createElement('video');
+                video.controls = true;
+                video.playsInline = true;
+                video.preload = 'metadata';
+                video.setAttribute('aria-label', alt);
+                video.addEventListener('loadedmetadata', () => {
+                    slot.classList.add('media-loaded');
+                    slot.classList.remove('media-placeholder', 'aspect-video');
+                    slot.replaceChildren(video);
+                }, { once: true });
+                video.src = src;
+                video.load();
+            }
+        });
+
+        // Original portfolio behavior: highlight the currently visible section.
+        const sections = document.querySelectorAll('main h2[id]');
+        const navLinks = document.querySelectorAll('#nav-menu a');
+        if (sections.length === 0 || navLinks.length === 0) return;
+        const observer = new IntersectionObserver(() => {
+            let currentActiveId = sections[0].id;
+            sections.forEach(section => {
+                if (section.getBoundingClientRect().top < window.innerHeight / 2) currentActiveId = section.id;
+            });
+            navLinks.forEach(link => {
+                const navText = link.querySelector('.nav-text');
+                const navIndicator = link.querySelector('.nav-indicator');
+                const linkId = link.getAttribute('href').substring(1);
+                if (linkId === currentActiveId) {
+                    navText.classList.add('active-nav-text');
+                    navIndicator.classList.add('w-16', 'bg-slate-800');
+                    navIndicator.classList.remove('w-8', 'bg-slate-400');
+                } else {
+                    navText.classList.remove('active-nav-text');
+                    navIndicator.classList.remove('w-16', 'bg-slate-800');
+                    navIndicator.classList.add('w-8', 'bg-slate-400');
+                }
+            });
+        }, { rootMargin: '-50% 0px -50% 0px', threshold: 0 });
+        sections.forEach(section => observer.observe(section));
+    });
+    </script>
+</body>
+</html>
 
