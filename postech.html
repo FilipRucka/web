@@ -208,10 +208,10 @@
                         Most quadruped locomotion controllers assume contact with a horizontal floor. Climbing introduces different contact-force directions, while a ground-to-wall transition requires the robot to support its weight with feet attached to <i>different surfaces at the same time</i>. The research investigates how much of a single controller can be retained across these modes.
                     </p>
                     <figure class="my-8">
-                        <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="media/robot-overview.jpg" data-media-alt="Overview of the bio-inspired quadruped and soft tail in simulation">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="robot-overview.jpg" data-media-alt="Overview of the bio-inspired quadruped and soft tail in simulation">
                             <i class="fas fa-image" aria-hidden="true"></i>
                             <strong>Robot overview / simulation render</strong>
-                            <code>media/robot-overview.jpg</code>
+                            <code>robot-overview.jpg</code>
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">Overview of the quadruped simulation platform and the proposed tail-equipped research system.</figcaption>
                     </figure>
@@ -243,10 +243,10 @@
                         Here, \(s\in[0,1]\) is the normalized swing phase, \(p_0\) and \(p_1\) are the liftoff and touchdown positions, and \(H=0.045\,\mathrm{m}\). The resulting desired foot velocity becomes a task in the whole-body QP.
                     </p>
                     <figure class="my-8">
-                        <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="media/walking-demo.mp4" data-media-alt="Simulation video of the quadruped crawl on flat ground">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="walking-demo.mp4" data-media-alt="Simulation video of the quadruped crawl on flat ground">
                             <i class="fas fa-circle-play" aria-hidden="true"></i>
                             <strong>Video demo — model-based quadruped walking</strong>
-                            <code>media/walking-demo.mp4</code>
+                            <code>walking-demo.mp4</code>
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">MuJoCo crawl driven by MPC, whole-body IK-QP, and joint-level torque control.</figcaption>
                     </figure>
@@ -275,15 +275,15 @@
                     </p>
                     <figure class="my-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="media/walking-trajectory.png" data-media-alt="Body position and velocity tracking plot">
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="walking-trajectory.png" data-media-alt="Body position and velocity tracking plot">
                                 <i class="fas fa-chart-line" aria-hidden="true"></i>
                                 <strong>Trajectory tracking</strong>
-                                <code>media/walking-trajectory.png</code>
+                                <code>walking-trajectory.png</code>
                             </div>
-                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="media/contact-forces.png" data-media-alt="Planned and simulated foot contact forces plot">
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="contact-forces.png" data-media-alt="Planned and simulated foot contact forces plot">
                                 <i class="fas fa-chart-area" aria-hidden="true"></i>
                                 <strong>Contact-force distribution</strong>
-                                <code>media/contact-forces.png</code>
+                                <code>contact-forces.png</code>
                             </div>
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">Suggested plots: center-of-mass tracking (left) and time-varying optimized foot forces (right).</figcaption>
@@ -323,24 +323,24 @@
                         I also explored an alternative climbing posture inspired by feline movement: the trunk is referenced closer to the wall, the front feet are placed higher, and the rear feet lower. The wall orientation is tracked through a local rotation-vector error instead of an absolute Euler-angle representation, avoiding the singularity near the head-up wall pose.
                     </p>
                     <figure class="my-8">
-                        <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="media/climbing-demo.mp4" data-media-alt="Video of simulated quadruped climbing a vertical wall">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="climbing-demo.mp4" data-media-alt="Video of simulated quadruped climbing a vertical wall">
                             <i class="fas fa-circle-play" aria-hidden="true"></i>
                             <strong>Video demo — vertical wall climbing</strong>
-                            <code>media/climbing-demo.mp4</code>
+                            <code>climbing-demo.mp4</code>
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">The same optimization-based control chain operates with wall-specific contact constraints and body references.</figcaption>
                     </figure>
                     <figure class="my-8">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="media/standard-climb.jpg" data-media-alt="Standard quadruped posture while climbing">
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="standard-climb.jpg" data-media-alt="Standard quadruped posture while climbing">
                                 <i class="fas fa-image" aria-hidden="true"></i>
                                 <strong>Standard wall posture</strong>
-                                <code>media/standard-climb.jpg</code>
+                                <code>standard-climb.jpg</code>
                             </div>
-                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="media/feline-climb.jpg" data-media-alt="Feline-inspired quadruped posture while climbing">
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="feline-climb.jpg" data-media-alt="Feline-inspired quadruped posture while climbing">
                                 <i class="fas fa-image" aria-hidden="true"></i>
                                 <strong>Feline-inspired posture</strong>
-                                <code>media/feline-climb.jpg</code>
+                                <code>feline-climb.jpg</code>
                             </div>
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">Comparison of the conventional and feline-inspired body and foothold references.</figcaption>
@@ -358,10 +358,10 @@
                         A foot in ground contact receives unilateral friction constraints; a wall-attached foot receives an idealized attachment force box; and a swinging foot receives zero contact force. The centroidal dynamics, MPC objective, and solver remain unchanged. The transition itself uses a prescribed sequence of approach, rearing, front attachment, incremental climbing steps, rear transfer, and final wall locomotion.
                     </p>
                     <figure class="my-8">
-                        <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="media/transition-demo.mp4" data-media-alt="Video of the complete floor-to-wall quadruped transition">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="transition-demo.mp4" data-media-alt="Video of the complete floor-to-wall quadruped transition">
                             <i class="fas fa-circle-play" aria-hidden="true"></i>
                             <strong>Video demo — complete floor-to-wall transition</strong>
-                            <code>media/transition-demo.mp4</code>
+                            <code>transition-demo.mp4</code>
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">Prescribed gait phases transfer the robot from all-ground contacts to all-wall contacts without switching to an unrelated control architecture.</figcaption>
                     </figure>
@@ -374,10 +374,10 @@
                         In parallel with locomotion, I am investigating a compliant tail as a potential tool for stabilization, exploration, and manipulation. The simulated experimental tail is <b>43 cm long</b>, uses four antagonistic tendons, and contains three regions of progressively decreasing bending stiffness. The tail is modeled as an elastic cable in MuJoCo rather than as a chain of rigid actuated joints.
                     </p>
                     <figure class="my-8">
-                        <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="media/soft-tail-model.jpg" data-media-alt="Three-section elastic tendon-driven robotic tail model">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="soft-tail-model.jpg" data-media-alt="Three-section elastic tendon-driven robotic tail model">
                             <i class="fas fa-image" aria-hidden="true"></i>
                             <strong>Three-section soft-tail model</strong>
-                            <code>media/soft-tail-model.jpg</code>
+                            <code>soft-tail-model.jpg</code>
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">Graded elastic backbone with continuous tendon routing and compliant distal section.</figcaption>
                     </figure>
@@ -403,10 +403,10 @@
                         The graded tail has also completed an isolated simulated grasp: it wraps laterally around a small cylinder, then bends in an orthogonal plane to lift it. The recorded experiment sustained a <b>23.45 mm cylinder-center lift</b> and retained the free object in the air for <b>4 seconds</b>, without an artificial weld. The scene uses a fixed object pose and staging collar; it is not a perception-driven autonomous grasp.
                     </p>
                     <figure class="my-8">
-                        <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="media/tail-grasp-demo.mp4" data-media-alt="Video showing simulated soft tail wrapping around and lifting a cylinder">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="tail-grasp-demo.mp4" data-media-alt="Video showing simulated soft tail wrapping around and lifting a cylinder">
                             <i class="fas fa-circle-play" aria-hidden="true"></i>
                             <strong>Video demo — continuum-tail wrapping and pickup</strong>
-                            <code>media/tail-grasp-demo.mp4</code>
+                            <code>tail-grasp-demo.mp4</code>
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">Orthogonal-plane tail manipulation: lateral wrap followed by lift.</figcaption>
                     </figure>
@@ -435,10 +435,10 @@
                         A separate parametric CAD model contains the chassis, leg interfaces, actuator placeholders, and a tail mount. It exports STEP and STL files and shares geometry conventions with the MuJoCo model. These are preliminary mechanical designs, not yet a validated manufactured prototype.
                     </p>
                     <figure class="my-8">
-                        <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="media/cad-assembly.jpg" data-media-alt="Parametric CAD of the quadruped with soft-tail adapter">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="cad-assembly.jpg" data-media-alt="Parametric CAD of the quadruped with soft-tail adapter">
                             <i class="fas fa-cubes" aria-hidden="true"></i>
                             <strong>Parametric CAD assembly / prototype image</strong>
-                            <code>media/cad-assembly.jpg</code>
+                            <code>cad-assembly.jpg</code>
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">Space reserved for the evolving CAD assembly or a photograph of the physical prototype.</figcaption>
                     </figure>
@@ -452,7 +452,7 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Media slots auto-activate when the corresponding file is placed into ./media/.
+        // Media slots auto-activate when the corresponding file is placed into ./.
         // Missing media retain attractive, labeled placeholders rather than broken images.
         document.querySelectorAll('[data-media-src]').forEach(slot => {
             const src = slot.getAttribute('data-media-src');
