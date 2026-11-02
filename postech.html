@@ -175,7 +175,6 @@
                             <li>Mixed-Contact Transitions</li>
                             <li>Piecewise Constant Curvature</li>
                             <li>Tendon-Driven Soft Robotics</li>
-                            <li>Parametric Mechanical Design</li>
                         </ul>
                     </dd>
                 </dl>
@@ -274,21 +273,8 @@
                     <p>
                         Contact constraints require stance feet to push within a linearized friction cone, while a swinging foot must apply zero force. The scheduled contact sequence is supplied externally; <b>MPC optimizes forces, not gait timing or foothold locations</b>. I use OSQP to solve the convex QP and apply only the first optimized force action before replanning.
                     </p>
-                    <figure class="my-8">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="walking-trajectory.png" data-media-alt="Body position and velocity tracking plot">
-                                <i class="fas fa-chart-line" aria-hidden="true"></i>
-                                <strong>Trajectory tracking</strong>
-                                <code>walking-trajectory.png</code>
-                            </div>
-                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="contact-forces.png" data-media-alt="Planned and simulated foot contact forces plot">
-                                <i class="fas fa-chart-area" aria-hidden="true"></i>
-                                <strong>Contact-force distribution</strong>
-                                <code>contact-forces.png</code>
-                            </div>
-                        </div>
-                        <figcaption class="text-sm text-center text-slate-500 mt-3">Suggested plots: center-of-mass tracking (left) and time-varying optimized foot forces (right).</figcaption>
-                    </figure>
+                
+                 
 
                     <h2 id="whole-body" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">4. Whole-Body IK-QP and Torque Control</h2>
                     <p>
@@ -331,21 +317,7 @@
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">The same optimization-based control chain operates with wall-specific contact constraints and body references.</figcaption>
                     </figure>
-                    <figure class="my-8">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="standard-climb.jpg" data-media-alt="Standard quadruped posture while climbing">
-                                <i class="fas fa-image" aria-hidden="true"></i>
-                                <strong>Standard wall posture</strong>
-                                <code>standard-climb.jpg</code>
-                            </div>
-                            <div class="media-slot media-placeholder aspect-video" data-media-type="image" data-media-src="feline-climb.jpg" data-media-alt="Feline-inspired quadruped posture while climbing">
-                                <i class="fas fa-image" aria-hidden="true"></i>
-                                <strong>Feline-inspired posture</strong>
-                                <code>feline-climb.jpg</code>
-                            </div>
-                        </div>
-                        <figcaption class="text-sm text-center text-slate-500 mt-3">Comparison of the conventional and feline-inspired body and foothold references.</figcaption>
-                    </figure>
+        
 
                     <h2 id="transition" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">6. Walking-to-Wall Transition</h2>
                     <p>
