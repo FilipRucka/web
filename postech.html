@@ -27,6 +27,9 @@
             font-size: 1.2rem; margin: 1.5rem 0; color: #334155;
             overflow-x: auto; padding: .25rem 0;
         }
+        /* Keep MathJax inline SVGs inline after Tailwind's global svg reset. */
+        .prose mjx-container[jax="SVG"]:not([display="true"]) { display: inline !important; }
+        .prose mjx-container[jax="SVG"]:not([display="true"]) > svg { display: inline-block !important; }
         .active-nav-text { color: #2563eb; transform: translateX(5px); font-weight: 600; }
         .technical-table { width: 100%; border-collapse: collapse; font-size: .875rem; margin: 1.5rem 0; }
         .technical-table th, .technical-table td { border-bottom: 1px solid #e2e8f0; padding: .65rem .65rem; text-align: left; vertical-align: top; }
@@ -297,7 +300,7 @@
                     <p>
                         The optimization variable is the 18-dimensional generalized velocity \(\nu\): six floating-base velocities and twelve joint velocities. MuJoCo provides the COM, body rotation, and foot Jacobians. The QP follows the desired COM and body orientation, tracks the swinging foot, and regularizes joint posture while imposing approximately stationary stance feet.
                     </p>
-                    <div class="equation">\[\min_{\nu}\;w_b^2\|J_C\nu-v_b^*\|^2+w_a^2\|J_R\nu-\omega_b^*\|^2+\sum_{i\in\mathcal S}w_f^2\|J_i\nu-v_i^*\|^2+\cdots\]</div>
+                    <div class="equation">\[\begin{aligned}\min_{\nu}\;&\left\|w_b\left(J_C\nu-v_b^*\right)\right\|^2+\left\|w_a\left(J_R\nu-\omega_b^*\right)\right\|^2+\sum_{i\in\mathcal S}\left\|w_f\left(J_i\nu-v_i^*\right)\right\|^2\\&+\left\|w_p\left(S_j\nu-0.8\left(q_{\mathrm{nom}}-q_{\mathrm{cmd}}\right)\right)\right\|^2+\left\|w_s\left(\nu-\nu_{\mathrm{previous}}\right)\right\|^2+10^{-6}\|\nu\|^2\end{aligned}\]</div>
                     <p>
                         Joint-position and velocity limits are enforced in the QP. The optimized joint velocities are integrated into position targets, then tracked by an explicit joint PD controller. Planned MPC contact forces enter the motors through a separate Jacobian-transpose feedforward term.
                     </p>
@@ -394,7 +397,7 @@
                     <p>
                         A convex tendon-rate QP selects four tendon motions that best realize a target tip velocity while respecting travel limits, tendon speed limits, smoothing, and neutral-length regularization. The desired tendon lengths are integrated from those rates, then tracked with low-level PID tension control.
                     </p>
-                    <div class="equation">\[\dot l^*=\arg\min_{\dot l}\;w_t\|J\dot l-v_{target}\|^2+w_m\|\dot l\|^2+w_s\|\dot l-\dot l_{prev}\|^2+\cdots\]</div>
+                    <div class="equation">\[\begin{aligned}\min_{\dot l}\;&w_t\left\|J\dot l-v_{\mathrm{target}}\right\|^2+w_m\|\dot l\|^2\\&+w_s\left\|\dot l-\dot l_{\mathrm{prev}}\right\|^2+w_c\left\|l_d-l_0+\Delta t\,\dot l\right\|^2\end{aligned}\]</div>
                     <p>
                         Separate experiments also investigate coupling tail curvature to the centroidal MPC through an inertial-reaction model. In a matched disturbance test with the earlier one-section tail, the tail-aware controller reduced pitch RMS by <b>8.16%</b> over the disturbance-and-recovery window. The improvement was not uniform across other metrics, so this remains exploratory.
                     </p>
@@ -498,4 +501,3 @@
     </script>
 </body>
 </html>
-
