@@ -350,7 +350,7 @@
                         <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="transition-demo.mp4" data-media-alt="Video showing the soft tail tracking its reference trajectory">
                             <i class="fas fa-circle-play" aria-hidden="true"></i>
                             <strong>Video demo — soft-tail reference tracking</strong>
-                            <code>transition-demo.mp4</code>
+                            <code>tail_test_demo.mp4</code>
                         </div>
                         <figcaption class="text-sm text-center text-slate-500 mt-3">Reference-tracking performance of the tendon-driven soft tail.</figcaption>
                     </figure>
@@ -384,24 +384,6 @@
                         <figcaption class="text-sm text-center text-slate-500 mt-3">Orthogonal-plane tail manipulation: lateral wrap followed by lift.</figcaption>
                     </figure>
 
-                    <h2 id="results" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">8. Simulation Results &amp; Future Work</h2>
-                    <p>
-                        The current implementation has a validated walking baseline and separately recorded climbing, transition, and tail experiments. The following measurements come from saved MuJoCo logs and test summaries, not physical hardware trials.
-                    </p>
-                    <table class="technical-table">
-                        <thead><tr><th>Experiment</th><th>Recorded Result</th></tr></thead>
-                        <tbody>
-                            <tr><td>30 s walking, 0.15 m/s command</td><td>0.1509 m/s mean velocity</td></tr>
-                            <tr><td>Walking COM-height tracking</td><td>2.35 mm RMS error</td></tr>
-                            <tr><td>Walking roll / pitch RMS</td><td>0.20° / 0.20°</td></tr>
-                            <tr><td>Walking MPC / IK-QP mean solve time</td><td>2.09 / 0.37 ms</td></tr>
-                            <tr><td>Standalone wall climb</td><td>0.383 m upward COM gain</td></tr>
-                            <tr><td>Floor-to-wall transition</td><td>47 s; completed successfully</td></tr>
-                            <tr><td>Soft-tail cylinder pickup</td><td>23.45 mm lift; 4 s hold</td></tr>
-                        </tbody>
-                    </table>
-                    <p>
-                        The simulation establishes that a single model-based control stack can accommodate very different contact orientations. The next challenges are replacing ideal wall attachments with realistic gripping mechanics, estimating contact geometry from perception, planning contact transitions autonomously, and transferring the algorithms to a custom physical robot.
                     
                 </div>
             </div>
