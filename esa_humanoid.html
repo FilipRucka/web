@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Predictive visual feedback and local alignment assistance for humanoid manipulation across a 2.6 s round-trip communication delay.">
+    <title>Predictive XR Telemanipulation Under Delay - Filip Ručka</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .prose p { margin-bottom: 1rem; }
+        .prose h4 { font-size: 1.15rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; color: #1e293b; }
+        .prose ul { list-style-position: inside; margin-left: 1rem; margin-bottom: 1rem; }
+        .prose li { margin-bottom: 0.5rem; }
+        .prose .equation {
+            display: block; text-align: center; font-family: 'Times New Roman', serif;
+            font-size: 1.2rem; margin: 1.5rem 0; color: #334155;
+            overflow-x: auto; padding: .25rem 0;
+        }
+        /* Keep MathJax inline SVGs inline after Tailwind's global svg reset. */
+        .prose mjx-container[jax="SVG"]:not([display="true"]) { display: inline !important; }
+        .prose mjx-container[jax="SVG"]:not([display="true"]) > svg { display: inline-block !important; }
+        .active-nav-text { color: #2563eb; transform: translateX(5px); font-weight: 600; }
+        .technical-table { width: 100%; border-collapse: collapse; font-size: .875rem; margin: 1.5rem 0; }
+        .technical-table th, .technical-table td { border-bottom: 1px solid #e2e8f0; padding: .65rem .65rem; text-align: left; vertical-align: top; }
+        .technical-table th { color: #1e293b; background: #f1f5f9; font-weight: 600; }
+        .technical-table td:not(:first-child), .technical-table th:not(:first-child) { text-align: right; }
+        .media-placeholder {
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            min-height: 0; background: #f8fafc; border: 2px dashed #cbd5e1;
+            border-radius: .5rem; text-align: center; padding: 1.5rem;
+        }
+        .media-placeholder i { font-size: 2rem; color: #94a3b8; margin-bottom: .75rem; }
+        .media-placeholder strong { color: #475569; font-size: .875rem; font-weight: 600; }
+        .media-placeholder code { color: #64748b; font-size: .75rem; margin-top: .5rem; overflow-wrap: anywhere; }
+        .media-slot.media-loaded { background: none; border: 0; padding: 0; min-height: 0; }
+        .media-slot img, .media-slot video { width: 100%; border-radius: .5rem; border: 1px solid #e2e8f0; box-shadow: 0 8px 16px -8px rgb(15 23 42 / .15); }
+        .media-slot video { background: #0f172a; }
+        .flow-node { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: .375rem; padding: .7rem .85rem; font-weight: 600; font-size: .875rem; color: #334155; text-align: center; }
+        .flow-arrow { text-align: center; color: #94a3b8; padding: .2rem; }
+        /* Small Tailwind-compatible fallback so the page remains readable offline. */
+        *, *::before, *::after { box-sizing: border-box; }
+        figure { margin-left: 0; margin-right: 0; }
+        body { margin: 0; background: #f8fafc; color: #334155; line-height: 1.5; }
+        a { color: inherit; text-decoration: none; }
+        .container { width: 100%; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .max-w-screen-lg { max-width: 1024px; }
+        .max-w-none { max-width: none; }
+        .max-w-md { max-width: 448px; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+        .mt-3 { margin-top: .75rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-8 { margin-top: 2rem; }
+        .mt-12 { margin-top: 3rem; }
+        .mb-3 { margin-bottom: .75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-12 { margin-bottom: 3rem; }
+        .my-7 { margin-top: 1.75rem; margin-bottom: 1.75rem; }
+        .my-8 { margin-top: 2rem; margin-bottom: 2rem; }
+        .mr-2 { margin-right: .5rem; }
+        .mr-4 { margin-right: 1rem; }
+        .pb-2 { padding-bottom: .5rem; }
+        .flex { display: flex; }
+        .grid { display: grid; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .font-semibold { font-weight: 600; }
+        .font-medium { font-weight: 500; }
+        .font-bold { font-weight: 700; }
+        .text-sm { font-size: .875rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+        .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+        .text-center { text-align: center; }
+        .text-slate-500 { color: #64748b; }
+        .text-slate-600 { color: #475569; }
+        .text-slate-700 { color: #334155; }
+        .text-slate-800 { color: #1e293b; }
+        .text-slate-900 { color: #0f172a; }
+        .text-blue-600 { color: #2563eb; }
+        .border-b { border-bottom: 1px solid #e2e8f0; }
+        .border-slate-200 { border-color: #e2e8f0; }
+        .border { border: 1px solid #e2e8f0; }
+        .rounded-lg { border-radius: .5rem; }
+        .w-8 { width: 2rem; }
+        .w-16 { width: 4rem; }
+        .h-px { height: 1px; }
+        .bg-slate-400 { background: #94a3b8; }
+        .bg-slate-800 { background: #1e293b; }
+        .aspect-video { aspect-ratio: 16/9; }
+        .hidden { display: none; }
+        .list-disc { list-style-type: disc; }
+        .list-inside { list-style-position: inside; }
+        .space-y-3 > :not(:first-child) { margin-top: .75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-x-12 { column-gap: 3rem; }
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        main > aside, main > div { min-width: 0; }
+        main.grid { grid-template-columns: minmax(0, 1fr); }
+        .nav-indicator { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+        #nav-menu { list-style: none; padding: 0; }
+        #nav-menu a { display: flex; align-items: center; }
+        .prose h2 { margin-top: 2rem; margin-bottom: 1rem; }
+        .prose p, .prose li { line-height: 1.65; }
+        @media (min-width: 640px) { .sm\:text-5xl { font-size: 3rem; line-height: 1.1; } }
+        @media (min-width: 768px) {
+            .md\:py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+            .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            main.md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .md\:col-span-1 { grid-column: span 1 / span 1; }
+            .md\:col-span-2 { grid-column: span 2 / span 2; }
+            .md\:items-start { align-items: start; }
+            .md\:sticky { position: sticky; }
+            .md\:top-24 { top: 6rem; }
+            .md\:block { display: block; }
+            .md\:mt-0 { margin-top: 0; }
+        }
+        @media (min-width: 1024px) { .lg\:py-24 { padding-top: 6rem; padding-bottom: 6rem; } }
+        @media (max-width: 640px) { .prose .equation { font-size: 1rem; } .technical-table { font-size: .76rem; } .media-placeholder { min-height: 145px; } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-700">
+    <div class="container mx-auto max-w-screen-lg px-6 py-12 md:py-20 lg:py-24">
+
+        <a href="./index.html" class="group flex items-center font-semibold text-blue-600 mb-12">
+            <i class="fas fa-arrow-left mr-2 transition-transform group-hover:-translate-x-1"></i>
+            Go Back to Portfolio
+        </a>
+
+        <header class="mb-12">
+            <h1 class="text-4xl font-bold text-slate-900 sm:text-5xl">Predictive XR Telemanipulation Under Delay</h1>
+            <p class="mt-3 text-lg text-slate-600">Predictive visual feedback and local alignment assistance for humanoid manipulation across a 2.6 s round-trip communication delay.</p>
+        </header>
+
+        <main class="grid md:grid-cols-3 md:items-start gap-x-12">
+            <!-- LEFT COLUMN: KEY DETAILS & NAVIGATION -->
+            <aside class="md:col-span-1 md:sticky md:top-24">
+                <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Key Details</h3>
+                <dl class="text-sm">
+                    <dt class="font-semibold text-slate-800">Project Type:</dt>
+                    <dd class="text-slate-600 mb-3">Personal Project (ESA EAC Robotics &amp; IoT Lab Focus)</dd>
+
+                    <dt class="font-semibold text-slate-800">Tools:</dt>
+                    <dd class="text-slate-600 mb-3">Python, C++17, MuJoCo, UDP, Pygame, OpenXR</dd>
+
+                    <dt class="font-semibold text-slate-800">Robot Model:</dt>
+                    <dd class="text-slate-600 mb-3">Unitree G1 (29-DoF Body + 7-DoF Articulated Hand)</dd>
+
+                    <dt class="font-semibold text-slate-800">Core Concepts:</dt>
+                    <dd class="text-slate-600">
+                        <ul class="list-disc list-inside">
+                            <li>Latency Compensation</li>
+                            <li>Causal Forward Prediction</li>
+                            <li>Constrained Damped Least-Squares IK</li>
+                            <li>Null-Space Joint Limits</li>
+                            <li>Shared Autonomy / Local Alignment</li>
+                            <li>C++17 Delay Queue &amp; Watchdog</li>
+                            <li>3D Frame Calibration</li>
+                        </ul>
+                    </dd>
+                </dl>
+
+                <nav class="hidden md:block mt-12">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">On this page</h3>
+                    <ul id="nav-menu" class="flex flex-col space-y-3 text-sm font-medium mt-4">
+                        <li><a href="#architecture" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Architecture &amp; Calibration</span></a></li>
+                        <li><a href="#ik" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Constrained Upper-Body IK</span></a></li>
+                        <li><a href="#prediction" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Delay &amp; Predictive Feedback</span></a></li>
+                        <li><a href="#alignment" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Local Alignment &amp; Grasping</span></a></li>
+                        <li><a href="#videos" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Experimental Videos</span></a></li>
+                        <li><a href="#benchmark" class="group flex items-center transition-all duration-300 text-slate-600 hover:text-slate-900"><span class="nav-indicator mr-4 h-px w-8 bg-slate-400 transition-all duration-300 group-hover:w-16 group-hover:bg-slate-800"></span><span class="nav-text">Benchmark &amp; Findings</span></a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- RIGHT COLUMN: TECHNICAL WALKTHROUGH -->
+            <div class="md:col-span-2 mt-8 md:mt-0">
+                <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Technical Walkthrough</h3>
+                <div class="prose max-w-none">
+                    <p>
+                        In lunar teleoperation, a 2.6 s round-trip communication delay makes direct manual control slow and error-prone because the operator has to wait nearly three seconds to see the result of every movement. Built around the research focus of ESA's EAC Robotics &amp; IoT Lab, this project tests how <b>predictive visual feedback</b> and <b>robot-side local alignment</b> improve sample-canister grasping, bench transfer, and cradle docking under a <b>1.3 s one-way delay</b>.
+                    </p>
+                    <p>
+                        The platform is a simulated Unitree G1 humanoid (29-DoF body plus an articulated 7-DoF right hand) in MuJoCo. The pelvis is fixed as a deliberate first scope so whole-body walking balance does not confound manipulation accuracy or latency measurements.
+                    </p>
+
+                    <figure class="my-8">
+                        <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="demo.mp4" data-media-alt="Side-by-side overview across all four experimental conditions">
+                            <i class="fas fa-circle-play" aria-hidden="true"></i>
+                            <strong>All four conditions (head POV vs. external view)</strong>
+                            <code>demo.mp4</code>
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">Side-by-side comparison across all four conditions: robot-head camera (left) and external view (right).</figcaption>
+                    </figure>
+
+                    <h2 id="architecture" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">1. Architecture &amp; Frame Calibration</h2>
+                    <p>
+                        The operator interface and the MuJoCo physics simulation run as separate UDP processes so ground-truth robot state never leaks into the operator's screen. Physics steps at <b>500 Hz</b>, inverse kinematics and joint servos run at <b>100 Hz</b>, and command/telemetry streams run at <b>30 Hz</b>.
+                    </p>
+
+                    <div class="my-7 mx-auto max-w-md" role="img" aria-label="Operator pose input feeds calibration over UDP to a C++17 delay queue with watchdog, driving constrained IK and local alignment in MuJoCo, returning delayed telemetry to the predictor.">
+                        <div class="flow-node">Operator Input &amp; Frame Calibration (30 Hz)</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-down"></i></div>
+                        <div class="flow-node">UDP &rarr; C++17 Delay Queue &amp; Watchdog</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-down"></i></div>
+                        <div class="flow-node">Constrained IK &amp; Local Alignment (100 Hz)</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-down"></i></div>
+                        <div class="flow-node">MuJoCo Physics &amp; Contacts (500 Hz)</div>
+                        <div class="flow-arrow"><i class="fas fa-arrow-down"></i></div>
+                        <div class="flow-node">Delayed Telemetry (30 Hz) &rarr; Forward Predictor</div>
+                    </div>
+
+                    <p>
+                        Denoting the robot-base, operator, controller, and end-effector frames by \(R\), \(O\), \(C\), and \(E\), re-indexing records the relative offset between the input controller and the robot hand. This lets the operator recenter their workspace at any time without causing a sudden jump in the robot's target:
+                    </p>
+                    <div class="equation">\[T_{R,O} = T_{R,E}(0)\left[T_{O,C}(0)\right]^{-1}, \qquad T_{R,E}^* = T_{R,O}T_{O,C}\]</div>
+                    <p>
+                        The interface accepts either desktop controls or live 6-DoF XR controller poses through the same \(T_{O,C}\) transform, smoothed with an exponential filter (\(\alpha = 1 - e^{-\Delta t / \tau}\), \(\tau = 0.10\,\mathrm{s}\)).
+                    </p>
+
+                    <h2 id="ik" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">2. Constrained Upper-Body IK</h2>
+                    <p>
+                        At 100 Hz, the controller solves across 8 degrees of freedom (seven right-arm joints plus waist pitch) using weighted damped least squares with a null-space joint-limit barrier:
+                    </p>
+                    <div class="equation">\[\dot{q} = J^T\left(JJ^T + \lambda^2 I\right)^{-1}e + \left(I - J^+J\right)g_{\mathrm{limit}}\]</div>
+                    <p>
+                        The error vector \(e\) combines Cartesian position, weighted quaternion orientation, and a reach-dependent waist posture objective. For nearby targets, the arm moves alone to keep the torso steady; for distant reaches, the solver smoothly introduces a forward waist lean capped around \(27^\circ\). Joint limits, velocity caps, workspace bounds, and an elbow/bench height barrier prevent self-collision and table scraping before MuJoCo's contact solver takes over.
+                    </p>
+
+                    <h2 id="prediction" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">3. Delay &amp; Predictive Feedback</h2>
+                    <p>
+                        A C++17 packet scheduler buffers timestamped UDP commands by \(1.3\,\mathrm{s}\), discards out-of-order packets, and runs a safety watchdog that freezes the arm if incoming commands stop for \(0.45\,\mathrm{s}\).
+                    </p>
+                    <p>
+                        To eliminate blind move-and-wait behavior across the \(2.6\,\mathrm{s}\) round-trip loop, the operator view renders a real-time cyan ghost marker showing where the end-effector is predicted to be right now. Crucially, the predictor never accesses true simulator state—it rebases strictly on incoming delayed telemetry and integrates unacknowledged commands forward with a first-order response model and quaternion interpolation:
+                    </p>
+                    <div class="equation">\[\hat{x}(t + \Delta t) = \hat{x}(t) + \left(1 - e^{-\Delta t / \tau_p}\right)\left(x_{\mathrm{cmd}} - \hat{x}(t)\right)\]</div>
+                    <p>
+                        Because the cyan marker responds immediately to operator commands while staying anchored to real delayed telemetry, the operator can guide the hand continuously without waiting for the video feed to catch up. Physical actuation remains driven solely by the delayed command queue.
+                    </p>
+
+                    <h2 id="alignment" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">4. Local Alignment &amp; Grasping</h2>
+                    <p>
+                        Predictive display feedback speeds up coarse motion, but small overshoots or prediction errors still make tight docking difficult when every correction takes \(2.6\,\mathrm{s}\) to travel back and forth. To solve this, I added a robot-side alignment assist that closes the fine positioning loop locally: once the closed hand carrying the canister enters a \(20\,\mathrm{cm}\) capture radius around the cradle, the controller blends in a bounded position correction toward the docking pose without waiting for operator input.
+                    </p>
+                    <p>
+                        Instead of substituting a simplified parallel jaw, the simulation keeps the Unitree G1's articulated 7-DoF right hand. IK, prediction, and grasping all share a single palm-center frame so finger motion never shifts the predicted target. Closing the hand curls the thumb, index, and middle fingers over \(0.45\,\mathrm{s}\) onto a grasp latch; opening releases the canister so it drops and settles into the cradle through normal MuJoCo contact physics.
+                    </p>
+
+                    <h2 id="videos" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">5. Experimental Videos</h2>
+                    <p>
+                        Conditions 2&ndash;4 all enforce a \(1.300\,\mathrm{s}\) delay in each direction. Left: robot-head POV seen by the operator. Right: external camera.
+                    </p>
+
+                    <h4>Condition 1 &mdash; Direct (0 s Delay)</h4>
+                    <figure class="my-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="condition_1_direct_head.mp4" data-media-alt="Condition 1 robot-head view">
+                                <i class="fas fa-circle-play" aria-hidden="true"></i>
+                                <strong>Head POV</strong>
+                                <code>condition_1_direct_head.mp4</code>
+                            </div>
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="condition_1_direct_external.mp4" data-media-alt="Condition 1 external view">
+                                <i class="fas fa-circle-play" aria-hidden="true"></i>
+                                <strong>External View</strong>
+                                <code>condition_1_direct_external.mp4</code>
+                            </div>
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">Zero-latency baseline: completes in 13.96 s with 3.11 cm placement error.</figcaption>
+                    </figure>
+
+                    <h4>Condition 2 &mdash; Delayed Direct (1.3 s Each Way)</h4>
+                    <figure class="my-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="condition_2_delayed_head.mp4" data-media-alt="Condition 2 robot-head view">
+                                <i class="fas fa-circle-play" aria-hidden="true"></i>
+                                <strong>Head POV</strong>
+                                <code>condition_2_delayed_head.mp4</code>
+                            </div>
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="condition_2_delayed_external.mp4" data-media-alt="Condition 2 external view">
+                                <i class="fas fa-circle-play" aria-hidden="true"></i>
+                                <strong>External View</strong>
+                                <code>condition_2_delayed_external.mp4</code>
+                            </div>
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">Uncompensated 2.6 s RTT: completion time slows to 31.28 s with 5.26 cm error.</figcaption>
+                    </figure>
+
+                    <h4>Condition 3 &mdash; Delayed + Prediction</h4>
+                    <figure class="my-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="condition_3_prediction_head.mp4" data-media-alt="Condition 3 robot-head view">
+                                <i class="fas fa-circle-play" aria-hidden="true"></i>
+                                <strong>Head POV</strong>
+                                <code>condition_3_prediction_head.mp4</code>
+                            </div>
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="condition_3_prediction_external.mp4" data-media-alt="Condition 3 external view">
+                                <i class="fas fa-circle-play" aria-hidden="true"></i>
+                                <strong>External View</strong>
+                                <code>condition_3_prediction_external.mp4</code>
+                            </div>
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">Cyan predicted marker cuts completion time by 23% (24.09 s); unassisted error stays at 5.25 cm.</figcaption>
+                    </figure>
+
+                    <h4>Condition 4 &mdash; Delayed + Prediction + Local Alignment</h4>
+                    <figure class="my-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="condition_4_prediction_assist_head.mp4" data-media-alt="Condition 4 robot-head view">
+                                <i class="fas fa-circle-play" aria-hidden="true"></i>
+                                <strong>Head POV</strong>
+                                <code>condition_4_prediction_assist_head.mp4</code>
+                            </div>
+                            <div class="media-slot media-placeholder aspect-video" data-media-type="video" data-media-src="condition_4_prediction_assist_external.mp4" data-media-alt="Condition 4 external view">
+                                <i class="fas fa-circle-play" aria-hidden="true"></i>
+                                <strong>External View</strong>
+                                <code>condition_4_prediction_assist_external.mp4</code>
+                            </div>
+                        </div>
+                        <figcaption class="text-sm text-center text-slate-500 mt-3">Adding 20 cm local alignment cuts placement error by 67% to 1.71 cm in 23.63 s.</figcaption>
+                    </figure>
+
+                    <h2 id="benchmark" class="text-3xl font-bold text-slate-900 mt-8 mb-4 scroll-mt-24">6. Benchmark &amp; Findings</h2>
+                    <p>
+                        Timing logs across Conditions 2&ndash;4 verified exact \(1.300\,\mathrm{s}\) packet arrival, \(1.300\text{--}1.302\,\mathrm{s}\) actuation onset (within the \(2\,\mathrm{ms}\) physics step), and \(1.300\,\mathrm{s}\) telemetry age.
+                    </p>
+
+                    <table class="technical-table">
+                        <thead>
+                            <tr>
+                                <th>Condition</th>
+                                <th>Tracking RMSE</th>
+                                <th>Prediction RMSE</th>
+                                <th>Placement Error</th>
+                                <th>Peak Force</th>
+                                <th>Complete / Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>1. Direct</strong></td>
+                                <td>3.02 cm</td>
+                                <td>0.25 cm</td>
+                                <td>3.11 cm</td>
+                                <td>51.0 N</td>
+                                <td>yes / 13.96 s</td>
+                            </tr>
+                            <tr>
+                                <td><strong>2. Delayed direct</strong></td>
+                                <td>8.97 cm</td>
+                                <td>2.37 cm</td>
+                                <td>5.26 cm</td>
+                                <td>12.7 N</td>
+                                <td>yes / 31.28 s</td>
+                            </tr>
+                            <tr>
+                                <td><strong>3. Delayed + prediction</strong></td>
+                                <td>10.23 cm</td>
+                                <td>2.69 cm</td>
+                                <td>5.25 cm</td>
+                                <td>12.7 N</td>
+                                <td>yes / 24.09 s</td>
+                            </tr>
+                            <tr>
+                                <td><strong>4. Prediction + assist</strong></td>
+                                <td>10.13 cm</td>
+                                <td>2.83 cm</td>
+                                <td><strong>1.71 cm</strong></td>
+                                <td>46.4 N</td>
+                                <td><strong>yes / 23.63 s</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-media-src]').forEach(slot => {
+            const src = slot.getAttribute('data-media-src');
+            const alt = slot.getAttribute('data-media-alt') || 'Project media';
+            const kind = slot.getAttribute('data-media-type');
+            if (kind === 'image') {
+                const img = new Image();
+                img.alt = alt;
+                img.loading = 'lazy';
+                img.addEventListener('load', () => {
+                    slot.classList.add('media-loaded');
+                    slot.classList.remove('media-placeholder', 'aspect-video');
+                    slot.replaceChildren(img);
+                });
+                img.src = src;
+            } else if (kind === 'video') {
+                const video = document.createElement('video');
+                video.controls = true;
+                video.muted = true;
+                video.loop = true;
+                video.playsInline = true;
+                video.preload = 'metadata';
+                video.setAttribute('aria-label', alt);
+                video.addEventListener('loadedmetadata', () => {
+                    slot.classList.add('media-loaded');
+                    slot.classList.remove('media-placeholder', 'aspect-video');
+                    slot.replaceChildren(video);
+                }, { once: true });
+                video.src = src;
+                video.load();
+            }
+        });
+
+        const sections = document.querySelectorAll('main h2[id]');
+        const navLinks = document.querySelectorAll('#nav-menu a');
+        if (sections.length === 0 || navLinks.length === 0) return;
+        const observer = new IntersectionObserver(() => {
+            let currentActiveId = sections[0].id;
+            sections.forEach(section => {
+                if (section.getBoundingClientRect().top < window.innerHeight / 2) currentActiveId = section.id;
+            });
+            navLinks.forEach(link => {
+                const navText = link.querySelector('.nav-text');
+                const navIndicator = link.querySelector('.nav-indicator');
+                const linkId = link.getAttribute('href').substring(1);
+                if (linkId === currentActiveId) {
+                    navText.classList.add('active-nav-text');
+                    navIndicator.classList.add('w-16', 'bg-slate-800');
+                    navIndicator.classList.remove('w-8', 'bg-slate-400');
+                } else {
+                    navText.classList.remove('active-nav-text');
+                    navIndicator.classList.remove('w-16', 'bg-slate-800');
+                    navIndicator.classList.add('w-8', 'bg-slate-400');
+                }
+            });
+        }, { rootMargin: '-50% 0px -50% 0px', threshold: 0 });
+        sections.forEach(section => observer.observe(section));
+    });
+    </script>
+</body>
+</html>
